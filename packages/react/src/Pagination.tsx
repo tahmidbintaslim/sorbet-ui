@@ -4,7 +4,7 @@ import {
   PaginationProps as MuiPaginationProps,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { colors, colorScaleForMode, typography } from '@sorbetui/tokens';
+import { colors, colorScaleForMode, typography } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // =============================================================================

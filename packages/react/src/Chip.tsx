@@ -1,6 +1,6 @@
 import { CircularProgress, Chip as MuiChip, ChipProps as MuiChipProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { animations, colors, colorScaleForMode, typography } from '@sorbetui/tokens';
+import { animations, colors, colorScaleForMode, typography } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // =============================================================================

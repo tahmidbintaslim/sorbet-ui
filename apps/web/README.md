@@ -21,4 +21,4 @@ pnpm web:build
 ## What it shows
 
 - Hero, feature cards and a component showcase built with Sorbet UI components
-- A light and dark theme toggle using `lightTheme` and `darkTheme` from `@sorbetui/theme`
+- A light and dark theme toggle using `lightTheme` and `darkTheme` from `@sorbet-ui/theme`

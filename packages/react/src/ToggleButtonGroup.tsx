@@ -5,7 +5,7 @@ import MuiToggleButtonGroup, {
   ToggleButtonGroupProps as MuiToggleButtonGroupProps,
 } from '@mui/material/ToggleButtonGroup';
 import { styled } from '@mui/material/styles';
-import type { SorbetColor, SorbetSize, SorbetVariant } from '@sorbetui/core';
+import type { SorbetColor, SorbetSize, SorbetVariant } from '@sorbet-ui/core';
 import {
   colors,
   ColorScale,
@@ -13,7 +13,7 @@ import {
   radius,
   textColorsForMode,
   transitions,
-} from '@sorbetui/tokens';
+} from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // ─────────────────────────────────────────────────────────────────────────────

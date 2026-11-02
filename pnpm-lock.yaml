@@ -19,19 +19,19 @@ importers:
 
   .:
     dependencies:
-      '@sorbetui/core':
+      '@sorbet-ui/core':
         specifier: workspace:*
         version: link:packages/core
-      '@sorbetui/icons':
+      '@sorbet-ui/icons':
         specifier: workspace:*
         version: link:packages/icons
-      '@sorbetui/react':
+      '@sorbet-ui/react':
         specifier: workspace:*
         version: link:packages/react
-      '@sorbetui/theme':
+      '@sorbet-ui/theme':
         specifier: workspace:*
         version: link:packages/theme
-      '@sorbetui/tokens':
+      '@sorbet-ui/tokens':
         specifier: workspace:*
         version: link:packages/tokens
     devDependencies:
@@ -128,13 +128,13 @@ importers:
       '@playwright/test':
         specifier: ^1.57.0
         version: 1.61.1
-      '@sorbetui/react':
+      '@sorbet-ui/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@sorbetui/theme':
+      '@sorbet-ui/theme':
         specifier: workspace:*
         version: link:../../packages/theme
-      '@sorbetui/tokens':
+      '@sorbet-ui/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
       '@storybook/addon-a11y':
@@ -203,16 +203,16 @@ importers:
       '@mui/material':
         specifier: ^7.3.5
         version: 7.3.11(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@sorbetui/core':
+      '@sorbet-ui/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@sorbetui/react':
+      '@sorbet-ui/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@sorbetui/theme':
+      '@sorbet-ui/theme':
         specifier: workspace:*
         version: link:../../packages/theme
-      '@sorbetui/tokens':
+      '@sorbet-ui/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
       react:
@@ -246,7 +246,7 @@ importers:
 
   packages/core:
     dependencies:
-      '@sorbetui/tokens':
+      '@sorbet-ui/tokens':
         specifier: workspace:*
         version: link:../tokens
       react:
@@ -286,13 +286,13 @@ importers:
 
   packages/react:
     dependencies:
-      '@sorbetui/core':
+      '@sorbet-ui/core':
         specifier: workspace:*
         version: link:../core
-      '@sorbetui/theme':
+      '@sorbet-ui/theme':
         specifier: workspace:*
         version: link:../theme
-      '@sorbetui/tokens':
+      '@sorbet-ui/tokens':
         specifier: workspace:*
         version: link:../tokens
       react:
@@ -356,7 +356,7 @@ importers:
 
   packages/theme:
     dependencies:
-      '@sorbetui/tokens':
+      '@sorbet-ui/tokens':
         specifier: workspace:*
         version: link:../tokens
       react:

@@ -43,4 +43,4 @@ jobs:
       - name: Check the public Storybook
         run: node scripts/check-deployed-storybook.mjs
         env:
-          STORYBOOK_URL: ${{ vars.STORYBOOK_URL || 'https://sun-ui-brown.vercel.app' }}
+          STORYBOOK_URL: ${{ vars.STORYBOOK_URL || 'https://sorbet-ui.vercel.app' }}

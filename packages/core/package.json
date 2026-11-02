@@ -1,5 +1,5 @@
 {
-  "name": "@sorbetui/core",
+  "name": "@sorbet-ui/core",
   "version": "0.1.0",
   "description": "Shared types, variant presets, accessibility helpers and headless state helpers for Sorbet UI.",
   "homepage": "https://github.com/tahmidbintaslim/sorbet-ui#readme",
@@ -50,7 +50,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@sorbetui/tokens": "workspace:*"
+    "@sorbet-ui/tokens": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=18.0.0"

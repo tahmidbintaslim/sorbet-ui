@@ -7,9 +7,9 @@ import MuiLinearProgress, {
 } from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
-import type { SorbetColor, SorbetSize, SorbetVariant } from '@sorbetui/core';
-import { calculateProgressState, clampProgress, getProgressAriaProps } from '@sorbetui/core';
-import { colors, ColorScale, radius, transitions } from '@sorbetui/tokens';
+import type { SorbetColor, SorbetSize, SorbetVariant } from '@sorbet-ui/core';
+import { calculateProgressState, clampProgress, getProgressAriaProps } from '@sorbet-ui/core';
+import { colors, ColorScale, radius, transitions } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // ─────────────────────────────────────────────────────────────────────────────

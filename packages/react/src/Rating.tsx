@@ -4,9 +4,9 @@ import Box from '@mui/material/Box';
 import MuiRating, { RatingProps as MuiRatingProps } from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
-import type { SorbetColor, SorbetSize, SorbetVariant } from '@sorbetui/core';
-import { getDefaultRatingLabel } from '@sorbetui/core';
-import { colors, ColorScale, transitions } from '@sorbetui/tokens';
+import type { SorbetColor, SorbetSize, SorbetVariant } from '@sorbet-ui/core';
+import { getDefaultRatingLabel } from '@sorbet-ui/core';
+import { colors, ColorScale, transitions } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // ─────────────────────────────────────────────────────────────────────────────

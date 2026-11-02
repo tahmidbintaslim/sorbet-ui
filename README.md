@@ -3,10 +3,10 @@
 React components built on Material UI v7, with one `variant`, `color` and `size` API across 26 components, plus design tokens and light and dark themes.
 
 [![CI](https://github.com/tahmidbintaslim/sorbet-ui/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/tahmidbintaslim/sorbet-ui/actions/workflows/test.yml)
-[![Storybook](https://img.shields.io/badge/Storybook-live-FF4785?logo=storybook&logoColor=white)](https://sun-ui-brown.vercel.app)
+[![Storybook](https://img.shields.io/badge/Storybook-live-FF4785?logo=storybook&logoColor=white)](https://sorbet-ui.vercel.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**Live demo: [Storybook](https://sun-ui-brown.vercel.app)**. Every component with live controls, 372 stories in all, deployed from `main` on Vercel.
+**Live demo: [Storybook](https://sorbet-ui.vercel.app)**. Every component with live controls, 372 stories in all, deployed from `main` on Vercel.
 
 **Status: in development.** Nothing has been published to npm. The packages were numbered 1.0.0 on `main` before any release; the readiness pass lowered every package to 0.1.0, which is still unreleased. To try it today, run it from source (see [Getting started](#getting-started)).
 
@@ -51,59 +51,59 @@ Sorbet UI is a good fit if you already use Material UI and MUI X and want soft, 
 ## Features
 
 - 26 components, from Button and TextField to Table, DatePicker and Autocomplete, each with the variant, color and size props above (exceptions are listed under [Components](#components)).
-- `@sorbetui/tokens`: 7 color scales with alpha steps, spacing, radius, shadows, z-index, breakpoints, typography and animations, as plain TypeScript objects.
-- `@sorbetui/theme`: `lightTheme` and `darkTheme`, built with MUI `createTheme` from those tokens.
+- `@sorbet-ui/tokens`: 7 color scales with alpha steps, spacing, radius, shadows, z-index, breakpoints, typography and animations, as plain TypeScript objects.
+- `@sorbet-ui/theme`: `lightTheme` and `darkTheme`, built with MUI `createTheme` from those tokens.
 - Dark mode: 22 of the 26 components read the MUI palette mode and switch to lighter shades under `darkTheme`. Autocomplete, DatePicker, Progress and Rating use the same shades in both modes.
-- ESM and CommonJS builds with TypeScript types for every published package; `@sorbetui/react` starts with a `"use client"` directive.
+- ESM and CommonJS builds with TypeScript types for every published package; `@sorbet-ui/react` starts with a `"use client"` directive.
 - 505 unit tests (Vitest, Testing Library, jest-axe in six files) and 372 Storybook stories that run as browser tests in Chromium.
 
 ## Screenshots
 
-Captured from the [live Storybook](https://sun-ui-brown.vercel.app). The light theme is on the left, the dark theme on the right.
+Captured from the [live Storybook](https://sorbet-ui.vercel.app). The light theme is on the left, the dark theme on the right.
 
-**Tabs** ([story](https://sun-ui-brown.vercel.app/?path=/story/molecules-tabs--all-variants)):
+**Tabs** ([story](https://sorbet-ui.vercel.app/?path=/story/molecules-tabs--all-variants)):
 
 ![Tabs in the solid, soft, outlined, ghost and plain variants, light theme on the left and dark theme on the right](docs/images/tabs-light-dark.png)
 
-**Table** ([story](https://sun-ui-brown.vercel.app/?path=/story/organisms-table--all-variants)):
+**Table** ([story](https://sorbet-ui.vercel.app/?path=/story/organisms-table--all-variants)):
 
 ![Table in the solid, soft and outlined variants with three rows of sample users, light theme on the left and dark theme on the right](docs/images/table-light-dark.png)
 
-The Button image at the top comes from the [Button colors story](https://sun-ui-brown.vercel.app/?path=/story/atoms-button--colors).
+The Button image at the top comes from the [Button colors story](https://sorbet-ui.vercel.app/?path=/story/atoms-button--colors).
 
 ## Packages
 
-The npm packages use the `@sorbetui` scope. That scope is not registered on npm yet (the registry answers "Scope not found"), so publishing needs an npm org named `sorbetui`.
+The npm packages use the `@sorbet-ui` scope. The npm org `sorbet-ui` exists; publishing needs an `NPM_TOKEN` from one of its members.
 
 | Package           | Contents                                                                                                       |
 | ----------------- | -------------------------------------------------------------------------------------------------------------- |
-| `@sorbetui/react`  | The 26 components                                                                                              |
-| `@sorbetui/theme`  | `lightTheme` and `darkTheme` (MUI `createTheme`) built from the tokens                                         |
-| `@sorbetui/tokens` | Colors (7 scales with alpha steps), spacing, radius, shadows, z-index, breakpoints, typography and animations  |
-| `@sorbetui/core`   | Shared types, variant presets, accessibility helpers and headless state helpers (Progress and Rating use them) |
-| `@sorbetui/icons`  | Empty placeholder. Private, not published                                                                      |
+| `@sorbet-ui/react`  | The 26 components                                                                                              |
+| `@sorbet-ui/theme`  | `lightTheme` and `darkTheme` (MUI `createTheme`) built from the tokens                                         |
+| `@sorbet-ui/tokens` | Colors (7 scales with alpha steps), spacing, radius, shadows, z-index, breakpoints, typography and animations  |
+| `@sorbet-ui/core`   | Shared types, variant presets, accessibility helpers and headless state helpers (Progress and Rating use them) |
+| `@sorbet-ui/icons`  | Empty placeholder. Private, not published                                                                      |
 
-Each published package ships ESM and CommonJS builds with TypeScript types, and `@sorbetui/react` starts with a `"use client"` directive.
+Each published package ships ESM and CommonJS builds with TypeScript types, and `@sorbet-ui/react` starts with a `"use client"` directive.
 
 ## Install
 
 Once 0.1.0 is published:
 
 ```bash
-npm install @sorbetui/react @sorbetui/theme \
+npm install @sorbet-ui/react @sorbet-ui/theme \
   @mui/material @mui/icons-material @mui/x-date-pickers \
   @emotion/react @emotion/styled dayjs
 ```
 
-Material UI, MUI X Date Pickers, Emotion and dayjs are peer dependencies, so your app keeps a single copy of each. `@sorbetui/react` needs React 19, Material UI 7 and MUI X Date Pickers 8. `@sorbetui/theme` works with React 18 or 19.
+Material UI, MUI X Date Pickers, Emotion and dayjs are peer dependencies, so your app keeps a single copy of each. `@sorbet-ui/react` needs React 19, Material UI 7 and MUI X Date Pickers 8. `@sorbet-ui/theme` works with React 18 or 19.
 
 ## Usage
 
 ```tsx
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
-import { Alert, Button, TextField } from '@sorbetui/react';
-import { lightTheme } from '@sorbetui/theme';
+import { Alert, Button, TextField } from '@sorbet-ui/react';
+import { lightTheme } from '@sorbet-ui/theme';
 
 export function App() {
   return (
@@ -124,7 +124,7 @@ export function App() {
 }
 ```
 
-Use `darkTheme` for dark mode. More examples are in [DOCUMENTATION.md](DOCUMENTATION.md) and in the [Storybook](https://sun-ui-brown.vercel.app).
+Use `darkTheme` for dark mode. More examples are in [DOCUMENTATION.md](DOCUMENTATION.md) and in the [Storybook](https://sorbet-ui.vercel.app).
 
 ## Components
 
@@ -167,7 +167,7 @@ All components take the 5 sizes above. The 7 colors apply everywhere except in t
 
 - Light theme: the `main`, `dark` and `contrastText` tokens reach 4.5:1 text contrast (the WCAG 2.1 AA level for normal text) in the resting state of the solid, soft, outlined, plain and link variants. A unit test in `packages/tokens` checks those pairs.
 - Light theme gaps: ghost and plain variants put `main` text on an 8% or 16% tint on hover and press, which drops below 4.5:1 for some colors (danger and neutral on hover). Progress, Rating, Slider and ToggleButtonGroup use the lighter 500 shades instead of `main`, and Autocomplete and DatePicker use MUI's default blue, so the token test does not cover them.
-- Dark mode: components switch to lighter shades (`colorScaleForMode` in `@sorbetui/tokens`; the `@sorbetui/core` variant helpers take an `isDark` flag), so `main` text reaches 4.5:1 on the token dark page (`backgrounds.dark.default`, `#0f172a`) for every color except neutral (on `darkTheme`'s `#111827` page, secondary falls just short at 4.48:1), and borders and icons reach 3:1. Checkbox, Radio and Switch labels, unselected ToggleButtonGroup text and the Slider value and min/max labels use the dark text tokens (`textColorsForMode`), which reach 4.5:1 on the page and on paper. Still short of 4.5:1: solid fills (white on the 500 shades) for most colors, neutral text, and secondary, danger and neutral text on the lighter paper surface.
+- Dark mode: components switch to lighter shades (`colorScaleForMode` in `@sorbet-ui/tokens`; the `@sorbet-ui/core` variant helpers take an `isDark` flag), so `main` text reaches 4.5:1 on the token dark page (`backgrounds.dark.default`, `#0f172a`) for every color except neutral (on `darkTheme`'s `#111827` page, secondary falls just short at 4.48:1), and borders and icons reach 3:1. Checkbox, Radio and Switch labels, unselected ToggleButtonGroup text and the Slider value and min/max labels use the dark text tokens (`textColorsForMode`), which reach 4.5:1 on the page and on paper. Still short of 4.5:1: solid fills (white on the 500 shades) for most colors, neutral text, and secondary, danger and neutral text on the lighter paper surface.
 - Components rely on the keyboard and ARIA behavior of the MUI components they wrap. Six component test files run jest-axe, and Storybook includes the a11y addon, but the library has not had a full accessibility audit.
 
 ## Tech stack
@@ -184,14 +184,14 @@ All components take the 5 sizes above. The 7 colors apply everywhere except in t
 
 ## Architecture
 
-The repo is a pnpm workspace run with Turborepo. Arrows point from a package to the packages that list it as a dependency. The two apps also list `@sorbetui/tokens`, and `apps/web` lists `@sorbetui/core`; those arrows are left out to keep the diagram readable. Material UI, MUI X, Emotion and React are peer dependencies, so an app keeps one copy of each.
+The repo is a pnpm workspace run with Turborepo. Arrows point from a package to the packages that list it as a dependency. The two apps also list `@sorbet-ui/tokens`, and `apps/web` lists `@sorbet-ui/core`; those arrows are left out to keep the diagram readable. Material UI, MUI X, Emotion and React are peer dependencies, so an app keeps one copy of each.
 
 ```mermaid
 flowchart LR
-  tokens["@sorbetui/tokens<br/>colors, spacing, typography"]
-  core["@sorbetui/core<br/>types, variant presets, a11y helpers"]
-  theme["@sorbetui/theme<br/>lightTheme, darkTheme"]
-  react["@sorbetui/react<br/>26 components"]
+  tokens["@sorbet-ui/tokens<br/>colors, spacing, typography"]
+  core["@sorbet-ui/core<br/>types, variant presets, a11y helpers"]
+  theme["@sorbet-ui/theme<br/>lightTheme, darkTheme"]
+  react["@sorbet-ui/react<br/>26 components"]
   mui[("Material UI 7, MUI X 8, Emotion<br/>peer dependencies")]
   docs["apps/docs<br/>Storybook, deployed on Vercel"]
   web["apps/web<br/>Vite demo page, not deployed"]
@@ -242,7 +242,7 @@ No environment variables are needed to install, build or test. The optional ones
 | Variable                  | Used by                                | Purpose                                                                        |
 | ------------------------- | -------------------------------------- | ------------------------------------------------------------------------------ |
 | `SB_URL`                  | `apps/docs/vitest.config.ts`           | Storybook URL used in links in the story test output. Default `localhost:6006` |
-| `STORYBOOK_URL`           | `scripts/check-deployed-storybook.mjs` | URL the deploy check tests. Default `https://sun-ui-brown.vercel.app`          |
+| `STORYBOOK_URL`           | `scripts/check-deployed-storybook.mjs` | URL the deploy check tests. Default `https://sorbet-ui.vercel.app`          |
 | `CHROMATIC_PROJECT_TOKEN` | `test.yml` (repository secret)         | Publishes Storybook to Chromatic. Without it the step fails but CI passes      |
 | `NPM_TOKEN`               | `publish.yml` (repository secret)      | Publishes the packages to npm on a GitHub release                              |
 
@@ -254,7 +254,7 @@ No environment variables are needed to install, build or test. The optional ones
 
 ## Deployment
 
-- **Storybook**: Vercel's GitHub integration builds every push with the settings in `vercel.json` (`turbo run build --filter=docs`, output `apps/docs/storybook-static`). `main` deploys to production at https://sun-ui-brown.vercel.app; pull requests get preview deployments, which sit behind Vercel Authentication. After each production deployment, `.github/workflows/storybook-deploy-check.yml` checks that the public URL serves every component.
+- **Storybook**: Vercel's GitHub integration builds every push with the settings in `vercel.json` (`turbo run build --filter=docs`, output `apps/docs/storybook-static`). `main` deploys to production at https://sorbet-ui.vercel.app; pull requests get preview deployments, which sit behind Vercel Authentication. After each production deployment, `.github/workflows/storybook-deploy-check.yml` checks that the public URL serves every component.
 - **Visual review**: the CI workflow publishes Storybook to Chromatic on pushes to `main` and on pull requests from this repo, using the `CHROMATIC_PROJECT_TOKEN` secret.
 - **npm**: `.github/workflows/publish.yml` publishes the public packages when the maintainer publishes a GitHub release tagged `v<version>`. It has not run yet; see [TESTING_GUIDE.md](TESTING_GUIDE.md#releasing).
 
@@ -278,10 +278,10 @@ sorbet-ui/
 
 ## Known gaps and next steps
 
-- Not published to npm yet. The first release needs the `sorbetui` npm org (or a different scope) and the `NPM_TOKEN` secret.
+- Not published to npm yet. The first release needs the `NPM_TOKEN` secret (the `sorbet-ui` npm org exists).
 - Dark-mode solid fills and some text and hover states fall short of 4.5:1 contrast (see [Accessibility](#accessibility)).
 - The `color` prop has no visible effect on DatePicker, on the Autocomplete input field or on Drawer.
-- `@sorbetui/icons` is empty.
+- `@sorbet-ui/icons` is empty.
 - The packed packages have been imported and server-rendered from Node (ESM and CommonJS), but not yet tested inside a Next.js or Vite app.
 
 ## Contributing

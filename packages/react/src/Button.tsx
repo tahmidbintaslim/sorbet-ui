@@ -1,6 +1,6 @@
 import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
 import { keyframes, styled } from '@mui/material/styles';
-import { colors, colorScaleForMode, componentSizes, radius, transitions } from '@sorbetui/tokens';
+import { colors, colorScaleForMode, componentSizes, radius, transitions } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // =============================================================================

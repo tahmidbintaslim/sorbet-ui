@@ -1,5 +1,5 @@
 {
-  "name": "@sorbetui/theme",
+  "name": "@sorbet-ui/theme",
   "version": "0.1.0",
   "description": "Light and dark Material UI themes built from the Sorbet UI tokens.",
   "homepage": "https://github.com/tahmidbintaslim/sorbet-ui#readme",
@@ -51,7 +51,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@sorbetui/tokens": "workspace:*"
+    "@sorbet-ui/tokens": "workspace:*"
   },
   "peerDependencies": {
     "@mui/material": "^7.3.5",

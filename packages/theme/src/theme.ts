@@ -1,5 +1,5 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
-import { radiusScale, sorbetPalette } from '@sorbetui/tokens';
+import { radiusScale, sorbetPalette } from '@sorbet-ui/tokens';
 
 const themeOptions: ThemeOptions = {
   palette: {

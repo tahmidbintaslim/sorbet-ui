@@ -89,10 +89,10 @@
     "vitest": "^4.1.11"
   },
   "dependencies": {
-    "@sorbetui/core": "workspace:*",
-    "@sorbetui/icons": "workspace:*",
-    "@sorbetui/react": "workspace:*",
-    "@sorbetui/theme": "workspace:*",
-    "@sorbetui/tokens": "workspace:*"
+    "@sorbet-ui/core": "workspace:*",
+    "@sorbet-ui/icons": "workspace:*",
+    "@sorbet-ui/react": "workspace:*",
+    "@sorbet-ui/theme": "workspace:*",
+    "@sorbet-ui/tokens": "workspace:*"
   }
 }

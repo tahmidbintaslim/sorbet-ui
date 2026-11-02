@@ -8,7 +8,7 @@ import {
   CardProps as MuiCardProps,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { animations, colors, colorScaleForMode, sizing } from '@sorbetui/tokens';
+import { animations, colors, colorScaleForMode, sizing } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // =============================================================================

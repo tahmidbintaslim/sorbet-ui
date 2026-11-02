@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { keyframes, styled } from '@mui/material/styles';
-import { colors, colorScaleForMode, radius, typography } from '@sorbetui/tokens';
+import { colors, colorScaleForMode, radius, typography } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // =============================================================================

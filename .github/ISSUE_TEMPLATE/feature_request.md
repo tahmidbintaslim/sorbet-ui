@@ -47,7 +47,7 @@ Describe any alternative solutions or features you've considered:
 
 ```tsx
 // Example usage
-import { NewComponent } from '@sorbetui/react';
+import { NewComponent } from '@sorbet-ui/react';
 
 export function MyComponent() {
   return <NewComponent />;

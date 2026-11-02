@@ -17,7 +17,7 @@ This creates a private security advisory that only you and the maintainer can se
 
 Please include:
 
-- the affected package (`@sorbetui/react`, `@sorbetui/theme`, `@sorbetui/tokens` or `@sorbetui/core`) and the version or commit
+- the affected package (`@sorbet-ui/react`, `@sorbet-ui/theme`, `@sorbet-ui/tokens` or `@sorbet-ui/core`) and the version or commit
 - steps to reproduce, or a small proof of concept
 - the impact you expect
 

@@ -5,7 +5,7 @@
  * This ensures visual consistency across all components.
  */
 
-import { colors, colorScaleForMode, type ColorScale } from '@sorbetui/tokens';
+import { colors, colorScaleForMode, type ColorScale } from '@sorbet-ui/tokens';
 import type { SorbetColor, SorbetVariant } from './types';
 
 /**

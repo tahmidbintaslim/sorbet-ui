@@ -1,5 +1,5 @@
 {
-  "name": "@sorbetui/react",
+  "name": "@sorbet-ui/react",
   "version": "0.1.0",
   "description": "React components built on Material UI v7 with one variant, color and size API.",
   "homepage": "https://github.com/tahmidbintaslim/sorbet-ui#readme",
@@ -55,9 +55,9 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@sorbetui/core": "workspace:*",
-    "@sorbetui/theme": "workspace:*",
-    "@sorbetui/tokens": "workspace:*"
+    "@sorbet-ui/core": "workspace:*",
+    "@sorbet-ui/theme": "workspace:*",
+    "@sorbet-ui/tokens": "workspace:*"
   },
   "peerDependencies": {
     "@emotion/react": "^11.14.0",

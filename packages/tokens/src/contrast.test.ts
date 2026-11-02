@@ -164,7 +164,7 @@ describe.each(semanticColors.filter((name) => name !== 'neutral'))(
   }
 );
 
-// darkTheme in @sorbetui/theme sets MUI's primary, success, warning and error `main`
+// darkTheme in @sorbet-ui/theme sets MUI's primary, success, warning and error `main`
 // to these 500 shades.
 describe.each(['primary', 'success', 'warning', 'danger'] as const)(
   'MUI dark theme palette %s on the dark default background',

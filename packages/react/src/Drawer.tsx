@@ -5,7 +5,7 @@ import {
   DrawerProps as MuiDrawerProps,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { animations, colors, sizing, typography } from '@sorbetui/tokens';
+import { animations, colors, sizing, typography } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // =============================================================================

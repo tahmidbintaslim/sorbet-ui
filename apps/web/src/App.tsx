@@ -22,7 +22,7 @@ import {
   Palette as PaletteIcon,
   Speed as SpeedIcon,
 } from '@mui/icons-material';
-import { lightTheme, darkTheme } from '@sorbetui/theme';
+import { lightTheme, darkTheme } from '@sorbet-ui/theme';
 import {
   Button as SorbetButton,
   Card as SorbetCard,
@@ -32,7 +32,7 @@ import {
   Alert,
   Progress,
   Rating,
-} from '@sorbetui/react';
+} from '@sorbet-ui/react';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 
@@ -65,7 +65,7 @@ function App() {
                 Sorbet UI
               </Typography>
               <Stack direction="row" spacing={2} alignItems="center">
-                <Button color="inherit" href="https://sun-ui-brown.vercel.app" target="_blank">
+                <Button color="inherit" href="https://sorbet-ui.vercel.app" target="_blank">
                   Storybook
                 </Button>
                 <IconButton
@@ -112,7 +112,7 @@ function App() {
                     <Button
                       variant="contained"
                       color="primary"
-                      href="https://sun-ui-brown.vercel.app"
+                      href="https://sorbet-ui.vercel.app"
                       target="_blank"
                       sx={{ borderRadius: 2, px: 3, py: 1.5 }}
                     >
@@ -368,7 +368,7 @@ function App() {
                     Links
                   </Typography>
                   <Stack spacing={1}>
-                    <Button color="inherit" href="https://sun-ui-brown.vercel.app" target="_blank">
+                    <Button color="inherit" href="https://sorbet-ui.vercel.app" target="_blank">
                       Storybook
                     </Button>
                     <Button

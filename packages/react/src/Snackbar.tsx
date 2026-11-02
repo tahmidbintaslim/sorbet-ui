@@ -6,7 +6,7 @@ import {
   SnackbarProps as MuiSnackbarProps,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { animations, colors, colorScaleForMode, sizing, typography } from '@sorbetui/tokens';
+import { animations, colors, colorScaleForMode, sizing, typography } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // =============================================================================

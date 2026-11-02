@@ -11,7 +11,7 @@ import {
   sizing,
   typography,
   type ColorScale,
-} from '@sorbetui/tokens';
+} from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // =============================================================================

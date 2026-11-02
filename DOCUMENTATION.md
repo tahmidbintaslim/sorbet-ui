@@ -1,6 +1,6 @@
 # Sorbet UI documentation
 
-Sorbet UI is a set of 26 React components built on Material UI (MUI) v7. Every component takes the same `variant` and `size` props and, with the three exceptions listed under [`color`](#color), the same `color` prop. Each still accepts the props of the MUI component it wraps. The [Storybook](https://sun-ui-brown.vercel.app) shows every component with live controls.
+Sorbet UI is a set of 26 React components built on Material UI (MUI) v7. Every component takes the same `variant` and `size` props and, with the three exceptions listed under [`color`](#color), the same `color` prop. Each still accepts the props of the MUI component it wraps. The [Storybook](https://sorbet-ui.vercel.app) shows every component with live controls.
 
 Sorbet UI is in development and nothing has been published to npm. The packages were numbered 1.0.0 before any release; they now start at 0.1.0, which is unreleased.
 
@@ -23,7 +23,7 @@ Sorbet UI is in development and nothing has been published to npm. The packages 
 After the first release:
 
 ```bash
-npm install @sorbetui/react @sorbetui/theme \
+npm install @sorbet-ui/react @sorbet-ui/theme \
   @mui/material @mui/icons-material @mui/x-date-pickers \
   @emotion/react @emotion/styled dayjs
 ```
@@ -36,7 +36,7 @@ npm install @sorbetui/react @sorbetui/theme \
 | `@emotion/react`, `@emotion/styled`    | 11            |
 | `dayjs`                                | 1.11 or later |
 
-These are peer dependencies, so your app owns one copy of each. `@sorbetui/react` imports all of them, including MUI X Date Pickers and dayjs, because its single entry point also exports `DatePicker`.
+These are peer dependencies, so your app owns one copy of each. `@sorbet-ui/react` imports all of them, including MUI X Date Pickers and dayjs, because its single entry point also exports `DatePicker`.
 
 Until then, run Sorbet UI from source:
 
@@ -55,8 +55,8 @@ Wrap your app in MUI's `ThemeProvider` with a Sorbet UI theme:
 ```tsx
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
-import { Button } from '@sorbetui/react';
-import { lightTheme } from '@sorbetui/theme';
+import { Button } from '@sorbet-ui/react';
+import { lightTheme } from '@sorbet-ui/theme';
 
 export function App() {
   return (
@@ -68,7 +68,7 @@ export function App() {
 }
 ```
 
-Components read their colors from `@sorbetui/tokens` and read the theme to choose light or dark styles, so the provider is what turns dark mode on.
+Components read their colors from `@sorbet-ui/tokens` and read the theme to choose light or dark styles, so the provider is what turns dark mode on.
 
 ## The shared props
 
@@ -112,7 +112,7 @@ These examples use only props that exist in the current code. The Storybook has 
 
 ```tsx
 import SaveIcon from '@mui/icons-material/Save';
-import { Button } from '@sorbetui/react';
+import { Button } from '@sorbet-ui/react';
 
 <Button variant="solid" color="primary">Continue</Button>
 <Button variant="solid" loading>Saving</Button>
@@ -127,7 +127,7 @@ import { Button } from '@sorbetui/react';
 ### Form controls
 
 ```tsx
-import { Checkbox, MenuItem, Select, Switch, TextField } from '@sorbetui/react';
+import { Checkbox, MenuItem, Select, Switch, TextField } from '@sorbet-ui/react';
 
 <TextField variant="outlined" label="Email" />
 <TextField variant="soft" label="Message" multiline rows={4} />
@@ -145,7 +145,7 @@ import { Checkbox, MenuItem, Select, Switch, TextField } from '@sorbetui/react';
 ### Feedback
 
 ```tsx
-import { Alert, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar } from '@sorbetui/react';
+import { Alert, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar } from '@sorbet-ui/react';
 
 <Alert variant="soft" color="warning" onClose={() => setOpen(false)}>
   Your session ends in 5 minutes.
@@ -166,7 +166,7 @@ import { Alert, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar } fr
 ### Navigation
 
 ```tsx
-import { Pagination, Tabs } from '@sorbetui/react';
+import { Pagination, Tabs } from '@sorbet-ui/react';
 
 <Tabs
   variant="soft"
@@ -183,7 +183,7 @@ import { Pagination, Tabs } from '@sorbetui/react';
 ### Data display
 
 ```tsx
-import { Avatar, Badge, Chip, Table, type TableColumn } from '@sorbetui/react';
+import { Avatar, Badge, Chip, Table, type TableColumn } from '@sorbet-ui/react';
 
 type User = { name: string; role: string };
 
@@ -204,7 +204,7 @@ const columns: TableColumn<User>[] = [
 ### DatePicker
 
 ```tsx
-import { DatePicker, dayjs } from '@sorbetui/react';
+import { DatePicker, dayjs } from '@sorbet-ui/react';
 
 <DatePicker label="Start date" value={dayjs()} onChange={(value) => setDate(value)} />;
 ```
@@ -213,10 +213,10 @@ DatePicker brings its own `LocalizationProvider` with the dayjs adapter.
 
 ## Design tokens
 
-`@sorbetui/tokens` holds the raw values the components use.
+`@sorbet-ui/tokens` holds the raw values the components use.
 
 ```ts
-import { colors, radius, spacing, typography } from '@sorbetui/tokens';
+import { colors, radius, spacing, typography } from '@sorbet-ui/tokens';
 
 colors.primary.main; // '#0369a1'
 colors.primary.dark; // '#075985'
@@ -235,16 +235,16 @@ Each color has a 50 to 900 scale, `main`, `light`, `dark`, `contrastText` and al
 In dark mode the components use `darkModeColorPalette`, where `main` is the lighter 500 shade. `colorScaleForMode` picks the scale for you:
 
 ```ts
-import { colorScaleForMode } from '@sorbetui/tokens';
+import { colorScaleForMode } from '@sorbet-ui/tokens';
 
 colorScaleForMode('primary', false).main; // '#0369a1'
 colorScaleForMode('primary', true).main; // '#0ea5e9'
 ```
 
-The variant helpers in `@sorbetui/core` (`getColorScale`, `getVariantStyles`, `getVariantCss`) return the light-theme shades unless you pass `true` as their last argument in dark mode:
+The variant helpers in `@sorbet-ui/core` (`getColorScale`, `getVariantStyles`, `getVariantCss`) return the light-theme shades unless you pass `true` as their last argument in dark mode:
 
 ```ts
-import { getVariantStyles } from '@sorbetui/core';
+import { getVariantStyles } from '@sorbet-ui/core';
 
 getVariantStyles('outlined', 'primary').color; // '#0369a1'
 getVariantStyles('outlined', 'primary', true).color; // '#0ea5e9'
@@ -253,7 +253,7 @@ getVariantStyles('outlined', 'primary', true).color; // '#0ea5e9'
 Text colors work the same way. `textColorsForMode` returns `textColors.light` or `textColors.dark`; Checkbox, Radio and Switch labels, unselected ToggleButtonGroup text and the Slider value and min/max labels use it:
 
 ```ts
-import { textColorsForMode } from '@sorbetui/tokens';
+import { textColorsForMode } from '@sorbet-ui/tokens';
 
 textColorsForMode(false).primary; // '#0f172a'
 textColorsForMode(true).primary; // '#f8fafc'
@@ -264,7 +264,7 @@ textColorsForMode(true).primary; // '#f8fafc'
 ```tsx
 import { ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { darkTheme, lightTheme } from '@sorbetui/theme';
+import { darkTheme, lightTheme } from '@sorbet-ui/theme';
 
 function Root() {
   const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
@@ -280,7 +280,7 @@ To change the theme, extend it with MUI's `createTheme`:
 
 ```ts
 import { createTheme } from '@mui/material/styles';
-import { lightTheme } from '@sorbetui/theme';
+import { lightTheme } from '@sorbet-ui/theme';
 
 const theme = createTheme(lightTheme, {
   typography: { fontFamily: '"Inter", sans-serif' },
@@ -297,7 +297,7 @@ Every component accepts the MUI `sx` prop, and works with MUI's `styled()`:
 
 ```tsx
 import { styled } from '@mui/material/styles';
-import { Button } from '@sorbetui/react';
+import { Button } from '@sorbet-ui/react';
 
 <Button variant="solid" sx={{ borderRadius: '20px', letterSpacing: 1 }}>
   Rounded
@@ -310,7 +310,7 @@ Every component's prop type is exported (`ButtonProps`, `TableProps`, `SorbetDat
 
 ## Server rendering and Next.js
 
-The packages ship ESM and CommonJS builds, and both have been server-rendered with `react-dom/server` in Node. The `@sorbetui/react` build starts with `"use client"`, so React Server Components frameworks treat it as client code. Put `ThemeProvider` in one of your own client components, because themes contain functions that cannot cross the server and client boundary. Sorbet UI has not been tested inside a Next.js app yet.
+The packages ship ESM and CommonJS builds, and both have been server-rendered with `react-dom/server` in Node. The `@sorbet-ui/react` build starts with `"use client"`, so React Server Components frameworks treat it as client code. Put `ThemeProvider` in one of your own client components, because themes contain functions that cannot cross the server and client boundary. Sorbet UI has not been tested inside a Next.js app yet.
 
 ## Troubleshooting
 
@@ -322,7 +322,7 @@ The packages ship ESM and CommonJS builds, and both have been server-rendered wi
 
 ## Resources
 
-- [Storybook](https://sun-ui-brown.vercel.app)
+- [Storybook](https://sorbet-ui.vercel.app)
 - [GitHub repository](https://github.com/tahmidbintaslim/sorbet-ui)
 - [Contributing guide](CONTRIBUTING.md)
 - [Testing guide](TESTING_GUIDE.md)

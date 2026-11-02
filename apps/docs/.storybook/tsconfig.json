@@ -5,9 +5,9 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "paths": {
-      "@sorbetui/tokens": ["../../../packages/tokens/src"],
-      "@sorbetui/theme": ["../../../packages/theme/src"],
-      "@sorbetui/react": ["../../../packages/react/src"]
+      "@sorbet-ui/tokens": ["../../../packages/tokens/src"],
+      "@sorbet-ui/theme": ["../../../packages/theme/src"],
+      "@sorbet-ui/react": ["../../../packages/react/src"]
     }
   },
   "include": ["*.ts", "*.tsx", "../../../packages/react/src/**/*.tsx"],

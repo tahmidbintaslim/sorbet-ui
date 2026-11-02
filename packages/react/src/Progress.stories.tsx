@@ -24,7 +24,7 @@ Progress indicators show the status of ongoing processes. Sorbet UI provides bot
 - **Determinate & Indeterminate**: Show exact progress or loading state
 - **Labels**: Optional value labels with custom formatting
 - **Buffer**: Linear progress supports buffer indicator
-- **Accessible**: Full ARIA support via @sorbetui/core primitives
+- **Accessible**: Full ARIA support via @sorbet-ui/core primitives
         `,
       },
     },

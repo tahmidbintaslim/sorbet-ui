@@ -2,8 +2,8 @@ import Box from '@mui/material/Box';
 import MuiSlider, { SliderProps as MuiSliderProps } from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import { styled, useTheme } from '@mui/material/styles';
-import type { SorbetColor, SorbetSize, SorbetVariant } from '@sorbetui/core';
-import { colors, ColorScale, radius, textColorsForMode, transitions } from '@sorbetui/tokens';
+import type { SorbetColor, SorbetSize, SorbetVariant } from '@sorbet-ui/core';
+import { colors, ColorScale, radius, textColorsForMode, transitions } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // ─────────────────────────────────────────────────────────────────────────────
