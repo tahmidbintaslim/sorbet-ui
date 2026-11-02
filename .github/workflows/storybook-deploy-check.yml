@@ -1,4 +1,4 @@
-# Sun UI - Deployed Storybook check
+# Sorbet UI - Deployed Storybook check
 #
 # Vercel builds and hosts the Storybook (vercel.json); this workflow does not deploy.
 # After each successful Production deployment, and once a week, it checks that the

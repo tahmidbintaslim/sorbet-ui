@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Report a bug to help us improve Sun UI
+about: Report a bug to help us improve Sorbet UI
 title: '[BUG] '
 labels: bug
 assignees: ''
@@ -19,8 +19,8 @@ A clear and concise description of what the bug is.
 <!-- Where does the bug occur? -->
 
 - Component: (e.g., Button, TextField, etc.)
-- Package: (e.g., @smug-ui/react, @smug-ui/theme)
-- Version: (run `npm list @smug-ui/react`)
+- Package: (e.g., @sorbetui/react, @sorbetui/theme)
+- Version: (run `npm list @sorbetui/react`)
 
 ---
 
@@ -75,7 +75,7 @@ Please provide your environment details:
 <!-- Provide a minimal code example that reproduces the bug -->
 
 ```tsx
-import { Button } from '@smug-ui/react';
+import { Button } from '@sorbetui/react';
 
 export function MyComponent() {
   return <Button>{/* Bug occurs here */}</Button>;
