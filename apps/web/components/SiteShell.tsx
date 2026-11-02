@@ -2,17 +2,38 @@
 import * as React from 'react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { AppBar, Box, Container, IconButton, Link, Stack, Toolbar, Typography } from '@mui/material';
+import { Box, Chip, Container, Grid, IconButton, Link, Stack, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import DarkMode from '@mui/icons-material/DarkMode';
 import LightMode from '@mui/icons-material/LightMode';
 import GitHub from '@mui/icons-material/GitHub';
 import { useColorMode } from './ColorMode';
+import Logo from './Logo';
 import { SITE } from '@/lib/site';
 
 const NAV = [
   { href: '/docs', label: 'Docs' },
   { href: '/docs/components', label: 'Components' },
   { href: '/docs/theming', label: 'Theming' },
+];
+
+const FOOTER = [
+  {
+    title: 'Docs',
+    links: [
+      { href: '/docs', label: 'Getting started' },
+      { href: '/docs/components', label: 'Components' },
+      { href: '/docs/theming', label: 'Theming' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { href: SITE.github, label: 'GitHub' },
+      { href: SITE.storybook, label: 'Storybook' },
+      { href: SITE.npm, label: 'npm' },
+    ],
+  },
 ];
 
 export default function SiteShell({ children }: { children: React.ReactNode }) {
@@ -31,22 +52,52 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
       >
         Skip to content
       </Link>
-      <AppBar
-        position="sticky"
-        color="inherit"
-        elevation={0}
-        sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}
+
+      {/* Translucent sticky header; on phones the nav drops to its own scrollable row. */}
+      <Box
+        component="header"
+        sx={(t) => ({
+          position: 'sticky',
+          top: 0,
+          zIndex: t.zIndex.appBar,
+          borderBottom: 1,
+          borderColor: 'divider',
+          bgcolor: alpha(t.palette.background.default, 0.8),
+          backdropFilter: 'saturate(180%) blur(12px)',
+        })}
       >
-        <Toolbar sx={{ gap: 1, flexWrap: 'wrap' }}>
-          <Typography
+        <Container
+          maxWidth="lg"
+          sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', columnGap: 3, minHeight: 64 }}
+        >
+          <Stack
             component={NextLink}
             href="/"
-            variant="h6"
-            sx={{ fontWeight: 700, color: 'inherit', textDecoration: 'none', mr: 2 }}
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            sx={{ color: 'text.primary', textDecoration: 'none', py: 1.5 }}
           >
-            Sorbet UI
-          </Typography>
-          <Box component="nav" aria-label="Main" sx={{ display: 'flex', gap: 2, flexGrow: 1 }}>
+            <Logo />
+            <Typography component="span" sx={{ fontWeight: 800, fontSize: 18, letterSpacing: '-0.02em' }}>
+              {SITE.name}
+            </Typography>
+          </Stack>
+
+          <Box
+            component="nav"
+            aria-label="Main"
+            sx={{
+              order: { xs: 3, md: 0 },
+              width: { xs: '100%', md: 'auto' },
+              flexGrow: { md: 1 },
+              display: 'flex',
+              gap: 0.5,
+              overflowX: 'auto',
+              pb: { xs: 1, md: 0 },
+              mx: { xs: -1, md: 0 },
+            }}
+          >
             {NAV.map((n) => {
               const active = n.href === '/docs' ? pathname === '/docs' : pathname.startsWith(n.href);
               return (
@@ -54,53 +105,105 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                   key={n.href}
                   component={NextLink}
                   href={n.href}
-                  underline={active ? 'always' : 'hover'}
-                  color="inherit"
+                  underline="none"
                   aria-current={active ? 'page' : undefined}
-                  sx={{ fontWeight: active ? 700 : 400 }}
+                  sx={{
+                    px: 1.25,
+                    py: 0.75,
+                    borderRadius: 2,
+                    fontSize: 15,
+                    whiteSpace: 'nowrap',
+                    fontWeight: active ? 600 : 500,
+                    color: active ? 'text.primary' : 'text.secondary',
+                    bgcolor: active ? 'action.selected' : 'transparent',
+                    '&:hover': { color: 'text.primary', bgcolor: 'action.hover' },
+                  }}
                 >
                   {n.label}
                 </Link>
               );
             })}
-            <Link href={SITE.storybook} color="inherit" underline="hover" rel="noopener">
+            <Link
+              href={SITE.storybook}
+              underline="none"
+              rel="noopener"
+              sx={{
+                px: 1.25,
+                py: 0.75,
+                borderRadius: 2,
+                fontSize: 15,
+                fontWeight: 500,
+                whiteSpace: 'nowrap',
+                color: 'text.secondary',
+                '&:hover': { color: 'text.primary', bgcolor: 'action.hover' },
+              }}
+            >
               Storybook
             </Link>
           </Box>
-          <Stack direction="row" spacing={0.5}>
-            <IconButton
+
+          <Stack direction="row" spacing={0.5} alignItems="center" sx={{ ml: 'auto' }}>
+            <Chip
               component="a"
-              href={SITE.github}
-              aria-label="Sorbet UI on GitHub"
-              color="inherit"
-              rel="noopener"
-            >
+              href={SITE.npm}
+              clickable
+              label="v0.1.0"
+              size="small"
+              variant="outlined"
+              sx={{ display: { xs: 'none', sm: 'inline-flex' }, fontWeight: 600, mr: 0.5 }}
+            />
+            <IconButton component="a" href={SITE.github} aria-label="Sorbet UI on GitHub" rel="noopener">
               <GitHub />
             </IconButton>
             <IconButton
               onClick={toggle}
-              color="inherit"
               aria-label={mode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
             >
               {mode === 'dark' ? <LightMode /> : <DarkMode />}
             </IconButton>
           </Stack>
-        </Toolbar>
-      </AppBar>
+        </Container>
+      </Box>
+
       <Box component="main" id="main" sx={{ flexGrow: 1 }}>
         {children}
       </Box>
-      <Box component="footer" sx={{ borderTop: 1, borderColor: 'divider', py: 4, mt: 8 }}>
+
+      <Box component="footer" sx={{ borderTop: 1, borderColor: 'divider', pt: 6, pb: 4, mt: 10 }}>
         <Container maxWidth="lg">
-          <Typography variant="body2" color="text.secondary">
-            MIT licensed. Built on Material UI v7.{' '}
-            <Link href={SITE.github} rel="noopener">
-              GitHub
-            </Link>{' '}
-            ·{' '}
-            <Link href={SITE.storybook} rel="noopener">
-              Storybook
-            </Link>
+          <Grid container spacing={4}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Logo size={24} />
+                <Typography sx={{ fontWeight: 800 }}>{SITE.name}</Typography>
+              </Stack>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5, maxWidth: 360 }}>
+                {SITE.description}
+              </Typography>
+            </Grid>
+            {FOOTER.map((col) => (
+              <Grid key={col.title} size={{ xs: 6, md: 3 }}>
+                <Typography component="h2" variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5 }}>
+                  {col.title}
+                </Typography>
+                <Stack spacing={1}>
+                  {col.links.map((l) =>
+                    l.href.startsWith('/') ? (
+                      <Link key={l.label} component={NextLink} href={l.href} color="text.secondary" underline="hover" variant="body2">
+                        {l.label}
+                      </Link>
+                    ) : (
+                      <Link key={l.label} href={l.href} rel="noopener" color="text.secondary" underline="hover" variant="body2">
+                        {l.label}
+                      </Link>
+                    ),
+                  )}
+                </Stack>
+              </Grid>
+            ))}
+          </Grid>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 5, pt: 3, borderTop: 1, borderColor: 'divider' }}>
+            MIT licensed. Built on Material UI v7.
           </Typography>
         </Container>
       </Box>

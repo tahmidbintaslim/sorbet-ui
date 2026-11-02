@@ -5,7 +5,11 @@ import { Alert, Avatar, Button, Card, Checkbox, Chip, Progress, Switch, TextFiel
 // Hero showcase: a handful of real components in one card.
 export default function Showcase() {
   return (
-    <Card variant="outlined" data-known-contrast sx={{ p: 3, width: '100%', maxWidth: 440 }}>
+    <Card
+      variant="outlined"
+      data-known-contrast
+      sx={{ p: 3, width: '100%', maxWidth: 460, borderRadius: 4, boxShadow: '0 24px 64px -24px rgba(15,23,42,.25)' }}
+    >
       <Stack spacing={2.5}>
         <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
           <Button variant="solid">Solid</Button>

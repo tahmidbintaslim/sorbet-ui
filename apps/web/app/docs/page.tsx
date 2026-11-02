@@ -59,7 +59,7 @@ export default function GettingStarted() {
       <Typography component="h2" variant="h5" sx={{ fontWeight: 700, mt: 4 }}>
         Install
       </Typography>
-      <CodeBlock code={INSTALL} label="Install command" />
+      <CodeBlock code={INSTALL} title="Terminal" label="Install command" />
       <Typography variant="body2" color="text.secondary">
         <code>@sorbet-ui/react</code> needs React 19. <code>@sorbet-ui/core</code> and{' '}
         <code>@sorbet-ui/tokens</code> install automatically.
