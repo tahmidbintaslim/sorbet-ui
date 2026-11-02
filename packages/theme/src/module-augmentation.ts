@@ -13,7 +13,10 @@ declare module '@mui/material/styles' {
   }
 }
 
-declare module '@mui/material/styles' {
+// Button's variant overrides must be augmented in the module that owns the
+// interface; declaring them in '@mui/material/styles' makes
+// '@mui/material' re-export the name twice (TS2308 with skipLibCheck: false).
+declare module '@mui/material/Button' {
   interface ButtonPropsVariantOverrides {
     solid: true;
     soft: true;
@@ -21,7 +24,9 @@ declare module '@mui/material/styles' {
     ghost: true;
     plain: true;
   }
+}
 
+declare module '@mui/material/styles' {
   interface TextFieldPropsVariantOverrides {
     solid: true;
     soft: true;
