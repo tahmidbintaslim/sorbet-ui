@@ -286,6 +286,8 @@ sorbet-ui/
 
 ## Contributing
 
+If Sorbet UI is useful to you, a star on GitHub helps other people find it. Looking for a place to start? See the [good first issues](https://github.com/tahmidbintaslim/sorbet-ui/labels/good%20first%20issue) and [help wanted](https://github.com/tahmidbintaslim/sorbet-ui/labels/help%20wanted).
+
 See [CONTRIBUTING.md](CONTRIBUTING.md). Bugs and ideas go in [GitHub issues](https://github.com/tahmidbintaslim/sorbet-ui/issues). For security problems, follow [SECURITY.md](SECURITY.md).
 
 ## License

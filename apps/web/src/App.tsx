@@ -100,13 +100,13 @@ function App() {
                     gutterBottom
                     sx={{ fontWeight: 'bold' }}
                   >
-                    One variant API
+                    Material UI,
                     <br />
-                    for Material UI
+                    but softer
                   </Typography>
                   <Typography variant="h5" color="text.secondary" paragraph>
-                    26 React components built on Material UI v7, sharing one variant, color and size
-                    API, with design tokens and light and dark themes.
+                    Soft, ghost and plain variants for 26 Material UI v7 components, with one variant,
+                    color and size API and light and dark themes.
                   </Typography>
                   <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
                     <Button
@@ -116,7 +116,7 @@ function App() {
                       target="_blank"
                       sx={{ borderRadius: 2, px: 3, py: 1.5 }}
                     >
-                      Get Started
+                      Browse components
                     </Button>
                     <Button
                       variant="outlined"
@@ -126,7 +126,7 @@ function App() {
                       startIcon={<GitHubIcon />}
                       sx={{ borderRadius: 2, px: 3, py: 1.5 }}
                     >
-                      GitHub
+                      Star on GitHub
                     </Button>
                   </Stack>
                 </Grid>
