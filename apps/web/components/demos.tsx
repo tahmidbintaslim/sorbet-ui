@@ -3,27 +3,37 @@
 // variant/color/size and returns matching source for the "Code" block, so what
 // the visitor sees and what they copy cannot drift apart.
 import * as React from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
 import {
   Alert,
+  Autocomplete,
   Avatar,
   Badge,
   Button,
   Card,
   Checkbox,
   Chip,
+  DatePicker,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Drawer,
   MenuItem,
   Pagination,
+  Popover,
   Progress,
   Radio,
   Rating,
   Select,
   Slider,
+  Snackbar,
   Switch,
   Table,
   Tabs,
   TextField,
   Tooltip,
+  dayjs,
 } from '@sorbet-ui/react';
 import type { Color, Size, Variant } from '@/lib/site';
 
@@ -97,6 +107,109 @@ function RatingDemo(p: DemoProps) {
       onChange={(_e, n) => setV(n)}
       aria-label="Rating"
     />
+  );
+}
+
+const frameworks = [
+  { label: 'Next.js', value: 'next', group: 'React' },
+  { label: 'Remix', value: 'remix', group: 'React' },
+  { label: 'Astro', value: 'astro', group: 'Islands' },
+  { label: 'SvelteKit', value: 'svelte', group: 'Other' },
+  { label: 'Nuxt', value: 'nuxt', group: 'Other' },
+];
+
+function DatePickerDemo(p: DemoProps) {
+  const [v, setV] = React.useState<ReturnType<typeof dayjs> | null>(dayjs('2026-11-03'));
+  return <DatePicker {...p} label="Start date" value={v} onChange={setV} />;
+}
+
+// Overlays render a trigger button; the overlay itself follows the pickers.
+function DialogDemo(p: DemoProps) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <>
+      <Button color={p.color} onClick={() => setOpen(true)}>
+        Open dialog
+      </Button>
+      <Dialog {...p} open={open} onClose={() => setOpen(false)} aria-labelledby="demo-dialog-title">
+        <DialogTitle id="demo-dialog-title">Delete project?</DialogTitle>
+        <DialogContent>This removes the project and its deploys. You can't undo it.</DialogContent>
+        <DialogActions>
+          <Button variant="ghost" color="neutral" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button color="danger" onClick={() => setOpen(false)}>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+
+function DrawerDemo(p: DemoProps) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <>
+      <Button color={p.color} onClick={() => setOpen(true)}>
+        Open drawer
+      </Button>
+      <Drawer {...p} anchor="right" open={open} onClose={() => setOpen(false)}>
+        <Box sx={{ width: 280, p: 2 }} role="navigation" aria-label="Drawer menu">
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+            Menu
+          </Typography>
+          <List component="div" disablePadding>
+            {['Overview', 'Deployments', 'Settings'].map((t) => (
+              <ListItemButton key={t} onClick={() => setOpen(false)}>
+                <ListItemText primary={t} />
+              </ListItemButton>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
+    </>
+  );
+}
+
+function PopoverDemo(p: DemoProps) {
+  const [anchor, setAnchor] = React.useState<HTMLElement | null>(null);
+  return (
+    <>
+      <Button color={p.color} onClick={(e) => setAnchor(e.currentTarget)} aria-haspopup="dialog">
+        Show details
+      </Button>
+      <Popover
+        {...p}
+        open={!!anchor}
+        anchorEl={anchor}
+        onClose={() => setAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      >
+        <Box sx={{ p: 2, maxWidth: 260 }}>
+          <Typography sx={{ fontWeight: 700 }}>Usage this month</Typography>
+          <Typography variant="body2">1,204 of 5,000 builds used.</Typography>
+        </Box>
+      </Popover>
+    </>
+  );
+}
+
+function SnackbarDemo(p: DemoProps) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <>
+      <Button color={p.color} onClick={() => setOpen(true)}>
+        Save changes
+      </Button>
+      <Snackbar
+        {...p}
+        open={open}
+        onClose={() => setOpen(false)}
+        autoHideDuration={4000}
+        message="Changes saved"
+      />
+    </>
   );
 }
 
@@ -244,6 +357,51 @@ export const DEMOS: Demo[] = [
     ),
     code: (p) =>
       `<Tooltip ${attrs(p)} title="Tooltip text">\n  <Button>Hover me</Button>\n</Tooltip>`,
+  },
+  {
+    slug: 'autocomplete',
+    render: (p) => (
+      <Autocomplete
+        {...p}
+        options={frameworks}
+        groupBy={(o) => o.group ?? ''}
+        label="Framework"
+        placeholder="Search frameworks"
+        sx={{ width: 300 }}
+      />
+    ),
+    code: (p) =>
+      `<Autocomplete ${attrs(p)}\n  options={frameworks}\n  groupBy={(o) => o.group}\n  label="Framework"\n  placeholder="Search frameworks"\n/>`,
+  },
+  {
+    slug: 'date-picker',
+    render: (p) => <DatePickerDemo {...p} />,
+    code: (p) =>
+      `const [value, setValue] = useState(dayjs('2026-11-03'));\n\n<DatePicker ${attrs(p)} label="Start date" value={value} onChange={setValue} />`,
+  },
+  {
+    slug: 'dialog',
+    render: (p) => <DialogDemo {...p} />,
+    code: (p) =>
+      `<Dialog ${attrs(p)} open={open} onClose={close} aria-labelledby="dialog-title">\n  <DialogTitle id="dialog-title">Delete project?</DialogTitle>\n  <DialogContent>This removes the project and its deploys.</DialogContent>\n  <DialogActions>\n    <Button variant="ghost" color="neutral" onClick={close}>Cancel</Button>\n    <Button color="danger" onClick={close}>Delete</Button>\n  </DialogActions>\n</Dialog>`,
+  },
+  {
+    slug: 'drawer',
+    render: (p) => <DrawerDemo {...p} />,
+    code: (p) =>
+      `<Drawer ${attrs(p)} anchor="right" open={open} onClose={close}>\n  <Box sx={{ width: 280, p: 2 }}>…</Box>\n</Drawer>`,
+  },
+  {
+    slug: 'popover',
+    render: (p) => <PopoverDemo {...p} />,
+    code: (p) =>
+      `<Popover ${attrs(p)}\n  open={!!anchor}\n  anchorEl={anchor}\n  onClose={() => setAnchor(null)}\n  anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}\n>\n  <Box sx={{ p: 2 }}>Usage this month</Box>\n</Popover>`,
+  },
+  {
+    slug: 'snackbar',
+    render: (p) => <SnackbarDemo {...p} />,
+    code: (p) =>
+      `<Snackbar ${attrs(p)} open={open} onClose={close} autoHideDuration={4000} message="Changes saved" />`,
   },
 ];
 
