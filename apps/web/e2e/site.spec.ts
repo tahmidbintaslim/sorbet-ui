@@ -144,7 +144,7 @@ for (const theme of ['light', 'dark'] as const) {
 test('snackbar demo shows its message', async ({ page }) => {
   await page.goto('/docs/components/snackbar');
   await page.getByTestId('preview').getByRole('button', { name: 'Save changes' }).click();
-  await expect(page.getByText('Changes saved')).toBeVisible();
+  await expect(page.locator('.MuiSnackbar-root').getByText('Changes saved')).toBeVisible();
 });
 
 test('copy button copies the source', async ({ page, context }) => {
