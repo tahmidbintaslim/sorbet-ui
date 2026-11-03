@@ -1,4 +1,5 @@
 'use client';
+// @block {"name": "Newsletter", "description": "Email form with a success state."}
 import * as React from 'react';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { Alert, Button, Card, Checkbox, TextField } from '@sorbet-ui/react';

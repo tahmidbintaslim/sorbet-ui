@@ -17,6 +17,8 @@ const NAV = [
   { href: '/docs/components', label: 'Components' },
   { href: '/docs/theming', label: 'Theming' },
   { href: '/blocks', label: 'Blocks' },
+  { href: '/templates', label: 'Templates' },
+  { href: '/demo', label: 'Demo' },
 ];
 
 const FOOTER = [
@@ -27,6 +29,8 @@ const FOOTER = [
       { href: '/docs/components', label: 'Components' },
       { href: '/docs/theming', label: 'Theming' },
       { href: '/blocks', label: 'Blocks' },
+      { href: '/templates', label: 'Templates' },
+      { href: '/demo', label: 'Demo' },
     ],
   },
   {

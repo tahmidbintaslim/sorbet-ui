@@ -1,4 +1,5 @@
 'use client';
+// @block {"name": "Tabbed", "description": "Tabs switching between three working panels."}
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { Button, Card, Checkbox, Switch, Tabs } from '@sorbet-ui/react';
 

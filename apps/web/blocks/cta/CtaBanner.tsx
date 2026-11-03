@@ -1,4 +1,5 @@
 'use client';
+// @block {"name": "Gradient banner", "description": "Headline and two actions on a brand gradient."}
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { Button } from '@sorbet-ui/react';
 

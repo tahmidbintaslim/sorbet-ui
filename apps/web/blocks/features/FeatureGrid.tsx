@@ -1,4 +1,5 @@
 'use client';
+// @block {"name": "Icon grid", "description": "Six features with colored soft chips."}
 import { Box, Container, Grid, Typography } from '@mui/material';
 import Bolt from '@mui/icons-material/Bolt';
 import Lock from '@mui/icons-material/Lock';

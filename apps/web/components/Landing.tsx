@@ -1,6 +1,7 @@
 'use client';
 // Landing-page sections. app/page.tsx (a server component) composes them.
 import * as React from 'react';
+import NextLink from 'next/link';
 import { Box, Container, Grid, Stack, Typography } from '@mui/material';
 import { alpha, type Theme } from '@mui/material/styles';
 import { motion, useReducedMotion } from 'motion/react';
@@ -8,7 +9,7 @@ import ArrowForward from '@mui/icons-material/ArrowForward';
 import LinkButton from './LinkButton';
 import CodeBlock, { CommandLine } from './CodeBlock';
 import VariantMatrix from './VariantMatrix';
-import { EASE, Reveal } from './motion';
+import { CountUp, EASE, Reveal } from './motion';
 import HeroCanvas from './landing/HeroCanvas';
 import HeroDashboard from './landing/HeroDashboard';
 import WordRotator from './landing/WordRotator';
@@ -19,6 +20,8 @@ import { ComponentMarquee, FAQ, Pricing } from './landing/Sections';
 import { useGitHubStars, formatStars } from './GitHubStars';
 import { colorPalette } from '@sorbet-ui/tokens';
 import { SITE } from '@/lib/site';
+import { BLOCKS, categoriesWithBlocks } from '@/lib/blocks';
+import { TEMPLATES } from '@/lib/templates';
 
 // Brand accent per section; light/dark pick a shade that reads as text.
 type Accent = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
@@ -213,6 +216,66 @@ export function Matrix() {
         <VariantMatrix />
       </Reveal>
     </Section>
+  );
+}
+
+export function Library() {
+  const items = [
+    { href: '/blocks', count: BLOCKS.length, label: 'copy-paste blocks', body: `Heroes, pricing, dashboards, auth and more, in ${categoriesWithBlocks().length} categories. Preview, then copy the code.`, color: 'primary' as const },
+    { href: '/templates', count: TEMPLATES.length, label: 'free templates', body: 'Full pages assembled from blocks: SaaS landing, product launch, store, auth and app screens.', color: 'secondary' as const },
+    { href: '/demo', count: 4, label: 'screen live demo', body: 'Acme Admin: a working dashboard with orders, customers, dialogs, a drawer and toasts.', color: 'success' as const },
+  ];
+  return (
+    <Section>
+      <SectionTitle eyebrow="Ready to paste" title="Blocks, templates and a working demo" lead="Everything is built from the published packages, MIT licensed, and checked for WCAG AA in both themes." />
+      <Grid container spacing={2.5}>
+        {items.map((it, i) => (
+          <Grid key={it.href} size={{ xs: 12, md: 4 }}>
+            <Reveal delay={i * 0.06}>
+              <LinkCard href={it.href} count={it.count} label={it.label} body={it.body} color={it.color} />
+            </Reveal>
+          </Grid>
+        ))}
+      </Grid>
+    </Section>
+  );
+}
+
+function LinkCard({ href, count, label, body, color }: { href: string; count: number; label: string; body: string; color: Accent }) {
+  return (
+    <Box
+      component={NextLink}
+      href={href}
+      sx={(t) => ({
+        display: 'block',
+        height: '100%',
+        p: 3.5,
+        borderRadius: 4,
+        border: 1,
+        borderColor: 'divider',
+        bgcolor: 'background.paper',
+        color: 'text.primary',
+        textDecoration: 'none',
+        transition: 'transform .2s, border-color .2s',
+        '&:hover': { transform: 'translateY(-3px)', borderColor: colorPalette[color][400] },
+        '&:hover .go': { transform: 'translateX(4px)' },
+        '& .num': { color: accent(t, color) },
+      })}
+    >
+      <Typography component="p" className="num" sx={{ fontWeight: 800, fontSize: 48, letterSpacing: '-0.04em', lineHeight: 1 }}>
+        <CountUp value={count} />
+      </Typography>
+      <Typography component="h3" sx={{ fontWeight: 700, fontSize: 18, mt: 1 }}>
+        {label}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+        {body}
+      </Typography>
+      <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mt: 2, fontWeight: 600, fontSize: 14 }}>
+        <span>Open</span>
+        <ArrowForward className="go" sx={{ fontSize: 16, transition: 'transform .2s' }} />
+      </Stack>
+    </Box>
   );
 }
 
