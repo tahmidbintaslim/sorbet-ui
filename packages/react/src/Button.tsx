@@ -1,6 +1,6 @@
 import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
 import { keyframes, styled } from '@mui/material/styles';
-import { colors, colorScaleForMode, componentSizes, radius, transitions } from '@sorbet-ui/tokens';
+import { colors, colorScaleForMode, componentSizes, radius, solidActiveShade, transitions } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // =============================================================================
@@ -71,7 +71,7 @@ const getColorStyles = (color: SorbetColor, variant: SorbetVariant, isDark: bool
         boxShadow: `0 4px 12px ${colorScale.alpha30}`,
       },
       '&:active:not(:disabled)': {
-        backgroundColor: colorScale[700],
+        backgroundColor: solidActiveShade(colorScale),
         transform: 'translateY(0)',
         boxShadow: 'none',
       },

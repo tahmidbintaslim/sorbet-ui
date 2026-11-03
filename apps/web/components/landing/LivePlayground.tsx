@@ -89,7 +89,7 @@ export default function LivePlayground() {
       <Grid size={{ xs: 12, md: 6 }} sx={{ order: { xs: 1, md: 2 } }}>
         <Box sx={{ height: '100%', border: 1, borderColor: 'divider', borderRadius: 3, bgcolor: 'background.paper', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <Box
-            data-known-contrast
+           
             data-testid="playground-preview"
             sx={(t) => ({
               position: 'relative',

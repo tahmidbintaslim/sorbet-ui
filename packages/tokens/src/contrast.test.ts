@@ -9,6 +9,7 @@ import {
   textColorsForMode,
   type ColorScale,
   type SemanticColor,
+  solidActiveShade,
 } from './colors';
 import { sorbetPalette } from './palette';
 
@@ -146,6 +147,18 @@ describe.each(semanticColors)('%s tokens on a dark page', (name) => {
     expect(contrast(scale.light, scale.alpha20, DARK_PAGE)).toBeGreaterThanOrEqual(AA_TEXT);
   });
 
+  it('solid: contrastText on main', () => {
+    expect(contrast(scale.contrastText, scale.main)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+
+  it('solid hover: contrastText on dark', () => {
+    expect(contrast(scale.contrastText, scale.dark)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+
+  it('solid active: contrastText on the pressed shade', () => {
+    expect(contrast(scale.contrastText, solidActiveShade(scale))).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+
   it('is lighter than the light-theme main, so text on dark surfaces gains contrast', () => {
     expect(contrast(scale.main, DARK_PAGE, DARK_PAGE)).toBeGreaterThanOrEqual(
       contrast(colorPalette[name].main, DARK_PAGE, DARK_PAGE)
@@ -153,16 +166,13 @@ describe.each(semanticColors)('%s tokens on a dark page', (name) => {
   });
 });
 
-describe.each(semanticColors.filter((name) => name !== 'neutral'))(
-  '%s main as text on the dark page (WCAG AA text)',
-  (name) => {
-    it('reaches 4.5:1', () => {
-      expect(
-        contrast(darkModeColorPalette[name].main, DARK_PAGE, DARK_PAGE)
-      ).toBeGreaterThanOrEqual(AA_TEXT);
-    });
-  }
-);
+// Outlined, dash, plain and link variants use `main` as text on the page and on cards.
+describe.each(semanticColors)('%s main as text on dark surfaces (WCAG AA text)', (name) => {
+  it('reaches 4.5:1 on the page and on paper', () => {
+    expect(contrast(darkModeColorPalette[name].main, DARK_PAGE, DARK_PAGE)).toBeGreaterThanOrEqual(AA_TEXT);
+    expect(contrast(darkModeColorPalette[name].main, DARK_PAPER, DARK_PAPER)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+});
 
 // darkTheme in @sorbet-ui/theme sets MUI's primary, success, warning and error `main`
 // to these 500 shades.

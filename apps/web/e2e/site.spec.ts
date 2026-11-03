@@ -131,23 +131,8 @@ for (const theme of ['light', 'dark'] as const) {
       await page.goto(route);
       await page.waitForLoadState('networkidle');
       await expect(page.locator('html')).toHaveAttribute('data-mode', theme);
-      // Known gap (reported separately): darkTheme primary is white on #0ea5e9 = 2.77:1
-      // (documented in packages/tokens/src/contrast.test.ts). Library demos are therefore
-      // checked for everything except color-contrast in dark mode; all site chrome and
-      // text stay fully checked, and light mode is checked in full.
-      const known = '[data-known-contrast]';
-      const strict = new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']);
-      if (theme === 'dark') strict.exclude(known);
-      const passes = [await strict.analyze()];
-      if (theme === 'dark' && (await page.locator(known).count()) > 0) {
-        passes.push(
-          await new AxeBuilder({ page })
-            .withTags(['wcag2a', 'wcag2aa'])
-            .disableRules(['color-contrast'])
-            .include(known)
-            .analyze(),
-        );
-      }
+      // Full WCAG A/AA in both themes, library demos included.
+      const passes = [await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()];
       const summary = passes.flatMap((r) =>
         r.violations.map((v) => `${v.id} (${v.impact}): ${v.nodes.length} nodes, e.g. ${v.nodes[0]?.html.slice(0, 120)}`),
       );

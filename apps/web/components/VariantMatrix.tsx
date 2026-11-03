@@ -45,7 +45,7 @@ export default function VariantMatrix() {
       </Box>
 
       <Box
-        data-known-contrast
+       
         tabIndex={0}
         role="region"
         aria-label="Variant and color matrix"

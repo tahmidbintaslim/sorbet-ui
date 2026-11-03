@@ -38,7 +38,7 @@ export default function BlockViewer({ id, name, description }: { id: string; nam
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={view} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
           {view === 'preview' ? (
-            <Box data-known-contrast data-testid={`block-${id}`} sx={{ border: 1, borderColor: 'divider', borderRadius: 3, overflow: 'hidden', bgcolor: 'background.default' }}>
+            <Box data-testid={`block-${id}`} sx={{ border: 1, borderColor: 'divider', borderRadius: 3, overflow: 'hidden', bgcolor: 'background.default' }}>
               <Block />
             </Box>
           ) : (
