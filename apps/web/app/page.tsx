@@ -3,6 +3,7 @@ import {
   Compare,
   FAQSection,
   Hero,
+  Library,
   Marquee,
   Matrix,
   Playground,
@@ -20,6 +21,7 @@ export default function Home() {
       <Playground />
       <Matrix />
       <Showcase />
+      <Library />
       <QuickStart />
       <PricingSection />
       <FAQSection />

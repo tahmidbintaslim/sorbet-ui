@@ -2,6 +2,9 @@ import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { CATALOG } from '../lib/catalog';
 import { categoriesWithBlocks } from '../lib/blocks';
+import { TEMPLATES } from '../lib/templates';
+
+const TEMPLATE_ROUTES = TEMPLATES.map((t) => `/templates/${t.slug}`);
 
 const BLOCK_ROUTES = categoriesWithBlocks().map((c) => `/blocks/${c.id}`);
 
@@ -12,6 +15,8 @@ const ROUTES = [
   '/docs/components',
   '/blocks',
   '/demo',
+  '/templates',
+  ...TEMPLATE_ROUTES,
   ...BLOCK_ROUTES,
   ...CATALOG.map((c) => `/docs/components/${c.slug}`),
 ];
@@ -126,7 +131,7 @@ test('keyboard: skip link reaches main content', async ({ page }) => {
 });
 
 for (const theme of ['light', 'dark'] as const) {
-  for (const route of ['/', '/blocks', '/demo', '/docs', '/docs/components/button', '/docs/components/table', ...BLOCK_ROUTES]) {
+  for (const route of ['/', '/blocks', '/demo', '/docs', '/docs/components/button', '/docs/components/table', '/templates', ...TEMPLATE_ROUTES, ...BLOCK_ROUTES]) {
     test(`a11y (axe) ${theme} ${route}`, async ({ browser }) => {
       // Reduced motion renders every section in its final state, so axe never
       // measures text mid-fade.
@@ -214,4 +219,12 @@ test('demo: create an order, filter it, and see the toast', async ({ page }) => 
   await expect(page.getByText(/Order #\d+ created/)).toBeVisible();
   await app.getByRole('textbox', { name: 'Search orders' }).fill('Test Buyer');
   await expect(app.getByRole('cell', { name: 'Test Buyer' })).toBeVisible();
+});
+
+test('templates: gallery links to a template whose source lists its blocks', async ({ page }) => {
+  await page.goto('/templates');
+  await page.getByRole('link', { name: /SaaS landing/ }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'SaaS landing' })).toBeVisible();
+  await page.getByRole('button', { name: 'Get the code' }).click();
+  await expect(page.locator('pre[aria-label="SaaS landing page source"]')).toContainText('<PricingTiers />');
 });
