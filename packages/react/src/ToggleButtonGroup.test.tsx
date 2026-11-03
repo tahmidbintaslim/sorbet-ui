@@ -434,4 +434,25 @@ describe('ToggleButtonGroup', () => {
       expect(results).toHaveNoViolations();
     });
   });
+
+  it('exposes aria-pressed and names icon-only buttons through aria-label', () => {
+    render(
+      <ToggleButtonGroup value="left" exclusive>
+        <ToggleButton value="left" aria-label="Align left">
+          <svg />
+        </ToggleButton>
+        <ToggleButton value="right" aria-label="Align right">
+          <svg />
+        </ToggleButton>
+      </ToggleButtonGroup>
+    );
+    expect(screen.getByRole('button', { name: 'Align left' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+    expect(screen.getByRole('button', { name: 'Align right' })).toHaveAttribute(
+      'aria-pressed',
+      'false'
+    );
+  });
 });

@@ -92,8 +92,8 @@ export const AllVariants: Story = {
               {variant.charAt(0).toUpperCase() + variant.slice(1)}
             </Typography>
           </Box>
-          <Radio variant={variant} />
-          <Radio variant={variant} checked />
+          <Radio variant={variant} aria-label={`${variant} unselected`} />
+          <Radio variant={variant} checked aria-label={`${variant} selected`} />
         </Stack>
       ))}
     </Stack>
@@ -123,7 +123,7 @@ export const Colors: Story = {
                 color={color}
                 label={color.charAt(0).toUpperCase() + color.slice(1)}
               />
-              <Radio variant="solid" color={color} checked />
+              <Radio variant="solid" color={color} checked aria-label={`${color} selected`} />
             </Stack>
           )
         )}
@@ -146,7 +146,13 @@ export const ColorsByVariant: Story = {
           <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
             {(['primary', 'secondary', 'success', 'warning', 'danger', 'info'] as const).map(
               (color) => (
-                <Radio key={color} variant={variant} color={color} checked />
+                <Radio
+                  key={color}
+                  variant={variant}
+                  color={color}
+                  checked
+                  aria-label={`${variant} ${color}`}
+                />
               )
             )}
           </Stack>
@@ -265,11 +271,11 @@ export const FullDemo: Story = {
           Variants (Checked)
         </Typography>
         <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
-          <Radio variant="solid" checked />
-          <Radio variant="soft" checked />
-          <Radio variant="outlined" checked />
-          <Radio variant="ghost" checked />
-          <Radio variant="plain" checked />
+          <Radio variant="solid" checked aria-label="Solid" />
+          <Radio variant="soft" checked aria-label="Soft" />
+          <Radio variant="outlined" checked aria-label="Outlined" />
+          <Radio variant="ghost" checked aria-label="Ghost" />
+          <Radio variant="plain" checked aria-label="Plain" />
         </Stack>
       </Box>
 
@@ -278,13 +284,13 @@ export const FullDemo: Story = {
           Colors (Solid)
         </Typography>
         <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
-          <Radio variant="solid" color="primary" checked />
-          <Radio variant="solid" color="secondary" checked />
-          <Radio variant="solid" color="success" checked />
-          <Radio variant="solid" color="warning" checked />
-          <Radio variant="solid" color="danger" checked />
-          <Radio variant="solid" color="info" checked />
-          <Radio variant="solid" color="neutral" checked />
+          <Radio variant="solid" color="primary" checked aria-label="Primary" />
+          <Radio variant="solid" color="secondary" checked aria-label="Secondary" />
+          <Radio variant="solid" color="success" checked aria-label="Success" />
+          <Radio variant="solid" color="warning" checked aria-label="Warning" />
+          <Radio variant="solid" color="danger" checked aria-label="Danger" />
+          <Radio variant="solid" color="info" checked aria-label="Info" />
+          <Radio variant="solid" color="neutral" checked aria-label="Neutral" />
         </Stack>
       </Box>
 
@@ -293,11 +299,11 @@ export const FullDemo: Story = {
           Sizes
         </Typography>
         <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1 }}>
-          <Radio size="xs" checked />
-          <Radio size="sm" checked />
-          <Radio size="md" checked />
-          <Radio size="lg" checked />
-          <Radio size="xl" checked />
+          <Radio size="xs" checked aria-label="Size xs" />
+          <Radio size="sm" checked aria-label="Size sm" />
+          <Radio size="md" checked aria-label="Size md" />
+          <Radio size="lg" checked aria-label="Size lg" />
+          <Radio size="xl" checked aria-label="Size xl" />
         </Stack>
       </Box>
 

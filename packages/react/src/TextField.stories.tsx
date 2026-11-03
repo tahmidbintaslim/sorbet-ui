@@ -341,8 +341,8 @@ export const FullDemo: Story = {
         <Stack spacing={1} sx={{ mt: 1, maxWidth: 300 }}>
           <TextField placeholder="Default" size="sm" />
           <TextField loading placeholder="Loading" size="sm" />
-          <TextField disabled value="Disabled" size="sm" />
-          <TextField error helperText="Error message" size="sm" />
+          <TextField disabled value="Disabled" size="sm" aria-label="Disabled state" />
+          <TextField error helperText="Error message" size="sm" aria-label="Error state" />
         </Stack>
       </Box>
     </Stack>

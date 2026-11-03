@@ -318,19 +318,19 @@ export const FullDemo: Story = {
           Variants
         </Typography>
         <Stack spacing={1} sx={{ mt: 1, maxWidth: 250 }}>
-          <Select variant="solid" defaultValue="option1" size="sm">
+          <Select variant="solid" defaultValue="option1" size="sm" aria-label="Solid variant">
             {options}
           </Select>
-          <Select variant="soft" defaultValue="option1" size="sm">
+          <Select variant="soft" defaultValue="option1" size="sm" aria-label="Soft variant">
             {options}
           </Select>
-          <Select variant="outlined" defaultValue="option1" size="sm">
+          <Select variant="outlined" defaultValue="option1" size="sm" aria-label="Outlined variant">
             {options}
           </Select>
-          <Select variant="ghost" defaultValue="option1" size="sm">
+          <Select variant="ghost" defaultValue="option1" size="sm" aria-label="Ghost variant">
             {options}
           </Select>
-          <Select variant="plain" defaultValue="option1" size="sm">
+          <Select variant="plain" defaultValue="option1" size="sm" aria-label="Plain variant">
             {options}
           </Select>
         </Stack>
@@ -341,19 +341,19 @@ export const FullDemo: Story = {
           Sizes
         </Typography>
         <Stack spacing={1} sx={{ mt: 1, maxWidth: 250 }}>
-          <Select size="xs" defaultValue="option1">
+          <Select size="xs" defaultValue="option1" aria-label="Size xs">
             {options}
           </Select>
-          <Select size="sm" defaultValue="option1">
+          <Select size="sm" defaultValue="option1" aria-label="Size sm">
             {options}
           </Select>
-          <Select size="md" defaultValue="option1">
+          <Select size="md" defaultValue="option1" aria-label="Size md">
             {options}
           </Select>
-          <Select size="lg" defaultValue="option1">
+          <Select size="lg" defaultValue="option1" aria-label="Size lg">
             {options}
           </Select>
-          <Select size="xl" defaultValue="option1">
+          <Select size="xl" defaultValue="option1" aria-label="Size xl">
             {options}
           </Select>
         </Stack>
@@ -364,16 +364,16 @@ export const FullDemo: Story = {
           States
         </Typography>
         <Stack spacing={1} sx={{ mt: 1, maxWidth: 250 }}>
-          <Select defaultValue="option1" size="sm">
+          <Select defaultValue="option1" size="sm" aria-label="Default state">
             {options}
           </Select>
-          <Select loading defaultValue="option1" size="sm">
+          <Select loading defaultValue="option1" size="sm" aria-label="Loading state">
             {options}
           </Select>
-          <Select disabled defaultValue="option1" size="sm">
+          <Select disabled defaultValue="option1" size="sm" aria-label="Disabled state">
             {options}
           </Select>
-          <Select error helperText="Error message" size="sm">
+          <Select error helperText="Error message" size="sm" aria-label="Error state">
             {options}
           </Select>
         </Stack>

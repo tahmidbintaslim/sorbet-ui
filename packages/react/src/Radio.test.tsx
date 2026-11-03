@@ -31,4 +31,14 @@ describe('Radio', () => {
       unmount();
     });
   });
+
+  it('names an unlabeled radio through aria-label on the input', () => {
+    render(<Radio aria-label="Option A" />);
+    expect(screen.getByRole('radio', { name: 'Option A' }).tagName).toBe('INPUT');
+  });
+
+  it('names the loading spinner', () => {
+    render(<Radio loading label="Saving" />);
+    expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
+  });
 });

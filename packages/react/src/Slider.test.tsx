@@ -339,4 +339,15 @@ describe('Slider', () => {
       expect(results).toHaveNoViolations();
     });
   });
+
+  it('names each range thumb through getAriaLabel', () => {
+    render(
+      <Slider
+        defaultValue={[20, 80]}
+        getAriaLabel={(i) => (i === 0 ? 'Minimum price' : 'Maximum price')}
+      />
+    );
+    expect(screen.getByRole('slider', { name: 'Minimum price' })).toBeInTheDocument();
+    expect(screen.getByRole('slider', { name: 'Maximum price' })).toBeInTheDocument();
+  });
 });

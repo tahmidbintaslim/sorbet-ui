@@ -11,6 +11,7 @@ import {
   ColorScale,
   colorScaleForMode,
   radius,
+  solidActiveShade,
   textColorsForMode,
   transitions,
 } from '@sorbet-ui/tokens';
@@ -107,6 +108,9 @@ const getVariantStyles = (
   const softRest = isDark ? colors.neutral[800] : colors.neutral[100];
   const softHover = isDark ? colors.neutral[700] : colors.neutral[200];
   const plainHover = isDark ? colors.neutral[800] : colors.neutral[50];
+  // Selected text and solid fills use the mode-aware scale, whose `main` reaches
+  // 4.5:1 against white and against `contrastText` (the raw 500 shades do not).
+  const scale = colorScaleForMode(color, isDark);
 
   const baseButtonStyles = {
     padding: config.padding,
@@ -131,11 +135,11 @@ const getVariantStyles = (
           backgroundColor: solidHover,
         },
         '&.Mui-selected': {
-          color: 'white',
-          backgroundColor: mainColor,
-          borderColor: mainColor,
+          color: scale.contrastText,
+          backgroundColor: scale.main,
+          borderColor: scale.main,
           '&:hover': {
-            backgroundColor: darkColor,
+            backgroundColor: solidActiveShade(scale),
           },
         },
         '&.Mui-disabled': {
@@ -175,9 +179,9 @@ const getVariantStyles = (
           backgroundColor: 'transparent',
         },
         '&.Mui-selected': {
-          color: mainColor,
+          color: scale.main,
           backgroundColor: 'transparent',
-          borderColor: mainColor,
+          borderColor: scale.main,
           '&:hover': {
             backgroundColor: `${mainColor}10`,
           },
@@ -197,7 +201,7 @@ const getVariantStyles = (
           backgroundColor: `${mainColor}10`,
         },
         '&.Mui-selected': {
-          color: mainColor,
+          color: scale.main,
           backgroundColor: `${mainColor}15`,
           '&:hover': {
             backgroundColor: `${mainColor}25`,
