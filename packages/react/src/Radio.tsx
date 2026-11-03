@@ -15,6 +15,7 @@ import {
   typography,
 } from '@sorbet-ui/tokens';
 import * as React from 'react';
+import { mergeInputSlotProps, pickAriaNameProps } from './internal/inputSlotProps';
 
 // =============================================================================
 // TYPES
@@ -178,11 +179,27 @@ export const Radio = React.forwardRef<HTMLButtonElement, RadioProps>(
       loading = false,
       checked,
       disabled,
+      inputProps,
+      slotProps,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledby,
+      'aria-describedby': ariaDescribedby,
       ...rest
     },
     ref
   ) => {
     const theme = useTheme();
+    // Naming attributes belong on the <input>, not MUI's wrapper span, so a radio
+    // without a visible label can still be named.
+    const inputSlotProps = mergeInputSlotProps(
+      pickAriaNameProps({
+        'aria-label': ariaLabel,
+        'aria-labelledby': ariaLabelledby,
+        'aria-describedby': ariaDescribedby,
+      }),
+      inputProps,
+      slotProps?.input as Parameters<typeof mergeInputSlotProps>[2]
+    );
     const colorScale = getColorScale(color, theme.palette.mode === 'dark');
     const sizeStyles = sizeConfig[size];
 
@@ -192,9 +209,11 @@ export const Radio = React.forwardRef<HTMLButtonElement, RadioProps>(
         sorbetSize={size}
         checked={checked}
         disabled={disabled || loading}
+        slotProps={{ ...slotProps, input: inputSlotProps as never }}
+        aria-busy={loading || undefined}
         icon={
           loading ? (
-            <CircularProgress size={sizeStyles.dot * 2} color="inherit" />
+            <CircularProgress size={sizeStyles.dot * 2} color="inherit" aria-label="Loading" />
           ) : (
             <RadioIcon
               size={sizeStyles.radio}

@@ -96,9 +96,9 @@ export const AllVariants: Story = {
               {variant.charAt(0).toUpperCase() + variant.slice(1)}
             </Typography>
           </Box>
-          <Checkbox variant={variant} />
-          <Checkbox variant={variant} defaultChecked />
-          <Checkbox variant={variant} indeterminate />
+          <Checkbox variant={variant} aria-label={`${variant} unchecked`} />
+          <Checkbox variant={variant} defaultChecked aria-label={`${variant} checked`} />
+          <Checkbox variant={variant} indeterminate aria-label={`${variant} indeterminate`} />
         </Stack>
       ))}
     </Stack>
@@ -128,7 +128,12 @@ export const Colors: Story = {
                 color={color}
                 label={color.charAt(0).toUpperCase() + color.slice(1)}
               />
-              <Checkbox variant="solid" color={color} defaultChecked />
+              <Checkbox
+                variant="solid"
+                color={color}
+                defaultChecked
+                aria-label={`${color} checked`}
+              />
             </Stack>
           )
         )}
@@ -151,7 +156,13 @@ export const ColorsByVariant: Story = {
           <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
             {(['primary', 'secondary', 'success', 'warning', 'danger', 'info'] as const).map(
               (color) => (
-                <Checkbox key={color} variant={variant} color={color} defaultChecked />
+                <Checkbox
+                  key={color}
+                  variant={variant}
+                  color={color}
+                  defaultChecked
+                  aria-label={`${variant} ${color}`}
+                />
               )
             )}
           </Stack>
@@ -271,11 +282,11 @@ export const FullDemo: Story = {
           Variants (Checked)
         </Typography>
         <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
-          <Checkbox variant="solid" defaultChecked />
-          <Checkbox variant="soft" defaultChecked />
-          <Checkbox variant="outlined" defaultChecked />
-          <Checkbox variant="ghost" defaultChecked />
-          <Checkbox variant="plain" defaultChecked />
+          <Checkbox variant="solid" defaultChecked aria-label="Solid" />
+          <Checkbox variant="soft" defaultChecked aria-label="Soft" />
+          <Checkbox variant="outlined" defaultChecked aria-label="Outlined" />
+          <Checkbox variant="ghost" defaultChecked aria-label="Ghost" />
+          <Checkbox variant="plain" defaultChecked aria-label="Plain" />
         </Stack>
       </Box>
 
@@ -284,13 +295,13 @@ export const FullDemo: Story = {
           Colors (Solid)
         </Typography>
         <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
-          <Checkbox variant="solid" color="primary" defaultChecked />
-          <Checkbox variant="solid" color="secondary" defaultChecked />
-          <Checkbox variant="solid" color="success" defaultChecked />
-          <Checkbox variant="solid" color="warning" defaultChecked />
-          <Checkbox variant="solid" color="danger" defaultChecked />
-          <Checkbox variant="solid" color="info" defaultChecked />
-          <Checkbox variant="solid" color="neutral" defaultChecked />
+          <Checkbox variant="solid" color="primary" defaultChecked aria-label="Primary" />
+          <Checkbox variant="solid" color="secondary" defaultChecked aria-label="Secondary" />
+          <Checkbox variant="solid" color="success" defaultChecked aria-label="Success" />
+          <Checkbox variant="solid" color="warning" defaultChecked aria-label="Warning" />
+          <Checkbox variant="solid" color="danger" defaultChecked aria-label="Danger" />
+          <Checkbox variant="solid" color="info" defaultChecked aria-label="Info" />
+          <Checkbox variant="solid" color="neutral" defaultChecked aria-label="Neutral" />
         </Stack>
       </Box>
 
@@ -299,11 +310,11 @@ export const FullDemo: Story = {
           Sizes
         </Typography>
         <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1 }}>
-          <Checkbox size="xs" defaultChecked />
-          <Checkbox size="sm" defaultChecked />
-          <Checkbox size="md" defaultChecked />
-          <Checkbox size="lg" defaultChecked />
-          <Checkbox size="xl" defaultChecked />
+          <Checkbox size="xs" defaultChecked aria-label="Size xs" />
+          <Checkbox size="sm" defaultChecked aria-label="Size sm" />
+          <Checkbox size="md" defaultChecked aria-label="Size md" />
+          <Checkbox size="lg" defaultChecked aria-label="Size lg" />
+          <Checkbox size="xl" defaultChecked aria-label="Size xl" />
         </Stack>
       </Box>
 

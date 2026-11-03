@@ -34,4 +34,13 @@ describe('Tooltip', () => {
     );
     expect(screen.getByTestId('tooltip-child')).toBeInTheDocument();
   });
+
+  it('describes a labeled child instead of renaming it when describeChild is set', () => {
+    render(
+      <Tooltip title="More details" describeChild>
+        <Button>Save</Button>
+      </Tooltip>
+    );
+    expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
+  });
 });

@@ -1,6 +1,12 @@
 import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { CATALOG } from '../lib/catalog';
+import { categoriesWithBlocks } from '../lib/blocks';
+import { TEMPLATES } from '../lib/templates';
+
+const TEMPLATE_ROUTES = TEMPLATES.map((t) => `/templates/${t.slug}`);
+
+const BLOCK_ROUTES = categoriesWithBlocks().map((c) => `/blocks/${c.id}`);
 
 const ROUTES = [
   '/',
@@ -8,6 +14,10 @@ const ROUTES = [
   '/docs/theming',
   '/docs/components',
   '/blocks',
+  '/demo',
+  '/templates',
+  ...TEMPLATE_ROUTES,
+  ...BLOCK_ROUTES,
   ...CATALOG.map((c) => `/docs/components/${c.slug}`),
 ];
 
@@ -105,6 +115,38 @@ test('every component preview renders something visible', async ({ page }) => {
   }
 });
 
+// Overlay demos: the trigger opens the overlay, axe passes with it open, Escape closes it.
+const OVERLAYS = [
+  { slug: 'dialog', trigger: 'Open dialog', role: 'dialog', name: 'Delete project?' },
+  { slug: 'drawer', trigger: 'Open drawer', role: 'navigation', name: 'Drawer menu' },
+  { slug: 'popover', trigger: 'Show details', role: 'presentation', name: undefined },
+] as const;
+for (const theme of ['light', 'dark'] as const) {
+  for (const o of OVERLAYS) {
+    test(`overlay ${o.slug} opens, passes axe and closes (${theme})`, async ({ browser }) => {
+      const ctx = await browser.newContext({ colorScheme: theme, reducedMotion: 'reduce' });
+      await stubGitHub(ctx);
+      const page = await ctx.newPage();
+      await page.goto(`/docs/components/${o.slug}`);
+      await page.getByTestId('preview').getByRole('button', { name: o.trigger }).click();
+      const overlay = o.name ? page.getByRole(o.role, { name: o.name }) : page.locator('.MuiPopover-paper');
+      await expect(overlay).toBeVisible();
+      const r = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+      const summary = r.violations.map((v) => `${v.id}: ${v.nodes[0]?.html.slice(0, 120)}`);
+      expect(summary, summary.join('\n')).toEqual([]);
+      await page.keyboard.press('Escape');
+      await expect(overlay).toBeHidden();
+      await ctx.close();
+    });
+  }
+}
+
+test('snackbar demo shows its message', async ({ page }) => {
+  await page.goto('/docs/components/snackbar');
+  await page.getByTestId('preview').getByRole('button', { name: 'Save changes' }).click();
+  await expect(page.locator('.MuiSnackbar-root').getByText('Changes saved')).toBeVisible();
+});
+
 test('copy button copies the source', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto('/docs/components/button');
@@ -121,7 +163,7 @@ test('keyboard: skip link reaches main content', async ({ page }) => {
 });
 
 for (const theme of ['light', 'dark'] as const) {
-  for (const route of ['/', '/blocks', '/docs', '/docs/components/button', '/docs/components/table']) {
+  for (const route of ['/', '/blocks', '/demo', '/docs', '/docs/components/button', '/docs/components/table', '/docs/components/autocomplete', '/docs/components/date-picker', '/templates', ...TEMPLATE_ROUTES, ...BLOCK_ROUTES]) {
     test(`a11y (axe) ${theme} ${route}`, async ({ browser }) => {
       // Reduced motion renders every section in its final state, so axe never
       // measures text mid-fade.
@@ -131,23 +173,8 @@ for (const theme of ['light', 'dark'] as const) {
       await page.goto(route);
       await page.waitForLoadState('networkidle');
       await expect(page.locator('html')).toHaveAttribute('data-mode', theme);
-      // Known gap (reported separately): darkTheme primary is white on #0ea5e9 = 2.77:1
-      // (documented in packages/tokens/src/contrast.test.ts). Library demos are therefore
-      // checked for everything except color-contrast in dark mode; all site chrome and
-      // text stay fully checked, and light mode is checked in full.
-      const known = '[data-known-contrast]';
-      const strict = new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']);
-      if (theme === 'dark') strict.exclude(known);
-      const passes = [await strict.analyze()];
-      if (theme === 'dark' && (await page.locator(known).count()) > 0) {
-        passes.push(
-          await new AxeBuilder({ page })
-            .withTags(['wcag2a', 'wcag2aa'])
-            .disableRules(['color-contrast'])
-            .include(known)
-            .analyze(),
-        );
-      }
+      // Full WCAG A/AA in both themes, library demos included.
+      const passes = [await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()];
       const summary = passes.flatMap((r) =>
         r.violations.map((v) => `${v.id} (${v.impact}): ${v.nodes.length} nodes, e.g. ${v.nodes[0]?.html.slice(0, 120)}`),
       );
@@ -197,7 +224,39 @@ test('landing: hero dashboard tabs switch data', async ({ page }) => {
 });
 
 test('blocks: code tab shows the block source', async ({ page }) => {
-  await page.goto('/blocks');
+  await page.goto('/blocks/hero');
   await page.getByRole('group', { name: 'Centered view' }).getByRole('button', { name: 'Code' }).click();
   await expect(page.locator('pre[aria-label="Centered source"]')).toContainText('export default function HeroCentered');
+});
+
+test('blocks: index lists 40+ blocks and search finds one', async ({ page }) => {
+  await page.goto('/blocks');
+  const placeholder = await page.getByRole('textbox', { name: 'Search blocks' }).getAttribute('placeholder');
+  expect(Number(placeholder?.match(/\d+/)?.[0])).toBeGreaterThanOrEqual(40);
+  await page.getByRole('textbox', { name: 'Search blocks' }).fill('pricing');
+  await expect(page.getByTestId('block-search-results').getByRole('link').first()).toBeVisible();
+});
+
+test('demo: create an order, filter it, and see the toast', async ({ page }) => {
+  await page.goto('/demo');
+  const app = page.getByTestId('demo-app');
+  const nav = app.getByRole('navigation', { name: 'Demo app' }).first();
+  if (!(await nav.isVisible())) await app.getByRole('button', { name: 'Open menu' }).click();
+  await page.getByRole('navigation', { name: 'Demo app' }).filter({ visible: true }).getByRole('button', { name: /Orders/ }).click();
+  await app.getByRole('button', { name: 'New order' }).click();
+  const dialog = page.getByRole('dialog', { name: 'New order' });
+  await dialog.getByRole('textbox', { name: 'Customer name' }).fill('Test Buyer');
+  await dialog.getByRole('spinbutton', { name: 'Amount (USD)' }).fill('120');
+  await dialog.getByRole('button', { name: 'Create order' }).click();
+  await expect(page.getByText(/Order #\d+ created/)).toBeVisible();
+  await app.getByRole('textbox', { name: 'Search orders' }).fill('Test Buyer');
+  await expect(app.getByRole('cell', { name: 'Test Buyer' })).toBeVisible();
+});
+
+test('templates: gallery links to a template whose source lists its blocks', async ({ page }) => {
+  await page.goto('/templates');
+  await page.getByRole('link', { name: /SaaS landing/ }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'SaaS landing' })).toBeVisible();
+  await page.getByRole('button', { name: 'Get the code' }).click();
+  await expect(page.locator('pre[aria-label="SaaS landing page source"]')).toContainText('<PricingTiers />');
 });

@@ -539,7 +539,8 @@ export const Accessibility: Story = {
         All buttons support aria-label, aria-busy, aria-disabled, and focus-visible styling.
       </Typography>
       <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-        <Button aria-label="Submit form">With ARIA Label</Button>
+        {/* The aria-label starts with the visible text, so speech users can say it (WCAG 2.5.3). */}
+        <Button aria-label="Submit form">Submit</Button>
         <Button variant="soft" loading aria-busy="true">
           Loading (aria-busy)
         </Button>

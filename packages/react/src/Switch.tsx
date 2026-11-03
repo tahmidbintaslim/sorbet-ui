@@ -15,6 +15,7 @@ import {
   typography,
 } from '@sorbet-ui/tokens';
 import * as React from 'react';
+import { mergeInputSlotProps, pickAriaNameProps } from './internal/inputSlotProps';
 
 // =============================================================================
 // TYPES
@@ -62,7 +63,8 @@ interface StyledProps {
 }
 
 const StyledSwitch = styled(MuiSwitch, {
-  shouldForwardProp: (prop) => !['sorbetVariant', 'sorbetColor', 'sorbetSize'].includes(prop as string),
+  shouldForwardProp: (prop) =>
+    !['sorbetVariant', 'sorbetColor', 'sorbetSize'].includes(prop as string),
 })<StyledProps>(({ theme, sorbetVariant, sorbetColor, sorbetSize }) => {
   const colorScale = getColorScale(sorbetColor, theme.palette.mode === 'dark');
   const sizeStyles = sizeConfig[sorbetSize];
@@ -148,18 +150,20 @@ const StyledSwitch = styled(MuiSwitch, {
   };
 });
 
-const StyledLabel = styled(FormControlLabel)<{ sorbetSize: SorbetSize }>(({ theme, sorbetSize }) => ({
-  margin: 0,
-  gap: sizing.spacing[2],
-  '& .MuiFormControlLabel-label': {
-    fontSize: sizeConfig[sorbetSize].label,
-    fontFamily: typography.fontFamily.sans,
-    color: textColorsForMode(theme.palette.mode === 'dark').primary,
-    '&.Mui-disabled': {
-      color: textColorsForMode(theme.palette.mode === 'dark').disabled,
+const StyledLabel = styled(FormControlLabel)<{ sorbetSize: SorbetSize }>(
+  ({ theme, sorbetSize }) => ({
+    margin: 0,
+    gap: sizing.spacing[2],
+    '& .MuiFormControlLabel-label': {
+      fontSize: sizeConfig[sorbetSize].label,
+      fontFamily: typography.fontFamily.sans,
+      color: textColorsForMode(theme.palette.mode === 'dark').primary,
+      '&.Mui-disabled': {
+        color: textColorsForMode(theme.palette.mode === 'dark').disabled,
+      },
     },
-  },
-}));
+  })
+);
 
 const LoadingOverlay = styled(Box)<{ sorbetSize: SorbetSize }>(({ sorbetSize: _sunSize }) => ({
   position: 'absolute',
@@ -181,15 +185,31 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
       label,
       loading = false,
       disabled,
+      inputProps,
+      slotProps,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledby,
+      'aria-describedby': ariaDescribedby,
       ...rest
     },
     ref
   ) => {
     const sizeStyles = sizeConfig[size];
+    // Naming attributes belong on the <input role="switch">, not MUI's wrapper span,
+    // so a switch without a visible label can still be named.
+    const inputSlotProps = mergeInputSlotProps(
+      pickAriaNameProps({
+        'aria-label': ariaLabel,
+        'aria-labelledby': ariaLabelledby,
+        'aria-describedby': ariaDescribedby,
+      }),
+      inputProps,
+      slotProps?.input as Parameters<typeof mergeInputSlotProps>[2]
+    );
     const loadingSize = sizeStyles.thumb * 0.6;
 
     const switchElement = (
-      <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <Box sx={{ position: 'relative', display: 'inline-flex' }} aria-busy={loading || undefined}>
         <StyledSwitch
           ref={ref}
           sorbetVariant={variant}
@@ -197,10 +217,11 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
           sorbetSize={size}
           disabled={disabled || loading}
           {...(rest as any)}
+          slotProps={{ ...slotProps, input: inputSlotProps }}
         />
         {loading && (
           <LoadingOverlay sorbetSize={size}>
-            <CircularProgress size={loadingSize} color="inherit" />
+            <CircularProgress size={loadingSize} color="inherit" aria-label="Loading" />
           </LoadingOverlay>
         )}
       </Box>

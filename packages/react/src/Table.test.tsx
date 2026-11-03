@@ -157,4 +157,39 @@ describe('Table', () => {
 
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
+
+  it('wraps the table in a focusable, labeled scroll region', () => {
+    render(<Table data={[{ id: '1', name: 'A' }]} columns={[{ id: 'name', header: 'Name', accessor: 'name' }]} caption="People" />);
+    const region = screen.getByRole('region', { name: 'People' });
+    expect(region).toHaveAttribute('tabindex', '0');
+  });
+
+  it('names the loading spinner and marks the region busy', () => {
+    render(<Table data={testData} columns={testColumns} loading caption="People" />);
+    expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'People' })).toHaveAttribute('aria-busy', 'true');
+  });
+
+  it('uses aria-label to name the region, so several tables can be told apart', () => {
+    render(
+      <>
+        <Table data={testData} columns={testColumns} aria-label="Customers" />
+        <Table data={testData} columns={testColumns} aria-label="Orders" />
+      </>
+    );
+    expect(screen.getByRole('region', { name: 'Customers' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Orders' })).toBeInTheDocument();
+    expect(screen.getByRole('table', { name: 'Orders' })).toBeInTheDocument();
+  });
+
+  it('uses aria-labelledby to name the region and the table', () => {
+    render(
+      <>
+        <h2 id="users-heading">Users</h2>
+        <Table data={testData} columns={testColumns} aria-labelledby="users-heading" />
+      </>
+    );
+    expect(screen.getByRole('region', { name: 'Users' })).toBeInTheDocument();
+    expect(screen.getByRole('table', { name: 'Users' })).toBeInTheDocument();
+  });
 });

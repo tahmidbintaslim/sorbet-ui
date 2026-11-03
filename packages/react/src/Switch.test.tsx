@@ -27,4 +27,14 @@ describe('Switch', () => {
       unmount();
     });
   });
+
+  it('names an unlabeled switch through aria-label on the input', () => {
+    render(<Switch aria-label="Notifications" />);
+    expect(screen.getByRole('switch', { name: 'Notifications' }).tagName).toBe('INPUT');
+  });
+
+  it('names the loading spinner', () => {
+    render(<Switch loading label="Saving" />);
+    expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
+  });
 });

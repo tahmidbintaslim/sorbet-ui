@@ -33,4 +33,10 @@ describe('Card', () => {
     render(<Card sx={{ maxWidth: 400 }} className="custom-class" data-testid="card-with-props" />);
     expect(screen.getByTestId('card-with-props')).toHaveClass('custom-class');
   });
+
+  it('gives the loading spinner an accessible name and marks the card busy', () => {
+    render(<Card loading data-testid="card-loading" />);
+    expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
+    expect(screen.getByTestId('card-loading')).toHaveAttribute('aria-busy', 'true');
+  });
 });

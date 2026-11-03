@@ -192,7 +192,7 @@ function ThemeSplit() {
     </Stack>
   );
   return (
-    <Box data-known-contrast sx={{ position: 'relative', width: '100%', maxWidth: 340, height: 190, borderRadius: 3, overflow: 'hidden', border: 1, borderColor: 'divider' }}>
+    <Box sx={{ position: 'relative', width: '100%', maxWidth: 340, height: 190, borderRadius: 3, overflow: 'hidden', border: 1, borderColor: 'divider' }}>
       <ThemeProvider theme={lightTheme}>
         <Box sx={{ position: 'absolute', inset: 0 }}>{card}</Box>
       </ThemeProvider>

@@ -100,8 +100,10 @@ const StyledAlert = styled(MuiAlert, {
     borderRadius: sizeStyles.borderRadius,
     transition: $disableAnimation ? 'none' : animations.transitions.smooth,
     alignItems: 'flex-start',
+    // Loading is signalled by the spinner and aria-busy, not by fading the text,
+    // which would drop it below 4.5:1.
     ...($loading && {
-      opacity: 0.8,
+      cursor: 'progress',
     }),
     '& .MuiAlert-icon': {
       fontSize: sizeStyles.iconSize,
@@ -204,7 +206,11 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
       if (loading) {
         return (
           <LoadingWrapper>
-            <CircularProgress size={sizeStyles.iconSize - 4} color="inherit" />
+            <CircularProgress
+              size={sizeStyles.iconSize - 4}
+              color="inherit"
+              aria-label="Loading"
+            />
           </LoadingWrapper>
         );
       }
@@ -223,6 +229,7 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         $loading={loading}
         $disableAnimation={disableAnimation}
         icon={renderIcon()}
+        aria-busy={loading || undefined}
         {...rest}
       >
         {children}

@@ -86,7 +86,8 @@ interface StyledProps {
 }
 
 const StyledTextField = styled(MuiTextField, {
-  shouldForwardProp: (prop) => !['sorbetVariant', 'sorbetColor', 'sorbetSize'].includes(prop as string),
+  shouldForwardProp: (prop) =>
+    !['sorbetVariant', 'sorbetColor', 'sorbetSize'].includes(prop as string),
 })<StyledProps>(({ theme, sorbetVariant, sorbetColor, sorbetSize }) => {
   const colorScale = getColorScale(sorbetColor, theme.palette.mode === 'dark');
   const sizeStyles = sizeConfig[sorbetSize];
@@ -269,16 +270,43 @@ export const TextField = React.forwardRef<HTMLDivElement, TextFieldProps>(
       endIcon,
       disabled,
       InputProps,
+      inputProps,
+      slotProps,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledby,
       ...rest
     },
     ref
   ) => {
+    // MUI puts aria-label on the outer FormControl <div>; the <input> needs it so a
+    // field without a visible label can still be named.
+    const ariaNameProps = {
+      ...(ariaLabel !== undefined && { 'aria-label': ariaLabel }),
+      ...(ariaLabelledby !== undefined && { 'aria-labelledby': ariaLabelledby }),
+    };
+    const externalHtmlInput = slotProps?.htmlInput;
+    const htmlInputSlotProps =
+      typeof externalHtmlInput === 'function'
+        ? (ownerState: Parameters<typeof externalHtmlInput>[0]) => ({
+            ...ariaNameProps,
+            ...inputProps,
+            ...externalHtmlInput(ownerState),
+            ...(loading && { 'aria-busy': true }),
+          })
+        : {
+            ...ariaNameProps,
+            ...inputProps,
+            ...externalHtmlInput,
+            ...(loading && { 'aria-busy': true }),
+          };
+
     const startAdornment = (startIcon || loading) && (
       <InputAdornment position="start">
         {loading ? (
           <CircularProgress
             size={size === 'xs' || size === 'sm' ? 14 : size === 'md' ? 16 : 20}
             color="inherit"
+            aria-label="Loading"
           />
         ) : (
           startIcon
@@ -305,6 +333,7 @@ export const TextField = React.forwardRef<HTMLDivElement, TextFieldProps>(
           endAdornment: endAdornment || InputProps?.endAdornment,
         }}
         {...(rest as any)}
+        slotProps={{ ...slotProps, htmlInput: htmlInputSlotProps }}
       />
     );
   }

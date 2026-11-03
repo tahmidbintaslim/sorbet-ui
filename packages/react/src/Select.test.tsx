@@ -41,4 +41,32 @@ describe('Select', () => {
       unmount();
     });
   });
+
+  it('links the visible label to the combobox', () => {
+    render(
+      <Select label="Topic" value="a" onChange={() => {}}>
+        <MenuItem value="a">Billing</MenuItem>
+      </Select>
+    );
+    expect(screen.getByRole('combobox', { name: /^Topic/ })).toBeInTheDocument();
+  });
+
+  it('names a select without a visible label through aria-label', () => {
+    render(
+      <Select aria-label="Sort order" defaultValue="a">
+        <MenuItem value="a">Newest</MenuItem>
+      </Select>
+    );
+    expect(screen.getByRole('combobox', { name: 'Sort order' })).toBeInTheDocument();
+  });
+
+  it('names the loading spinner and marks the combobox busy', () => {
+    render(
+      <Select label="Topic" loading defaultValue="a">
+        <MenuItem value="a">Billing</MenuItem>
+      </Select>
+    );
+    expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-busy', 'true');
+  });
 });

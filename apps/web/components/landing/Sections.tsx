@@ -156,7 +156,7 @@ const FAQS = [
   ['Do I have to rewrite my MUI app?', 'No. Pass lightTheme or darkTheme to the MUI ThemeProvider and your existing MUI components pick up the new look. Swap in Sorbet components where you want the extra variants.'],
   ['Which MUI version is supported?', 'Material UI v7 with React 19. DatePicker uses MUI X Date Pickers v8.'],
   ['Does it work with the Next.js App Router?', 'Yes. Components ship with a "use client" banner, so you can import them from Server Components. Put the ThemeProvider in a client providers file.'],
-  ['Is it accessible?', 'Components keep MUI’s keyboard and ARIA behavior. Light-theme color pairs are contrast-tested in CI; the dark-theme solid primary is a known gap being fixed.'],
+  ['Is it accessible?', 'Components keep MUI’s keyboard and ARIA behavior, and every color pair is contrast-tested in CI against WCAG AA in both light and dark themes.'],
   ['What will Pro include?', 'Page templates, advanced motion blocks and a Figma kit. Nothing is for sale yet; the open-source library stays free and MIT licensed.'],
 ];
 

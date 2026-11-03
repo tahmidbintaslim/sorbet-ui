@@ -1,6 +1,6 @@
 import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
 import { keyframes, styled } from '@mui/material/styles';
-import { colors, colorScaleForMode, componentSizes, radius, transitions } from '@sorbet-ui/tokens';
+import { colors, colorScaleForMode, componentSizes, radius, solidActiveShade, transitions } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // =============================================================================
@@ -71,7 +71,7 @@ const getColorStyles = (color: SorbetColor, variant: SorbetVariant, isDark: bool
         boxShadow: `0 4px 12px ${colorScale.alpha30}`,
       },
       '&:active:not(:disabled)': {
-        backgroundColor: colorScale[700],
+        backgroundColor: solidActiveShade(colorScale),
         transform: 'translateY(0)',
         boxShadow: 'none',
       },
@@ -169,6 +169,43 @@ const getColorStyles = (color: SorbetColor, variant: SorbetVariant, isDark: bool
   };
 
   return variants[variant];
+};
+
+/**
+ * Styles for the `active` (pressed) prop. Each variant keeps its own text color
+ * and moves to a pressed background that still gives the label 4.5:1: a single
+ * light tint for every variant would put white text on a pale fill for `solid`.
+ */
+const getActiveStyles = (color: SorbetColor, variant: SorbetVariant, isDark: boolean) => {
+  const colorScale = colorScaleForMode(color, isDark);
+  const pressedShadow = `inset 0 2px 4px ${colorScale.alpha30}`;
+
+  switch (variant) {
+    case 'solid':
+      return {
+        backgroundColor: solidActiveShade(colorScale),
+        color: colorScale.contrastText,
+        boxShadow: pressedShadow,
+      };
+    case 'soft':
+      return {
+        backgroundColor: isDark ? colorScale.alpha40 : colorScale.alpha30,
+        color: isDark ? colorScale.light : colorScale[800],
+        boxShadow: pressedShadow,
+      };
+    case 'link':
+      return {
+        color: isDark ? colorScale.dark : colorScale[700],
+      };
+    default:
+      // outlined, dash, ghost, plain: a light tint, with the darker shade for text
+      // in light mode because `main` drops below 4.5:1 on it for some colors.
+      return {
+        backgroundColor: colorScale.alpha16,
+        color: isDark ? colorScale.main : colorScale.dark,
+        boxShadow: pressedShadow,
+      };
+  }
 };
 
 const getSizeStyles = (size: SorbetSize) => {
@@ -279,10 +316,7 @@ const StyledButton = styled(MuiButton, {
     },
 
     // Active/pressed state
-    ...($active && {
-      backgroundColor: colors[$color].alpha20,
-      boxShadow: `inset 0 2px 4px ${colors[$color].alpha30}`,
-    }),
+    ...($active && getActiveStyles($color, $variant, isDark)),
 
     // Disabled state
     '&.Mui-disabled': {

@@ -90,7 +90,7 @@ export default function BeforeAfter() {
         }}
       >
         {/* Sorbet (right/back layer) */}
-        <Box data-known-contrast sx={{ position: 'absolute', inset: 0, zIndex: 0, isolation: 'isolate' }}>
+        <Box sx={{ position: 'absolute', inset: 0, zIndex: 0, isolation: 'isolate' }}>
           <Form sorbet />
         </Box>
         {/* Stock MUI (front layer, clipped to the handle position). Always light, like an unthemed app. */}

@@ -251,7 +251,12 @@ export const AllVariants: Story = {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
             {variant.charAt(0).toUpperCase() + variant.slice(1)}
           </Typography>
-          <Table data={sampleUsers.slice(0, 3)} columns={basicColumns} variant={variant} />
+          <Table
+            data={sampleUsers.slice(0, 3)}
+            columns={basicColumns}
+            variant={variant}
+            aria-label={`Users (${variant})`}
+          />
         </Box>
       ))}
     </Stack>
@@ -279,6 +284,7 @@ export const Colors: Story = {
               columns={basicColumns}
               variant="solid"
               color={color}
+              aria-label={`Users (${color})`}
             />
           </Box>
         )
@@ -307,6 +313,7 @@ export const Sizes: Story = {
             columns={basicColumns}
             size={size}
             variant="outlined"
+            aria-label={`Users (size ${size})`}
           />
         </Box>
       ))}

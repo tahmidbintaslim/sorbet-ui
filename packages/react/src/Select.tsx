@@ -90,7 +90,8 @@ interface StyledProps {
 }
 
 const StyledSelect = styled(MuiSelect, {
-  shouldForwardProp: (prop) => !['sorbetVariant', 'sorbetColor', 'sorbetSize'].includes(prop as string),
+  shouldForwardProp: (prop) =>
+    !['sorbetVariant', 'sorbetColor', 'sorbetSize'].includes(prop as string),
 })<StyledProps>(({ theme, sorbetVariant, sorbetColor, sorbetSize }) => {
   const colorScale = getColorScale(sorbetColor, theme.palette.mode === 'dark');
   const sizeStyles = sizeConfig[sorbetSize];
@@ -276,16 +277,43 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       disabled,
       startIcon,
       children,
+      inputProps,
+      SelectDisplayProps,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledby,
+      'aria-describedby': ariaDescribedby,
       ...rest
     },
     ref
   ) => {
+    // Link the visible label to the combobox so screen readers announce it.
+    const autoId = React.useId();
+    const labelId = (rest as { labelId?: string }).labelId ?? `${autoId}-label`;
+    // MUI only names the combobox from `inputProps['aria-label']` and from the
+    // display's aria-labelledby, so forward the naming props there. Without a
+    // visible label, aria-labelledby would otherwise point at nothing useful.
+    const hasVisibleLabel = Boolean(label);
+    const mergedInputProps = {
+      ...(ariaLabel !== undefined && { 'aria-label': ariaLabel }),
+      ...(ariaDescribedby !== undefined && { 'aria-describedby': ariaDescribedby }),
+      ...inputProps,
+    };
+    const mergedDisplayProps = {
+      ...SelectDisplayProps,
+      ...(ariaLabelledby !== undefined
+        ? { 'aria-labelledby': ariaLabelledby }
+        : // Let aria-label name the combobox instead of the selected value.
+          ariaLabel !== undefined && !hasVisibleLabel && { 'aria-labelledby': undefined }),
+      ...(loading && { 'aria-busy': true }),
+    } as React.HTMLAttributes<HTMLDivElement>;
+
     const startAdornment = (startIcon || loading) && (
       <InputAdornment position="start">
         {loading ? (
           <CircularProgress
             size={size === 'xs' || size === 'sm' ? 14 : size === 'md' ? 16 : 20}
             color="inherit"
+            aria-label="Loading"
           />
         ) : (
           startIcon
@@ -301,7 +329,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         disabled={disabled || loading}
         fullWidth
       >
-        {label && <InputLabel>{label}</InputLabel>}
+        {label && <InputLabel id={labelId}>{label}</InputLabel>}
         <StyledSelect
           ref={ref}
           variant="outlined"
@@ -312,7 +340,10 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           disabled={disabled || loading}
           error={error}
           startAdornment={startAdornment}
+          inputProps={mergedInputProps}
+          SelectDisplayProps={mergedDisplayProps}
           {...(rest as any)}
+          labelId={label ? labelId : (rest as { labelId?: string }).labelId}
         >
           {children}
         </StyledSelect>

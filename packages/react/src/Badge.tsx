@@ -155,7 +155,7 @@ export const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
 
     const renderBadgeContent = () => {
       if (loading) {
-        return <CircularProgress size={sizeStyles.fontSize} color="inherit" />;
+        return <CircularProgress size={sizeStyles.fontSize} color="inherit" aria-label="Loading" />;
       }
       return badgeContent;
     };

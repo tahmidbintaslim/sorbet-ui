@@ -68,9 +68,11 @@ const StyledChip = styled(MuiChip, {
     borderRadius: sizeStyles.borderRadius,
     padding: `0 ${sizeStyles.paddingX}px`,
     transition: $disableAnimation ? 'none' : animations.transitions.button,
+    // Loading is signalled by the spinner and aria-busy, not by fading the label,
+    // which would drop it below 4.5:1.
     ...($loading && {
-      opacity: 0.7,
       pointerEvents: 'none' as const,
+      cursor: 'progress',
     }),
     '& .MuiChip-label': {
       padding: `0 ${sizeStyles.paddingX / 2}px`,
@@ -146,9 +148,25 @@ const StyledChip = styled(MuiChip, {
     },
   };
 
+  // MUI fades disabled chips to 38% opacity, which leaves the label far below
+  // 4.5:1. Disabled chips switch to a muted neutral scheme instead, so they read
+  // as unavailable while the label stays legible.
+  const disabledStyles = {
+    '&.Mui-disabled': {
+      opacity: 1,
+      backgroundColor: isDark ? colors.semantic.neutral[800] : colors.semantic.neutral[100],
+      color: isDark ? colors.semantic.neutral[400] : colors.semantic.neutral[600],
+      borderColor: isDark ? colors.semantic.neutral[700] : colors.semantic.neutral[300],
+      '& .MuiChip-icon, & .MuiChip-deleteIcon': {
+        color: isDark ? colors.semantic.neutral[400] : colors.semantic.neutral[600],
+      },
+    },
+  };
+
   return {
     ...baseStyles,
     ...variantStyles[sorbetVariant],
+    ...disabledStyles,
   };
 });
 
@@ -173,7 +191,9 @@ export const Chip = React.forwardRef<HTMLDivElement, ChipProps>(
 
     const renderIcon = () => {
       if (loading) {
-        return <CircularProgress size={sizeStyles.iconSize - 4} color="inherit" />;
+        return (
+          <CircularProgress size={sizeStyles.iconSize - 4} color="inherit" aria-label="Loading" />
+        );
       }
       return icon;
     };
@@ -187,6 +207,7 @@ export const Chip = React.forwardRef<HTMLDivElement, ChipProps>(
         $loading={loading}
         $disableAnimation={disableAnimation}
         icon={renderIcon()}
+        aria-busy={loading || undefined}
         {...rest}
       />
     );

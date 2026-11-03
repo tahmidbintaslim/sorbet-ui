@@ -50,6 +50,8 @@ const sorbetUIViewports = {
 
 const preview: Preview = {
   parameters: {
+    // axe runs on every story; any WCAG A/AA violation fails Storybook Tests and Chromatic.
+    a11y: { test: 'error' },
     actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
       matchers: {

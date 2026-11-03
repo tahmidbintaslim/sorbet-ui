@@ -109,4 +109,15 @@ describe('Pagination', () => {
     rerender(<Pagination count={10} page={3} onChange={handleChange} />);
     expect(screen.getByText('3').closest('button')).toHaveClass('Mui-selected');
   });
+
+  it('forwards aria-label so several pagination navs can be told apart', () => {
+    render(
+      <>
+        <Pagination count={5} aria-label="Results pages" />
+        <Pagination count={5} aria-label="Comments pages" />
+      </>
+    );
+    expect(screen.getByRole('navigation', { name: 'Results pages' })).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: 'Comments pages' })).toBeInTheDocument();
+  });
 });

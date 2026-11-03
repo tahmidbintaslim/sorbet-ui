@@ -1,5 +1,5 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
-import { radiusScale, sorbetPalette } from '@sorbet-ui/tokens';
+import { DARK_INK, radiusScale, sorbetPalette } from '@sorbet-ui/tokens';
 
 const themeOptions: ThemeOptions = {
   palette: {
@@ -26,7 +26,8 @@ const themeOptions: ThemeOptions = {
     },
     text: {
       primary: sorbetPalette.neutral[900],
-      secondary: sorbetPalette.neutral[500],
+      // gray-600: 7.6:1 on white and 6.7:1+ on the soft color tints (gray-500 dips below 4.5:1 there).
+      secondary: sorbetPalette.neutral[600],
     },
   },
   shape: {
@@ -47,19 +48,24 @@ export const darkTheme = createTheme({
   palette: {
     ...themeOptions.palette,
     mode: 'dark',
+    // Dark ink on the bright 500 fills: white on them is below 4.5:1.
     primary: {
       main: sorbetPalette.primary[500],
-      dark: sorbetPalette.primary[600],
+      dark: sorbetPalette.primary[400],
       light: sorbetPalette.primary.light,
+      contrastText: DARK_INK,
     },
     success: {
       main: sorbetPalette.success[500],
+      contrastText: DARK_INK,
     },
     warning: {
       main: sorbetPalette.warning[500],
+      contrastText: DARK_INK,
     },
     error: {
       main: sorbetPalette.danger[500],
+      contrastText: DARK_INK,
     },
     background: {
       default: sorbetPalette.neutral[900],

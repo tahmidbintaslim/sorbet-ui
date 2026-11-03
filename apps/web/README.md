@@ -29,9 +29,8 @@ To add a component page, add an entry to `lib/catalog.ts` (server-safe metadata)
 
 `e2e/site.spec.ts` (Playwright, desktop and 375px mobile) checks that every route returns 200 with no
 console errors or horizontal scroll, the dark toggle persists and follows the OS setting, navigation and
-the playground work, the copy button works, and axe finds no WCAG A/AA violations in light and dark.
-Library demos in dark mode skip the color-contrast rule because darkTheme's primary color is
-2.77:1 against white text (see `packages/tokens/src/contrast.test.ts`).
+the playground work, the copy button works, and axe finds no WCAG A/AA violations in light and dark,
+library demos included.
 
 ## Deploying
 

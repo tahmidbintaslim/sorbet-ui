@@ -171,6 +171,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                 size={size === 'xs' || size === 'sm' ? 12 : size === 'md' ? 14 : 16}
                 color="inherit"
                 sx={{ opacity: 0.8 }}
+                aria-label="Loading"
               />
             )}
             {title}

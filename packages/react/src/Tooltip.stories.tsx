@@ -37,6 +37,17 @@ const meta = {
       control: { type: 'boolean' },
       description: 'Disable animations',
     },
+    describeChild: {
+      control: { type: 'boolean' },
+      description:
+        'Use the title as a description (aria-describedby) instead of the accessible name. ' +
+        'Set it when the child has its own visible label, so its name matches its text.',
+    },
+  },
+  // The story triggers are buttons with their own visible text, so the tooltip
+  // describes them rather than replacing their name (WCAG 2.5.3 Label in Name).
+  args: {
+    describeChild: true,
   },
 } satisfies Meta<typeof Tooltip>;
 
@@ -251,19 +262,19 @@ export const Sizes: Story = {
         5 Size Options
       </Typography>
       <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
-        <Tooltip variant="solid" size="xs" title="Extra Small Tooltip">
+        <Tooltip variant="solid" size="xs" title="Extra Small Tooltip" describeChild>
           <Button size="xs">XS</Button>
         </Tooltip>
-        <Tooltip variant="solid" size="sm" title="Small Tooltip">
+        <Tooltip variant="solid" size="sm" title="Small Tooltip" describeChild>
           <Button size="sm">SM</Button>
         </Tooltip>
-        <Tooltip variant="solid" size="md" title="Medium Tooltip (default)">
+        <Tooltip variant="solid" size="md" title="Medium Tooltip (default)" describeChild>
           <Button size="md">MD</Button>
         </Tooltip>
-        <Tooltip variant="solid" size="lg" title="Large Tooltip">
+        <Tooltip variant="solid" size="lg" title="Large Tooltip" describeChild>
           <Button size="lg">LG</Button>
         </Tooltip>
-        <Tooltip variant="solid" size="xl" title="Extra Large Tooltip">
+        <Tooltip variant="solid" size="xl" title="Extra Large Tooltip" describeChild>
           <Button size="xl">XL</Button>
         </Tooltip>
       </Stack>

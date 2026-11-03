@@ -210,7 +210,9 @@ const StyledTab = styled(MuiTab, {
           borderRadius: radius.md,
           '&.Mui-selected': {
             backgroundColor: isDark ? colorScale.alpha30 : colorScale.alpha20,
-            color: isDark ? colorScale.light : colorScale.dark,
+            // The selected tint sits on the tinted soft track, so light mode needs
+            // the 800 shade to keep 4.5:1 (danger's `dark` 700 falls short).
+            color: isDark ? colorScale.light : colorScale[800],
           },
           '&:hover:not(.Mui-selected)': {
             backgroundColor: isDark ? colorScale.alpha16 : colorScale.alpha8,
@@ -230,7 +232,8 @@ const StyledTab = styled(MuiTab, {
             backgroundColor: isDark ? neutralScale[800] : neutralScale[100],
           },
           '&.Mui-selected': {
-            color: colorScale.main,
+            // `main` on the light tint is below 4.5:1 for danger and neutral.
+            color: isDark ? colorScale.main : colorScale.dark,
             backgroundColor: isDark ? colorScale.alpha12 : colorScale.alpha8,
           },
         };

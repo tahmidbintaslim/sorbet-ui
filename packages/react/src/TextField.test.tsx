@@ -32,4 +32,15 @@ describe('TextField', () => {
     render(<TextField label="Error" error helperText="Error message" />);
     expect(screen.getByText('Error message')).toBeInTheDocument();
   });
+
+  it('names a field without a visible label through aria-label on the input', () => {
+    render(<TextField aria-label="Search" />);
+    expect(screen.getByRole('textbox', { name: 'Search' }).tagName).toBe('INPUT');
+  });
+
+  it('names the loading spinner and marks the input busy', () => {
+    render(<TextField label="Email" loading />);
+    expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'Email' })).toHaveAttribute('aria-busy', 'true');
+  });
 });
