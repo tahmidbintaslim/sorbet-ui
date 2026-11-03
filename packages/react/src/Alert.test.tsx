@@ -42,4 +42,23 @@ describe('Alert', () => {
     );
     expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument();
   });
+
+  it('gives the loading spinner an accessible name and marks the alert busy', () => {
+    render(
+      <Alert loading data-testid="alert-loading">
+        Loading data...
+      </Alert>
+    );
+    expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
+    expect(screen.getByTestId('alert-loading')).toHaveAttribute('aria-busy', 'true');
+  });
+
+  it('does not fade the alert while loading', () => {
+    render(
+      <Alert loading variant="solid" data-testid="alert-loading">
+        Loading data...
+      </Alert>
+    );
+    expect(getComputedStyle(screen.getByTestId('alert-loading')).opacity).not.toBe('0.8');
+  });
 });

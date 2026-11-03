@@ -1,6 +1,7 @@
-import { Avatar, Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { Meta, StoryObj } from 'storybook/react';
 import { expect } from 'storybook/test';
+import { Avatar } from './Avatar';
 import { Badge } from './Badge';
 
 const meta = {

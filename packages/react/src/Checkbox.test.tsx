@@ -29,4 +29,28 @@ describe('Checkbox', () => {
       unmount();
     });
   });
+
+  it('names an unlabeled checkbox through aria-label on the input', () => {
+    render(<Checkbox aria-label="Accept terms" />);
+    const input = screen.getByRole('checkbox', { name: 'Accept terms' });
+    expect(input.tagName).toBe('INPUT');
+  });
+
+  it('exposes indeterminate natively instead of aria-checked', () => {
+    render(<Checkbox indeterminate aria-label="Select all" />);
+    const input = screen.getByRole('checkbox', { name: 'Select all' }) as HTMLInputElement;
+    expect(input).not.toHaveAttribute('aria-checked');
+    expect(input.indeterminate).toBe(true);
+  });
+
+  it('honours defaultChecked when uncontrolled', () => {
+    render(<Checkbox defaultChecked aria-label="Checked" />);
+    expect(screen.getByRole('checkbox', { name: 'Checked' })).toBeChecked();
+  });
+
+  it('names the loading spinner and marks the control busy', () => {
+    const { container } = render(<Checkbox loading label="Saving" />);
+    expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
+    expect(container.querySelector('[aria-busy="true"]')).not.toBeNull();
+  });
 });

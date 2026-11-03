@@ -92,8 +92,8 @@ export const AllVariants: Story = {
               {variant.charAt(0).toUpperCase() + variant.slice(1)}
             </Typography>
           </Box>
-          <Switch variant={variant} />
-          <Switch variant={variant} defaultChecked />
+          <Switch variant={variant} aria-label={`${variant} off`} />
+          <Switch variant={variant} defaultChecked aria-label={`${variant} on`} />
         </Stack>
       ))}
     </Stack>
@@ -123,7 +123,7 @@ export const Colors: Story = {
                 color={color}
                 label={color.charAt(0).toUpperCase() + color.slice(1)}
               />
-              <Switch variant="solid" color={color} defaultChecked />
+              <Switch variant="solid" color={color} defaultChecked aria-label={`${color} on`} />
             </Stack>
           )
         )}
@@ -146,7 +146,13 @@ export const ColorsByVariant: Story = {
           <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
             {(['primary', 'secondary', 'success', 'warning', 'danger', 'info'] as const).map(
               (color) => (
-                <Switch key={color} variant={variant} color={color} defaultChecked />
+                <Switch
+                  key={color}
+                  variant={variant}
+                  color={color}
+                  defaultChecked
+                  aria-label={`${variant} ${color}`}
+                />
               )
             )}
           </Stack>
@@ -257,11 +263,11 @@ export const FullDemo: Story = {
           Variants (On)
         </Typography>
         <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
-          <Switch variant="solid" defaultChecked />
-          <Switch variant="soft" defaultChecked />
-          <Switch variant="outlined" defaultChecked />
-          <Switch variant="ghost" defaultChecked />
-          <Switch variant="plain" defaultChecked />
+          <Switch variant="solid" defaultChecked aria-label="Solid" />
+          <Switch variant="soft" defaultChecked aria-label="Soft" />
+          <Switch variant="outlined" defaultChecked aria-label="Outlined" />
+          <Switch variant="ghost" defaultChecked aria-label="Ghost" />
+          <Switch variant="plain" defaultChecked aria-label="Plain" />
         </Stack>
       </Box>
 
@@ -270,13 +276,13 @@ export const FullDemo: Story = {
           Colors (Solid)
         </Typography>
         <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
-          <Switch variant="solid" color="primary" defaultChecked />
-          <Switch variant="solid" color="secondary" defaultChecked />
-          <Switch variant="solid" color="success" defaultChecked />
-          <Switch variant="solid" color="warning" defaultChecked />
-          <Switch variant="solid" color="danger" defaultChecked />
-          <Switch variant="solid" color="info" defaultChecked />
-          <Switch variant="solid" color="neutral" defaultChecked />
+          <Switch variant="solid" color="primary" defaultChecked aria-label="Primary" />
+          <Switch variant="solid" color="secondary" defaultChecked aria-label="Secondary" />
+          <Switch variant="solid" color="success" defaultChecked aria-label="Success" />
+          <Switch variant="solid" color="warning" defaultChecked aria-label="Warning" />
+          <Switch variant="solid" color="danger" defaultChecked aria-label="Danger" />
+          <Switch variant="solid" color="info" defaultChecked aria-label="Info" />
+          <Switch variant="solid" color="neutral" defaultChecked aria-label="Neutral" />
         </Stack>
       </Box>
 
@@ -285,11 +291,11 @@ export const FullDemo: Story = {
           Sizes
         </Typography>
         <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1 }}>
-          <Switch size="xs" defaultChecked />
-          <Switch size="sm" defaultChecked />
-          <Switch size="md" defaultChecked />
-          <Switch size="lg" defaultChecked />
-          <Switch size="xl" defaultChecked />
+          <Switch size="xs" defaultChecked aria-label="Size xs" />
+          <Switch size="sm" defaultChecked aria-label="Size sm" />
+          <Switch size="md" defaultChecked aria-label="Size md" />
+          <Switch size="lg" defaultChecked aria-label="Size lg" />
+          <Switch size="xl" defaultChecked aria-label="Size xl" />
         </Stack>
       </Box>
 

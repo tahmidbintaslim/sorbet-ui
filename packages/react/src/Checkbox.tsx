@@ -15,6 +15,7 @@ import {
   typography,
 } from '@sorbet-ui/tokens';
 import * as React from 'react';
+import { mergeInputSlotProps, pickAriaNameProps } from './internal/inputSlotProps';
 
 // =============================================================================
 // TYPES
@@ -189,11 +190,18 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
       disabled,
       indeterminate,
       onChange,
+      defaultChecked,
+      inputRef,
+      inputProps,
+      slotProps,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledby,
+      'aria-describedby': ariaDescribedby,
       ...rest
     },
     ref
   ) => {
-    const [isChecked, setIsChecked] = React.useState(checked ?? false);
+    const [isChecked, setIsChecked] = React.useState(checked ?? defaultChecked ?? false);
     const theme = useTheme();
     const colorScale = getColorScale(color, theme.palette.mode === 'dark');
     const sizeStyles = sizeConfig[size];
@@ -203,6 +211,38 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         setIsChecked(checked);
       }
     }, [checked]);
+
+    // A native checkbox reports "mixed" through its `indeterminate` DOM property;
+    // `aria-checked` is not allowed on it (axe: aria-conditional-attr).
+    const nativeInputRef = React.useRef<HTMLInputElement | null>(null);
+    React.useEffect(() => {
+      if (nativeInputRef.current) {
+        nativeInputRef.current.indeterminate = Boolean(indeterminate);
+      }
+    }, [indeterminate]);
+    const handleInputRef = React.useCallback(
+      (node: HTMLInputElement | null) => {
+        nativeInputRef.current = node;
+        if (typeof inputRef === 'function') inputRef(node);
+        else if (inputRef)
+          (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
+      },
+      [inputRef]
+    );
+
+    // aria-label/-labelledby/-describedby must reach the <input>, not the wrapper
+    // span, so an unlabeled checkbox can still be named. aria-checked is dropped
+    // because MUI sets aria-checked="mixed" when indeterminate.
+    const inputSlotProps = mergeInputSlotProps(
+      pickAriaNameProps({
+        'aria-label': ariaLabel,
+        'aria-labelledby': ariaLabelledby,
+        'aria-describedby': ariaDescribedby,
+      }),
+      inputProps,
+      slotProps?.input as Parameters<typeof mergeInputSlotProps>[2],
+      { 'aria-checked': undefined }
+    );
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       if (checked === undefined) {
@@ -219,9 +259,12 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         indeterminate={indeterminate}
         disabled={disabled || loading}
         onChange={handleChange}
+        inputRef={handleInputRef}
+        slotProps={{ ...slotProps, input: inputSlotProps as never }}
+        aria-busy={loading || undefined}
         icon={
           loading ? (
-            <CircularProgress size={sizeStyles.icon} color="inherit" />
+            <CircularProgress size={sizeStyles.icon} color="inherit" aria-label="Loading" />
           ) : (
             <CheckboxIcon size={sizeStyles.checkbox} variant={variant} colorScale={colorScale} />
           )

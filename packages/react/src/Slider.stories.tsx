@@ -68,6 +68,10 @@ Sliders allow users to select values from a continuous or discrete range. Sorbet
 export default meta;
 type Story = StoryObj<typeof Slider>;
 
+/** Names each thumb of a range slider, e.g. "Price minimum" / "Price maximum". */
+const rangeLabel = (name: string) => (index: number) =>
+  `${name} ${index === 0 ? 'minimum' : 'maximum'}`;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Default Story
 // ─────────────────────────────────────────────────────────────────────────────
@@ -81,7 +85,7 @@ export const Default: Story = {
   },
   render: (args) => (
     <Box sx={{ width: 300 }}>
-      <Slider {...args} />
+      <Slider aria-label="Value" {...args} />
     </Box>
   ),
 };
@@ -105,7 +109,7 @@ export const AllVariants: Story = {
             >
               {variant}
             </Typography>
-            <Slider variant={variant} defaultValue={60} />
+            <Slider aria-label={variant} variant={variant} defaultValue={60} />
           </Box>
         ))}
       </Stack>
@@ -140,7 +144,7 @@ export const AllColors: Story = {
             >
               {color}
             </Typography>
-            <Slider color={color} defaultValue={65} />
+            <Slider aria-label={color} color={color} defaultValue={65} />
           </Box>
         ))}
       </Stack>
@@ -164,7 +168,7 @@ export const AllSizes: Story = {
             <Typography variant="caption" sx={{ mb: 1, display: 'block' }}>
               Size: {size}
             </Typography>
-            <Slider size={size} defaultValue={50} />
+            <Slider aria-label={`Size ${size}`} size={size} defaultValue={50} />
           </Box>
         ))}
       </Stack>
@@ -185,19 +189,30 @@ export const WithValueLabel: Story = {
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Value Label on Hover
           </Typography>
-          <Slider defaultValue={30} showValue valueLabelPosition="top" />
+          <Slider
+            aria-label="Value label on hover"
+            defaultValue={30}
+            showValue
+            valueLabelPosition="top"
+          />
         </Box>
         <Box>
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Value Label at End
           </Typography>
-          <Slider defaultValue={50} showValue valueLabelPosition="bottom" />
+          <Slider
+            aria-label="Value label at end"
+            defaultValue={50}
+            showValue
+            valueLabelPosition="bottom"
+          />
         </Box>
         <Box>
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Custom Format (Temperature)
           </Typography>
           <Slider
+            aria-label="Temperature"
             defaultValue={72}
             min={32}
             max={100}
@@ -210,7 +225,7 @@ export const WithValueLabel: Story = {
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             With Min/Max Labels
           </Typography>
-          <Slider defaultValue={40} showMinMax />
+          <Slider aria-label="With min/max labels" defaultValue={40} showMinMax />
         </Box>
       </Stack>
     );
@@ -230,13 +245,19 @@ export const RangeSlider: Story = {
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Price Range
           </Typography>
-          <Slider defaultValue={[20, 80]} showValue formatValue={(v) => `$${v}`} />
+          <Slider
+            getAriaLabel={rangeLabel('Price')}
+            defaultValue={[20, 80]}
+            showValue
+            formatValue={(v) => `$${v}`}
+          />
         </Box>
         <Box>
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Date Range
           </Typography>
           <Slider
+            getAriaLabel={rangeLabel('Year')}
             defaultValue={[2020, 2024]}
             min={2000}
             max={2030}
@@ -248,7 +269,13 @@ export const RangeSlider: Story = {
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Soft Variant Range
           </Typography>
-          <Slider variant="soft" color="success" defaultValue={[30, 70]} showValue />
+          <Slider
+            getAriaLabel={rangeLabel('Soft range')}
+            variant="soft"
+            color="success"
+            defaultValue={[30, 70]}
+            showValue
+          />
         </Box>
       </Stack>
     );
@@ -277,19 +304,19 @@ export const WithMarks: Story = {
           <Typography variant="subtitle2" sx={{ mb: 3 }}>
             With Labels
           </Typography>
-          <Slider defaultValue={37} marks={marks} min={0} max={100} />
+          <Slider aria-label="Temperature" defaultValue={37} marks={marks} min={0} max={100} />
         </Box>
         <Box>
           <Typography variant="subtitle2" sx={{ mb: 3 }}>
             Step Marks
           </Typography>
-          <Slider defaultValue={50} marks={stepMarks} step={25} />
+          <Slider aria-label="Step marks" defaultValue={50} marks={stepMarks} step={25} />
         </Box>
         <Box>
           <Typography variant="subtitle2" sx={{ mb: 3 }}>
             Auto Marks (step=10)
           </Typography>
-          <Slider defaultValue={30} marks step={10} />
+          <Slider aria-label="Auto marks" defaultValue={30} marks step={10} />
         </Box>
       </Stack>
     );
@@ -317,13 +344,28 @@ export const DiscreteSlider: Story = {
           <Typography variant="subtitle2" sx={{ mb: 3 }}>
             Rating
           </Typography>
-          <Slider defaultValue={3} min={1} max={5} step={1} marks={ratingMarks} showValue />
+          <Slider
+            aria-label="Rating"
+            defaultValue={3}
+            min={1}
+            max={5}
+            step={1}
+            marks={ratingMarks}
+            showValue
+          />
         </Box>
         <Box>
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Volume (step=10)
           </Typography>
-          <Slider defaultValue={50} step={10} marks showValue valueLabelPosition="bottom" />
+          <Slider
+            aria-label="Volume"
+            defaultValue={50}
+            step={10}
+            marks
+            showValue
+            valueLabelPosition="bottom"
+          />
         </Box>
       </Stack>
     );
@@ -349,7 +391,12 @@ export const DisabledState: Story = {
             >
               {variant} (disabled)
             </Typography>
-            <Slider variant={variant} defaultValue={40} disabled />
+            <Slider
+              aria-label={`${variant} (disabled)`}
+              variant={variant}
+              defaultValue={40}
+              disabled
+            />
           </Box>
         ))}
       </Stack>
@@ -383,7 +430,12 @@ export const VariantShowcase: Story = {
                   >
                     {color}
                   </Typography>
-                  <Slider variant={variant} color={color} defaultValue={60} />
+                  <Slider
+                    aria-label={`${variant} ${color}`}
+                    variant={variant}
+                    color={color}
+                    defaultValue={60}
+                  />
                 </Box>
               ))}
             </Box>
@@ -411,6 +463,7 @@ export const InteractiveDemo: Story = {
         <Stack direction="row" spacing={2} alignItems="center">
           <VolumeDown />
           <Slider
+            aria-label="Volume"
             value={volume}
             onChange={(_, value) => setVolume(value as number)}
             showValue
@@ -436,7 +489,13 @@ export const VerticalSlider: Story = {
       <Stack direction="row" spacing={6} sx={{ height: 200 }}>
         {variants.map((variant) => (
           <Box key={variant} sx={{ textAlign: 'center' }}>
-            <Slider variant={variant} orientation="vertical" defaultValue={50} showValue />
+            <Slider
+              aria-label={`${variant} vertical`}
+              variant={variant}
+              orientation="vertical"
+              defaultValue={50}
+              showValue
+            />
             <Typography
               variant="caption"
               sx={{ mt: 1, display: 'block', textTransform: 'capitalize' }}
@@ -480,13 +539,18 @@ export const DarkMode: Story = {
               >
                 {variant}
               </Typography>
-              <Slider variant={variant} defaultValue={55} />
+              <Slider aria-label={variant} variant={variant} defaultValue={55} />
             </Box>
           ))}
           <Typography variant="h6" sx={{ color: 'white', mt: 2 }}>
             Range Slider
           </Typography>
-          <Slider variant="solid" defaultValue={[30, 70]} showValue />
+          <Slider
+            getAriaLabel={rangeLabel('Range')}
+            variant="solid"
+            defaultValue={[30, 70]}
+            showValue
+          />
         </Stack>
       </Box>
     );
@@ -508,6 +572,7 @@ export const RealWorldExamples: Story = {
             Price Filter
           </Typography>
           <Slider
+            getAriaLabel={rangeLabel('Price')}
             defaultValue={[100, 500]}
             min={0}
             max={1000}
@@ -524,6 +589,7 @@ export const RealWorldExamples: Story = {
             Brightness
           </Typography>
           <Slider
+            aria-label="Brightness"
             defaultValue={75}
             showValue
             valueLabelPosition="bottom"
@@ -539,6 +605,7 @@ export const RealWorldExamples: Story = {
             Satisfaction Rating
           </Typography>
           <Slider
+            aria-label="Satisfaction rating"
             defaultValue={4}
             min={1}
             max={5}
@@ -561,6 +628,7 @@ export const RealWorldExamples: Story = {
             Available Hours
           </Typography>
           <Slider
+            getAriaLabel={rangeLabel('Available hours')}
             defaultValue={[9, 17]}
             min={0}
             max={24}

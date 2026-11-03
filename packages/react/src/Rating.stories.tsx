@@ -418,9 +418,9 @@ export const InteractiveDemo: Story = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const DarkMode: Story = {
-  parameters: {
-    backgrounds: { default: 'dark' },
-  },
+  // Render with the dark theme (see .storybook/preview.tsx) so labels use the
+  // dark-mode text colors instead of light-theme ink on the dark box.
+  globals: { backgrounds: { value: 'dark' } },
   render: () => {
     const variants: RatingVariant[] = ['solid', 'soft', 'outlined', 'ghost', 'plain'];
 
@@ -489,7 +489,8 @@ export const RealWorldExamples: Story = {
             Customer Reviews
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
+            {/* A large figure, not a heading: an h3 here would break the heading order. */}
+            <Typography variant="h3" component="p" sx={{ fontWeight: 'bold' }}>
               4.5
             </Typography>
             <Box>

@@ -43,4 +43,13 @@ describe('Badge', () => {
     );
     expect(screen.getByText('0')).toBeInTheDocument();
   });
+
+  it('gives the loading spinner an accessible name', () => {
+    render(
+      <Badge loading badgeContent={4}>
+        <Avatar>JD</Avatar>
+      </Badge>
+    );
+    expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
+  });
 });

@@ -29,4 +29,21 @@ describe('Chip', () => {
     render(<Chip label="Deletable" onDelete={handleDelete} data-testid="chip-deletable" />);
     expect(screen.getByTestId('chip-deletable')).toBeInTheDocument();
   });
+
+  it('gives the loading spinner an accessible name and marks the chip busy', () => {
+    render(<Chip loading label="Saving" data-testid="chip-loading" />);
+    expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
+    expect(screen.getByTestId('chip-loading')).toHaveAttribute('aria-busy', 'true');
+  });
+
+  it('does not fade the chip while loading or disabled', () => {
+    render(
+      <>
+        <Chip loading label="Saving" data-testid="chip-loading" />
+        <Chip disabled label="Disabled" data-testid="chip-disabled" />
+      </>
+    );
+    expect(getComputedStyle(screen.getByTestId('chip-loading')).opacity).not.toBe('0.7');
+    expect(screen.getByTestId('chip-disabled')).toHaveStyle({ opacity: '1' });
+  });
 });

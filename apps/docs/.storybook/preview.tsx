@@ -50,9 +50,8 @@ const sorbetUIViewports = {
 
 const preview: Preview = {
   parameters: {
-    // axe runs on every story and reports violations (Storybook Tests, Chromatic).
-    // Switch to 'error' once the component a11y backlog is fixed.
-    a11y: { test: 'todo' },
+    // axe runs on every story; any WCAG A/AA violation fails Storybook Tests and Chromatic.
+    a11y: { test: 'error' },
     actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
       matchers: {

@@ -8,6 +8,7 @@ import {
 } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
+import { animations, colors, colorScaleForMode, sizing, solidActiveShade } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -20,7 +21,7 @@ export type DatePickerColor =
   | 'secondary'
   | 'success'
   | 'warning'
-  | 'error'
+  | 'danger'
   | 'info'
   | 'neutral';
 export type DatePickerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -73,27 +74,37 @@ const sizeConfig = {
 // Variant Styles
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Colors come from the Sorbet token scales for the current mode, so the picker
+// follows the theme (and dark mode) like every other input.
 const getVariantStyles = (
   variant: DatePickerVariant,
   color: DatePickerColor,
-  size: DatePickerSize
+  size: DatePickerSize,
+  isDark: boolean
 ) => {
   const config = sizeConfig[size];
-  const colorValue = `var(--sun-color-${color}-500, #1976d2)`;
-  const colorLight = `var(--sun-color-${color}-100, #e3f2fd)`;
-  const colorDark = `var(--sun-color-${color}-700, #1565c0)`;
+  const scale = colorScaleForMode(color, isDark);
+  const text = isDark ? colors.semantic.neutral[100] : colors.semantic.neutral[900];
+  const muted = isDark ? colors.semantic.neutral[300] : colors.semantic.neutral[600];
+  // Soft/ghost text uses the strong end of the scale so it stays AA on the tint.
+  const tintText = isDark ? scale.light : scale.dark;
 
   const baseStyles = {
     fontSize: config.fontSize,
     '& .MuiInputBase-root': {
       minHeight: config.height,
       fontSize: config.fontSize,
+      color: text,
     },
     '& .MuiInputBase-input': {
       padding: config.padding,
     },
     '& .MuiSvgIcon-root': {
       fontSize: config.iconSize,
+    },
+    '& .MuiInputLabel-root': {
+      color: muted,
+      '&.Mui-focused': { color: tintText },
     },
   };
 
@@ -102,29 +113,20 @@ const getVariantStyles = (
       return {
         ...baseStyles,
         '& .MuiOutlinedInput-root': {
-          backgroundColor: colorValue,
-          color: '#fff',
-          '& fieldset': {
-            borderColor: colorValue,
-          },
-          '&:hover fieldset': {
-            borderColor: colorDark,
-          },
-          '&.Mui-focused fieldset': {
-            borderColor: colorDark,
-          },
-          '& .MuiSvgIcon-root': {
-            color: '#fff',
-          },
-          '& input::placeholder': {
-            color: 'rgba(255, 255, 255, 0.7)',
-          },
+          backgroundColor: scale.main,
+          color: scale.contrastText,
+          '& fieldset': { borderColor: scale.main },
+          '&:hover fieldset': { borderColor: solidActiveShade(scale) },
+          '&.Mui-focused fieldset': { borderColor: solidActiveShade(scale) },
+          '& .MuiSvgIcon-root, & .MuiIconButton-root': { color: scale.contrastText },
+          '& input::placeholder': { color: scale.contrastText, opacity: 0.85 },
         },
+        // The label sits on the solid fill until it shrinks onto the border,
+        // where it gets the page background behind it.
         '& .MuiInputLabel-root': {
-          color: 'rgba(255, 255, 255, 0.7)',
-          '&.Mui-focused': {
-            color: '#fff',
-          },
+          color: scale.contrastText,
+          '&.MuiInputLabel-shrink': { color: tintText },
+          '&.Mui-focused': { color: tintText },
         },
       };
 
@@ -132,23 +134,14 @@ const getVariantStyles = (
       return {
         ...baseStyles,
         '& .MuiOutlinedInput-root': {
-          backgroundColor: colorLight,
-          '& fieldset': {
-            borderColor: 'transparent',
-          },
-          '&:hover': {
-            backgroundColor: colorLight,
-            filter: 'brightness(0.95)',
-          },
-          '&:hover fieldset': {
-            borderColor: colorValue,
-          },
-          '&.Mui-focused': {
-            backgroundColor: colorLight,
-          },
-          '&.Mui-focused fieldset': {
-            borderColor: colorValue,
-          },
+          backgroundColor: scale.alpha12,
+          color: text,
+          '& fieldset': { borderColor: 'transparent' },
+          '&:hover': { backgroundColor: scale.alpha20 },
+          '&:hover fieldset': { borderColor: scale.main },
+          '&.Mui-focused': { backgroundColor: scale.alpha12 },
+          '&.Mui-focused fieldset': { borderColor: scale.main },
+          '& .MuiSvgIcon-root': { color: tintText },
         },
       };
 
@@ -156,15 +149,9 @@ const getVariantStyles = (
       return {
         ...baseStyles,
         '& .MuiOutlinedInput-root': {
-          '& fieldset': {
-            borderColor: colorValue,
-          },
-          '&:hover fieldset': {
-            borderColor: colorDark,
-          },
-          '&.Mui-focused fieldset': {
-            borderColor: colorValue,
-          },
+          '& fieldset': { borderColor: scale.main },
+          '&:hover fieldset': { borderColor: tintText },
+          '&.Mui-focused fieldset': { borderColor: scale.main },
         },
       };
 
@@ -172,21 +159,11 @@ const getVariantStyles = (
       return {
         ...baseStyles,
         '& .MuiOutlinedInput-root': {
-          '& fieldset': {
-            borderColor: 'transparent',
-          },
-          '&:hover': {
-            backgroundColor: `var(--sun-color-${color}-50, rgba(25, 118, 210, 0.08))`,
-          },
-          '&:hover fieldset': {
-            borderColor: 'transparent',
-          },
-          '&.Mui-focused': {
-            backgroundColor: `var(--sun-color-${color}-100, rgba(25, 118, 210, 0.12))`,
-          },
-          '&.Mui-focused fieldset': {
-            borderColor: colorValue,
-          },
+          '& fieldset': { borderColor: 'transparent' },
+          '&:hover': { backgroundColor: scale.alpha8 },
+          '&:hover fieldset': { borderColor: 'transparent' },
+          '&.Mui-focused': { backgroundColor: scale.alpha12 },
+          '&.Mui-focused fieldset': { borderColor: scale.main },
         },
       };
 
@@ -194,16 +171,9 @@ const getVariantStyles = (
       return {
         ...baseStyles,
         '& .MuiOutlinedInput-root': {
-          '& fieldset': {
-            border: 'none',
-          },
-          '&:hover fieldset': {
-            border: 'none',
-          },
-          '&.Mui-focused fieldset': {
-            border: 'none',
-            boxShadow: `0 1px 0 0 ${colorValue}`,
-          },
+          '& fieldset': { border: 'none' },
+          '&:hover fieldset': { border: 'none' },
+          '&.Mui-focused fieldset': { border: 'none', boxShadow: `0 1px 0 0 ${scale.main}` },
         },
       };
 
@@ -219,8 +189,13 @@ const getVariantStyles = (
 const DatePickerWrapper = styled('div', {
   shouldForwardProp: (prop) =>
     !['$variant', '$color', '$size', '$fullWidth'].includes(prop as string),
-})<StyledProps>(({ $variant, $color, $size, $fullWidth }) => {
-  const variantStyles = getVariantStyles($variant, $color, $size) as Record<string, unknown>;
+})<StyledProps>(({ theme, $variant, $color, $size, $fullWidth }) => {
+  const variantStyles = getVariantStyles(
+    $variant,
+    $color,
+    $size,
+    theme.palette.mode === 'dark'
+  ) as Record<string, unknown>;
   const inputRootStyles = (variantStyles['& .MuiOutlinedInput-root'] ?? {}) as Record<
     string,
     unknown
@@ -231,8 +206,8 @@ const DatePickerWrapper = styled('div', {
     display: 'inline-flex',
     ...variantStyles,
     '& .MuiOutlinedInput-root': {
-      borderRadius: 'var(--sun-radius-md, 8px)',
-      transition: 'var(--sun-transition-normal, all 0.2s ease)',
+      borderRadius: sizing.radius.md,
+      transition: animations.transitions.smooth,
       ...inputRootStyles,
     },
     '& .MuiTextField-root': {
@@ -320,26 +295,28 @@ export const DatePicker = React.forwardRef<HTMLDivElement, SorbetDatePickerProps
               ...inputProps,
             },
             popper: {
-              sx: {
-                '& .MuiPaper-root': {
-                  borderRadius: 'var(--sun-radius-lg, 12px)',
-                  boxShadow: 'var(--sun-shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.15))',
-                },
-                '& .MuiPickersDay-root': {
-                  borderRadius: 'var(--sun-radius-full, 9999px)',
-                  '&.Mui-selected': {
-                    backgroundColor: `var(--sun-color-${color}-500, #1976d2)`,
+              sx: (theme) => {
+                const scale = colorScaleForMode(color, theme.palette.mode === 'dark');
+                const selected = {
+                  backgroundColor: scale.main,
+                  color: scale.contrastText,
+                  '&:hover, &:focus': { backgroundColor: solidActiveShade(scale) },
+                };
+                return {
+                  '& .MuiPaper-root': {
+                    borderRadius: sizing.radius.lg,
+                    boxShadow: sizing.shadows.lg,
                   },
-                  '&:hover': {
-                    backgroundColor: `var(--sun-color-${color}-100, #e3f2fd)`,
+                  '& .MuiPickersDay-root': {
+                    borderRadius: sizing.radius.full,
+                    '&:hover': { backgroundColor: scale.alpha12 },
+                    '&.Mui-selected': selected,
                   },
-                },
-                '& .MuiPickersYear-yearButton, & .MuiPickersMonth-monthButton': {
-                  borderRadius: 'var(--sun-radius-md, 8px)',
-                  '&.Mui-selected': {
-                    backgroundColor: `var(--sun-color-${color}-500, #1976d2)`,
+                  '& .MuiPickersYear-yearButton, & .MuiPickersMonth-monthButton': {
+                    borderRadius: sizing.radius.md,
+                    '&.Mui-selected': selected,
                   },
-                },
+                };
               },
             },
           }}

@@ -100,16 +100,16 @@ export const Default: Story = {
 
     return (
       <ToggleButtonGroup value={alignment} exclusive onChange={(_, value) => setAlignment(value)}>
-        <ToggleButton value="left">
+        <ToggleButton value="left" aria-label="Align left">
           <FormatAlignLeftIcon />
         </ToggleButton>
-        <ToggleButton value="center">
+        <ToggleButton value="center" aria-label="Align center">
           <FormatAlignCenterIcon />
         </ToggleButton>
-        <ToggleButton value="right">
+        <ToggleButton value="right" aria-label="Align right">
           <FormatAlignRightIcon />
         </ToggleButton>
-        <ToggleButton value="justify">
+        <ToggleButton value="justify" aria-label="Justify">
           <FormatAlignJustifyIcon />
         </ToggleButton>
       </ToggleButtonGroup>
@@ -137,13 +137,13 @@ export const AllVariants: Story = {
               {variant}
             </Typography>
             <ToggleButtonGroup variant={variant} value="center" exclusive>
-              <ToggleButton value="left">
+              <ToggleButton value="left" aria-label="Align left">
                 <FormatAlignLeftIcon />
               </ToggleButton>
-              <ToggleButton value="center">
+              <ToggleButton value="center" aria-label="Align center">
                 <FormatAlignCenterIcon />
               </ToggleButton>
-              <ToggleButton value="right">
+              <ToggleButton value="right" aria-label="Align right">
                 <FormatAlignRightIcon />
               </ToggleButton>
             </ToggleButtonGroup>
@@ -182,13 +182,13 @@ export const AllColors: Story = {
               {color}
             </Typography>
             <ToggleButtonGroup color={color} value="center" exclusive>
-              <ToggleButton value="left">
+              <ToggleButton value="left" aria-label="Align left">
                 <FormatAlignLeftIcon />
               </ToggleButton>
-              <ToggleButton value="center">
+              <ToggleButton value="center" aria-label="Align center">
                 <FormatAlignCenterIcon />
               </ToggleButton>
-              <ToggleButton value="right">
+              <ToggleButton value="right" aria-label="Align right">
                 <FormatAlignRightIcon />
               </ToggleButton>
             </ToggleButtonGroup>
@@ -216,13 +216,13 @@ export const AllSizes: Story = {
               Size: {size}
             </Typography>
             <ToggleButtonGroup size={size} value="center" exclusive>
-              <ToggleButton value="left">
+              <ToggleButton value="left" aria-label="Align left">
                 <FormatAlignLeftIcon />
               </ToggleButton>
-              <ToggleButton value="center">
+              <ToggleButton value="center" aria-label="Align center">
                 <FormatAlignCenterIcon />
               </ToggleButton>
-              <ToggleButton value="right">
+              <ToggleButton value="right" aria-label="Align right">
                 <FormatAlignRightIcon />
               </ToggleButton>
             </ToggleButtonGroup>
@@ -299,13 +299,13 @@ export const MultipleSelection: Story = {
             Text Formatting (Multi-select)
           </Typography>
           <ToggleButtonGroup value={formats} onChange={(_, value) => setFormats(value)}>
-            <ToggleButton value="bold">
+            <ToggleButton value="bold" aria-label="Bold">
               <FormatBoldIcon />
             </ToggleButton>
-            <ToggleButton value="italic">
+            <ToggleButton value="italic" aria-label="Italic">
               <FormatItalicIcon />
             </ToggleButton>
-            <ToggleButton value="underlined">
+            <ToggleButton value="underlined" aria-label="Underline">
               <FormatUnderlinedIcon />
             </ToggleButton>
           </ToggleButtonGroup>
@@ -338,13 +338,13 @@ export const VerticalOrientation: Story = {
               {variant}
             </Typography>
             <ToggleButtonGroup variant={variant} orientation="vertical" value="list" exclusive>
-              <ToggleButton value="list">
+              <ToggleButton value="list" aria-label="List view">
                 <ViewListIcon />
               </ToggleButton>
-              <ToggleButton value="module">
+              <ToggleButton value="module" aria-label="Grid view">
                 <ViewModuleIcon />
               </ToggleButton>
-              <ToggleButton value="quilt">
+              <ToggleButton value="quilt" aria-label="Quilt view">
                 <ViewQuiltIcon />
               </ToggleButton>
             </ToggleButtonGroup>
@@ -448,13 +448,13 @@ export const DisabledState: Story = {
               {variant}
             </Typography>
             <ToggleButtonGroup variant={variant} value="center" exclusive disabled>
-              <ToggleButton value="left">
+              <ToggleButton value="left" aria-label="Align left">
                 <FormatAlignLeftIcon />
               </ToggleButton>
-              <ToggleButton value="center">
+              <ToggleButton value="center" aria-label="Align center">
                 <FormatAlignCenterIcon />
               </ToggleButton>
-              <ToggleButton value="right">
+              <ToggleButton value="right" aria-label="Align right">
                 <FormatAlignRightIcon />
               </ToggleButton>
             </ToggleButtonGroup>
@@ -464,13 +464,13 @@ export const DisabledState: Story = {
           Individual Button Disabled
         </Typography>
         <ToggleButtonGroup value="left" exclusive>
-          <ToggleButton value="left">
+          <ToggleButton value="left" aria-label="Align left">
             <FormatAlignLeftIcon />
           </ToggleButton>
-          <ToggleButton value="center" disabled>
+          <ToggleButton value="center" disabled aria-label="Align center">
             <FormatAlignCenterIcon />
           </ToggleButton>
-          <ToggleButton value="right">
+          <ToggleButton value="right" aria-label="Align right">
             <FormatAlignRightIcon />
           </ToggleButton>
         </ToggleButtonGroup>
@@ -570,10 +570,10 @@ export const InteractiveDemo: Story = {
             onChange={(_, value) => value && setView(value)}
             variant="outlined"
           >
-            <ToggleButton value="list">
+            <ToggleButton value="list" aria-label="List view">
               <ViewListIcon />
             </ToggleButton>
-            <ToggleButton value="grid">
+            <ToggleButton value="grid" aria-label="Grid view">
               <ViewModuleIcon />
             </ToggleButton>
           </ToggleButtonGroup>
@@ -617,13 +617,13 @@ export const DarkMode: Story = {
                 {variant}
               </Typography>
               <ToggleButtonGroup variant={variant} value="center" exclusive>
-                <ToggleButton value="left">
+                <ToggleButton value="left" aria-label="Align left">
                   <FormatAlignLeftIcon />
                 </ToggleButton>
-                <ToggleButton value="center">
+                <ToggleButton value="center" aria-label="Align center">
                   <FormatAlignCenterIcon />
                 </ToggleButton>
-                <ToggleButton value="right">
+                <ToggleButton value="right" aria-label="Align right">
                   <FormatAlignRightIcon />
                 </ToggleButton>
               </ToggleButtonGroup>
@@ -654,13 +654,13 @@ export const RealWorldExamples: Story = {
           </Typography>
           <Stack direction="row" spacing={2}>
             <ToggleButtonGroup value={[]} size="sm">
-              <ToggleButton value="bold">
+              <ToggleButton value="bold" aria-label="Bold">
                 <FormatBoldIcon />
               </ToggleButton>
-              <ToggleButton value="italic">
+              <ToggleButton value="italic" aria-label="Italic">
                 <FormatItalicIcon />
               </ToggleButton>
-              <ToggleButton value="underlined">
+              <ToggleButton value="underlined" aria-label="Underline">
                 <FormatUnderlinedIcon />
               </ToggleButton>
             </ToggleButtonGroup>
@@ -670,13 +670,13 @@ export const RealWorldExamples: Story = {
               onChange={(_, v) => v && setTextAlign(v)}
               size="sm"
             >
-              <ToggleButton value="left">
+              <ToggleButton value="left" aria-label="Align left">
                 <FormatAlignLeftIcon />
               </ToggleButton>
-              <ToggleButton value="center">
+              <ToggleButton value="center" aria-label="Align center">
                 <FormatAlignCenterIcon />
               </ToggleButton>
-              <ToggleButton value="right">
+              <ToggleButton value="right" aria-label="Align right">
                 <FormatAlignRightIcon />
               </ToggleButton>
             </ToggleButtonGroup>

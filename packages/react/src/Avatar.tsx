@@ -103,7 +103,9 @@ const StyledAvatar = styled(MuiAvatar, {
     },
     outlined: {
       backgroundColor: isDark ? colorScale.alpha12 : colorScale.alpha8,
-      color: colorScale.main,
+      // On the light tint `main` drops below 4.5:1 for some colors (danger,
+      // neutral), so light mode uses the darker shade for the initials.
+      color: isDark ? colorScale.main : colorScale.dark,
       border: `2px solid ${colorScale.main}`,
     },
     ghost: {
@@ -178,7 +180,7 @@ export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
     const sizeStyles = sizeConfig[size];
 
     return (
-      <AvatarWrapper>
+      <AvatarWrapper aria-busy={loading || undefined}>
         <StyledAvatar
           ref={ref}
           sorbetVariant={variant}
@@ -191,7 +193,11 @@ export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
         </StyledAvatar>
         {loading && (
           <LoadingOverlay sorbetSize={size}>
-            <CircularProgress size={sizeStyles.iconSize} sx={{ color: 'white' }} />
+            <CircularProgress
+              size={sizeStyles.iconSize}
+              sx={{ color: 'white' }}
+              aria-label="Loading"
+            />
           </LoadingOverlay>
         )}
         {status && !loading && <StatusIndicator status={status} sorbetSize={size} />}
