@@ -47,7 +47,7 @@ export default function HeroDashboard() {
   return (
     <Card
       variant="outlined"
-      data-known-contrast
+     
       data-testid="hero-dashboard"
       sx={{
         width: '100%',

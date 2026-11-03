@@ -225,47 +225,32 @@ export const colorPalette = {
  * makes them too dark to read on the near-black dark-mode surfaces: no single shade
  * reaches 4.5:1 on both. Dark mode keeps the lighter shades it used before the
  * light-theme contrast fix (`main` is the 500 shade), so text, borders and icons stay
- * readable on dark surfaces. Solid fills in dark mode are a known gap: white on most
- * 500 shades is below 4.5:1.
+ * readable on dark surfaces. Solid fills put dark ink on those bright 500 shades
+ * (white on them is below 4.5:1), and hover moves to the lighter 400 shade so the
+ * ink still reads; src/contrast.test.ts enforces both.
  */
+/** Text on solid fills in dark mode (slate 900). */
+export const DARK_INK = '#0f172a';
+
 export const darkModeColorPalette: Record<SemanticColor, ColorScale> = {
-  primary: {
-    ...colorPalette.primary,
-    main: colorPalette.primary[500],
-    dark: colorPalette.primary[600],
-  },
-  secondary: {
-    ...colorPalette.secondary,
-    main: colorPalette.secondary[500],
-    dark: colorPalette.secondary[700],
-  },
-  success: {
-    ...colorPalette.success,
-    main: colorPalette.success[500],
-    dark: colorPalette.success[700],
-  },
-  warning: {
-    ...colorPalette.warning,
-    main: colorPalette.warning[500],
-    dark: colorPalette.warning[700],
-    contrastText: '#000000',
-  },
-  danger: {
-    ...colorPalette.danger,
-    main: colorPalette.danger[500],
-    dark: colorPalette.danger[700],
-  },
-  info: {
-    ...colorPalette.info,
-    main: colorPalette.info[500],
-    dark: colorPalette.info[700],
-  },
-  neutral: {
-    ...colorPalette.neutral,
-    main: colorPalette.neutral[500],
-    dark: colorPalette.neutral[700],
-  },
+  primary: { ...colorPalette.primary, main: colorPalette.primary[500], dark: colorPalette.primary[400], contrastText: DARK_INK },
+  // Secondary, danger and neutral 500 are too dark to read as text on dark paper, so they step up to 400.
+  secondary: { ...colorPalette.secondary, main: colorPalette.secondary[400], dark: colorPalette.secondary[300], contrastText: DARK_INK },
+  success: { ...colorPalette.success, main: colorPalette.success[500], dark: colorPalette.success[400], contrastText: DARK_INK },
+  warning: { ...colorPalette.warning, main: colorPalette.warning[500], dark: colorPalette.warning[400], contrastText: DARK_INK },
+  danger: { ...colorPalette.danger, main: colorPalette.danger[400], dark: colorPalette.danger[300], contrastText: DARK_INK },
+  info: { ...colorPalette.info, main: colorPalette.info[500], dark: colorPalette.info[400], contrastText: DARK_INK },
+  neutral: { ...colorPalette.neutral, main: colorPalette.neutral[400], dark: colorPalette.neutral[300], contrastText: DARK_INK },
 };
+
+/**
+ * Background for a pressed solid fill: one step further from the text color, so the
+ * press reads as a change and the label keeps its contrast (700 under white text,
+ * 300 under dark ink).
+ */
+export function solidActiveShade(scale: ColorScale): string {
+  return scale.contrastText === DARK_INK ? scale[300] : scale[700];
+}
 
 /**
  * Returns the scale for a color in the current mode. Components call it with

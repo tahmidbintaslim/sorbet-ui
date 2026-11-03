@@ -43,7 +43,7 @@ export default function Playground({ slug }: { slug: string }) {
     <Box>
       <Box
         data-testid="preview"
-        data-known-contrast
+       
         sx={{
           border: 1,
           borderColor: 'divider',
