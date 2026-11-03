@@ -1,30 +1,31 @@
 'use client';
-// Landing-page sections. Kept in one client module because they use MUI icons
-// and theme callbacks; app/page.tsx (a server component) just composes them.
+// Landing-page sections. app/page.tsx (a server component) composes them.
 import * as React from 'react';
 import { Box, Container, Grid, Stack, Typography } from '@mui/material';
 import { alpha, type Theme } from '@mui/material/styles';
-import Tune from '@mui/icons-material/Tune';
-import Layers from '@mui/icons-material/Layers';
-import Contrast from '@mui/icons-material/Contrast';
-import Code from '@mui/icons-material/Code';
-import Palette from '@mui/icons-material/Palette';
-import Bolt from '@mui/icons-material/Bolt';
+import { motion, useReducedMotion } from 'motion/react';
+import ArrowForward from '@mui/icons-material/ArrowForward';
 import LinkButton from './LinkButton';
 import CodeBlock, { CommandLine } from './CodeBlock';
-import Showcase from './Showcase';
 import VariantMatrix from './VariantMatrix';
+import { EASE, Reveal } from './motion';
+import HeroCanvas from './landing/HeroCanvas';
+import HeroDashboard from './landing/HeroDashboard';
+import WordRotator from './landing/WordRotator';
+import BeforeAfter from './landing/BeforeAfter';
+import LivePlayground from './landing/LivePlayground';
+import Bento from './landing/Bento';
+import { ComponentMarquee, FAQ, Pricing } from './landing/Sections';
+import { useGitHubStars, formatStars } from './GitHubStars';
 import { colorPalette } from '@sorbet-ui/tokens';
 import { SITE } from '@/lib/site';
 
 // Brand accent per section; light/dark pick a shade that reads as text.
-// Shades come straight from @sorbet-ui/tokens (MUI's palette names danger "error").
 type Accent = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
-const accent = (t: Theme, key: Accent) =>
-  t.palette.mode === 'dark' ? colorPalette[key][300] : colorPalette[key][700];
+const accent = (t: Theme, key: Accent) => (t.palette.mode === 'dark' ? colorPalette[key][300] : colorPalette[key][700]);
 
-const INSTALL =
-  'npm install @sorbet-ui/react @sorbet-ui/theme @mui/material @mui/icons-material @mui/x-date-pickers @emotion/react @emotion/styled dayjs';
+// npm 7+ and pnpm install peer dependencies automatically.
+const INSTALL = 'npm i @sorbet-ui/react @sorbet-ui/theme';
 
 const QUICK = `import { ThemeProvider, CssBaseline } from '@mui/material';
 import { lightTheme } from '@sorbet-ui/theme';
@@ -39,240 +40,232 @@ export default function App() {
   );
 }`;
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
+function Section({ children, id, py = { xs: 8, md: 12 } }: { children: React.ReactNode; id?: string; py?: object }) {
   return (
-    <Typography
-      variant="overline"
-      sx={(t) => ({ color: accent(t, 'primary'), fontWeight: 700, letterSpacing: '0.12em' })}
-    >
+    <Container component="section" id={id} maxWidth="lg" sx={{ py, scrollMarginTop: 80 }}>
       {children}
-    </Typography>
+    </Container>
   );
 }
 
-function SectionTitle({ eyebrow, title, lead }: { eyebrow: string; title: string; lead?: string }) {
+function SectionTitle({ eyebrow, title, lead, center }: { eyebrow: string; title: string; lead?: string; center?: boolean }) {
   return (
-    <Box sx={{ maxWidth: 680, mb: 5 }}>
-      <Eyebrow>{eyebrow}</Eyebrow>
-      <Typography component="h2" sx={{ fontWeight: 800, fontSize: { xs: 30, md: 40 }, letterSpacing: '-0.03em', lineHeight: 1.15, mt: 0.5 }}>
-        {title}
-      </Typography>
-      {lead && (
-        <Typography color="text.secondary" sx={{ mt: 1.5, fontSize: 18 }}>
-          {lead}
+    <Reveal>
+      <Box sx={{ maxWidth: 720, mb: 6, mx: center ? 'auto' : 0, textAlign: center ? 'center' : 'left' }}>
+        <Typography variant="overline" sx={(t) => ({ color: accent(t, 'primary'), fontWeight: 700, letterSpacing: '0.12em' })}>
+          {eyebrow}
         </Typography>
-      )}
-    </Box>
-  );
-}
-
-// Soft blurred color fields behind the hero. Decorative only.
-function Glow() {
-  return (
-    <Box
-      aria-hidden
-      sx={(t) => ({
-        position: 'absolute',
-        inset: 0,
-        overflow: 'hidden',
-        pointerEvents: 'none',
-        zIndex: 0,
-        '&::before, &::after': {
-          content: '""',
-          position: 'absolute',
-          borderRadius: '50%',
-          filter: 'blur(80px)',
-          opacity: t.palette.mode === 'dark' ? 0.25 : 0.45,
-        },
-        '&::before': { width: 520, height: 520, top: -160, right: -80, bgcolor: '#7dd3fc' },
-        '&::after': { width: 440, height: 440, top: 120, right: 280, bgcolor: '#f0abfc' },
-      })}
-    />
+        <Typography component="h2" sx={{ fontWeight: 800, fontSize: { xs: 32, md: 44 }, letterSpacing: '-0.035em', lineHeight: 1.1, mt: 0.5 }}>
+          {title}
+        </Typography>
+        {lead && (
+          <Typography color="text.secondary" sx={{ mt: 2, fontSize: 18 }}>
+            {lead}
+          </Typography>
+        )}
+      </Box>
+    </Reveal>
   );
 }
 
 export function Hero() {
+  const reduce = useReducedMotion();
+  const stars = useGitHubStars();
+  // Staggered entrance for the hero copy.
+  const item = (i: number) =>
+    reduce
+      ? {}
+      : { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, ease: EASE, delay: 0.08 * i } };
+
   return (
-    <Box component="section" sx={{ position: 'relative' }}>
-      <Glow />
-      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, pt: { xs: 6, md: 12 }, pb: { xs: 6, md: 10 } }}>
-        <Grid container spacing={{ xs: 6, md: 8 }} alignItems="center">
+    <HeroCanvas>
+      <Container maxWidth="lg" sx={{ pt: { xs: 6, md: 11 }, pb: { xs: 6, md: 10 } }}>
+        <Grid container spacing={{ xs: 6, md: 6 }} alignItems="center">
           <Grid size={{ xs: 12, md: 6 }} sx={{ minWidth: 0 }}>
-            <Box
-              sx={(t) => ({
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 1,
-                px: 1.5,
-                py: 0.5,
-                borderRadius: 999,
-                border: 1,
-                borderColor: 'divider',
-                bgcolor: alpha(t.palette.background.paper, 0.7),
-                fontSize: 13,
-                fontWeight: 600,
-              })}
-            >
-              <Box component="span" sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
-              v0.1.0 · MIT · Material UI v7
-            </Box>
-            <Typography
-              component="h1"
-              sx={{ fontWeight: 800, fontSize: { xs: 44, sm: 56, md: 68 }, lineHeight: 1.02, letterSpacing: '-0.04em', mt: 3 }}
-            >
-              Material UI,
-              <br />
-              but{' '}
-              <Box component="span" sx={(t) => ({ color: accent(t, 'secondary') })}>
-                softer.
-              </Box>
-            </Typography>
-            <Typography color="text.secondary" sx={{ mt: 3, fontSize: { xs: 18, md: 20 }, maxWidth: 520 }}>
-              {SITE.description}
-            </Typography>
-            <Stack direction="row" spacing={1.5} sx={{ mt: 4 }} flexWrap="wrap" useFlexGap>
-              <LinkButton href="/docs" variant="contained" size="large" disableElevation sx={{ borderRadius: 2.5, px: 3 }}>
-                Get started
-              </LinkButton>
-              <LinkButton href="/docs/components" variant="outlined" size="large" sx={{ borderRadius: 2.5, px: 3 }}>
-                Browse components
-              </LinkButton>
-            </Stack>
-            <CommandLine command={INSTALL} />
-            <Stack direction="row" spacing={3} sx={{ mt: 4 }} flexWrap="wrap" useFlexGap>
-              {[
-                ['26', 'components'],
-                ['5', 'variants'],
-                ['7', 'colors'],
-                ['5', 'sizes'],
-              ].map(([n, l]) => (
-                <Box key={l}>
-                  <Typography component="span" sx={{ fontWeight: 800, fontSize: 22 }}>
-                    {n}
-                  </Typography>{' '}
-                  <Typography component="span" color="text.secondary">
-                    {l}
-                  </Typography>
+            <motion.div {...item(0)}>
+              <Box
+                component="a"
+                href="#playground"
+                sx={(t) => ({
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  pl: 0.75,
+                  pr: 1.5,
+                  py: 0.5,
+                  borderRadius: 999,
+                  border: 1,
+                  borderColor: 'divider',
+                  bgcolor: alpha(t.palette.background.paper, 0.7),
+                  backdropFilter: 'blur(8px)',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  textDecoration: 'none',
+                  '&:hover .arrow': { transform: 'translateX(3px)' },
+                })}
+              >
+                <Box component="span" sx={(t) => ({ px: 1, py: 0.25, borderRadius: 999, bgcolor: alpha(colorPalette.primary[500], 0.15), color: accent(t, 'primary') })}>
+                  v0.1.0
                 </Box>
-              ))}
-            </Stack>
+                Try the live playground
+                <ArrowForward className="arrow" sx={{ fontSize: 14, transition: 'transform .2s' }} />
+              </Box>
+            </motion.div>
+            <motion.div {...item(1)}>
+              <Typography
+                component="h1"
+                aria-label="Material UI, but softer."
+                sx={{ fontWeight: 800, fontSize: { xs: 46, sm: 60, md: 72 }, lineHeight: 1.02, letterSpacing: '-0.045em', mt: 3 }}
+              >
+                <span aria-hidden>Material UI,</span>
+                <br />
+                <span aria-hidden>but </span>
+                <Box
+                  component="span"
+                  sx={{
+                    backgroundImage: `linear-gradient(90deg, ${colorPalette.primary[500]}, ${colorPalette.secondary[500]}, ${colorPalette.danger[400]})`,
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    color: 'transparent',
+                  }}
+                >
+                  <WordRotator words={['softer.', 'friendlier.', 'yours.']} />
+                </Box>
+              </Typography>
+            </motion.div>
+            <motion.div {...item(2)}>
+              <Typography color="text.secondary" sx={{ mt: 3, fontSize: { xs: 18, md: 20 }, maxWidth: 540 }}>
+                A design layer for apps already on MUI v7: tokens, light and dark themes, and 26 components with soft, dash and ghost
+                variants. Keep the MUI API. Lose the default look.
+              </Typography>
+            </motion.div>
+            <motion.div {...item(3)}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ mt: 4 }} alignItems={{ sm: 'center' }}>
+                <LinkButton href="/docs" variant="contained" size="large" disableElevation endIcon={<ArrowForward />} sx={{ borderRadius: 2.5, px: 3, flexShrink: 0 }}>
+                  Get started — free
+                </LinkButton>
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  <CommandLine command={INSTALL} mt={0} />
+                </Box>
+              </Stack>
+            </motion.div>
+            <motion.div {...item(4)}>
+              <Stack direction="row" spacing={3} sx={{ mt: 4, color: 'text.secondary', fontSize: 14 }} flexWrap="wrap" useFlexGap>
+                <span>MIT licensed</span>
+                <span>React 19 · MUI v7</span>
+                <span>TypeScript</span>
+                {!!stars && <span>★ {formatStars(stars)} on GitHub</span>}
+              </Stack>
+            </motion.div>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', justifyContent: 'center', minWidth: 0 }}>
-            <Showcase />
+            <motion.div
+              style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+              initial={reduce ? false : { opacity: 0, y: 40, rotateX: 12 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0 }}
+              transition={{ duration: 0.9, ease: EASE, delay: 0.25 }}
+            >
+              <HeroDashboard />
+            </motion.div>
           </Grid>
         </Grid>
       </Container>
+    </HeroCanvas>
+  );
+}
+
+export function Marquee() {
+  return (
+    <Box component="section" aria-label="All components" sx={{ py: 4, borderTop: 1, borderBottom: 1, borderColor: 'divider' }}>
+      <ComponentMarquee />
     </Box>
+  );
+}
+
+export function Compare() {
+  return (
+    <Section>
+      <SectionTitle eyebrow="No rewrite" title="Same MUI. A softer look." lead="The left side is stock Material UI. The right side is the same form with Sorbet UI. Nothing else changed." />
+      <Reveal>
+        <BeforeAfter />
+      </Reveal>
+    </Section>
+  );
+}
+
+export function Playground() {
+  return (
+    <Section id="playground">
+      <SectionTitle eyebrow="Live playground" title="Change it. The code follows." lead="Pick a variant, color, size and radius. The source on the left updates as you go, ready to copy." />
+      <Reveal>
+        <LivePlayground />
+      </Reveal>
+    </Section>
   );
 }
 
 export function Matrix() {
   return (
-    <Container component="section" maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
-      <SectionTitle
-        eyebrow="One API"
-        title="Five variants. Seven colors. Every component."
-        lead="The same variant, color and size props work across the library, so once you know one component you know them all."
-      />
-      <VariantMatrix />
-    </Container>
+    <Section>
+      <SectionTitle eyebrow="One API" title="Seven variants. Seven colors. Five sizes." lead="The same variant, color and size props work across the library, so once you know one component you know them all." />
+      <Reveal>
+        <VariantMatrix />
+      </Reveal>
+    </Section>
   );
 }
 
-const FEATURES = [
-  { icon: Tune, color: 'primary', title: 'One variant API', body: 'solid, soft, outlined, ghost and plain on every component, with shared color and size props.' },
-  { icon: Layers, color: 'secondary', title: 'Still Material UI', body: 'Each component wraps its MUI v7 counterpart, so MUI props, sx and your theme keep working.' },
-  { icon: Contrast, color: 'info', title: 'Light and dark', body: 'lightTheme and darkTheme for the MUI ThemeProvider, built from shared design tokens.' },
-  { icon: Palette, color: 'danger', title: 'Design tokens', body: '@sorbet-ui/tokens exports colors, type, spacing and motion for use outside React too.' },
-  { icon: Code, color: 'success', title: 'Typed end to end', body: 'Strict TypeScript with exported prop types. ESM and CJS builds with no side effects.' },
-  { icon: Bolt, color: 'warning', title: 'Next.js ready', body: 'Ships with a "use client" banner, so it drops into App Router layouts without wrappers.' },
-] as const;
-
-export function Features() {
+export function Showcase() {
   return (
-    <Container component="section" maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
-      <SectionTitle eyebrow="Why Sorbet" title="Familiar foundations, friendlier defaults" />
-      <Grid container spacing={2.5}>
-        {FEATURES.map(({ icon: Icon, color, title, body }) => (
-          <Grid key={title} size={{ xs: 12, sm: 6, md: 4 }}>
-            <Box
-              sx={{
-                height: '100%',
-                p: 3,
-                borderRadius: 3,
-                border: 1,
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-                transition: 'border-color .2s, transform .2s',
-                '&:hover': { borderColor: colorPalette[color][400], transform: 'translateY(-2px)' },
-              }}
-            >
-              <Box
-                sx={(t) => ({
-                  width: 44,
-                  height: 44,
-                  borderRadius: 2.5,
-                  display: 'grid',
-                  placeItems: 'center',
-                  color: accent(t, color),
-                  bgcolor: alpha(colorPalette[color][500], 0.14),
-                })}
-              >
-                <Icon />
-              </Box>
-              <Typography component="h3" sx={{ fontWeight: 700, fontSize: 18, mt: 2 }}>
-                {title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1, lineHeight: 1.65 }}>
-                {body}
-              </Typography>
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+    <Section>
+      <SectionTitle eyebrow="Built with Sorbet" title="Small demos, real components" lead="Every tile below is interactive and made from the published packages." />
+      <Bento />
+    </Section>
   );
 }
 
 const STEPS = [
-  { title: 'Install', body: 'Add the components, the theme and their Material UI peers.' },
+  { title: 'Install', body: 'Add the components and the theme. npm 7+ and pnpm pull in the MUI peers.' },
   { title: 'Wrap your app', body: 'Pass lightTheme or darkTheme to the MUI ThemeProvider.' },
   { title: 'Use components', body: 'Import from @sorbet-ui/react and pick a variant and color.' },
 ];
 
 export function QuickStart() {
   return (
-    <Container component="section" maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
+    <Section>
       <Grid container spacing={{ xs: 4, md: 8 }} alignItems="center">
         <Grid size={{ xs: 12, md: 5 }}>
           <SectionTitle eyebrow="Quick start" title="Up and running in a minute" />
           <Stack component="ol" spacing={3} sx={{ p: 0, m: 0, listStyle: 'none' }}>
             {STEPS.map((s, i) => (
-              <Stack component="li" key={s.title} direction="row" spacing={2}>
-                <Box
-                  sx={(t) => ({
-                    flexShrink: 0,
-                    width: 32,
-                    height: 32,
-                    borderRadius: '50%',
-                    display: 'grid',
-                    placeItems: 'center',
-                    fontWeight: 700,
-                    fontSize: 14,
-                    color: accent(t, 'primary'),
-                    border: 1,
-                    borderColor: 'divider',
-                  })}
-                >
-                  {i + 1}
-                </Box>
-                <Box>
-                  <Typography sx={{ fontWeight: 700 }}>{s.title}</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {s.body}
-                  </Typography>
-                </Box>
-              </Stack>
+              <Reveal as="li" key={s.title} delay={i * 0.08}>
+                <Stack direction="row" spacing={2}>
+                  <Box
+                    sx={(t) => ({
+                      flexShrink: 0,
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      display: 'grid',
+                      placeItems: 'center',
+                      fontWeight: 700,
+                      fontSize: 14,
+                      color: accent(t, 'primary'),
+                      border: 1,
+                      borderColor: 'divider',
+                    })}
+                  >
+                    {i + 1}
+                  </Box>
+                  <Box>
+                    <Typography sx={{ fontWeight: 700 }}>{s.title}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {s.body}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Reveal>
             ))}
           </Stack>
           <LinkButton href="/docs" variant="text" sx={{ mt: 3, ml: -1 }}>
@@ -280,47 +273,90 @@ export function QuickStart() {
           </LinkButton>
         </Grid>
         <Grid size={{ xs: 12, md: 7 }} sx={{ minWidth: 0 }}>
-          <CodeBlock code={QUICK} title="App.tsx" label="Quick start example" />
+          <Reveal>
+            <CodeBlock code={QUICK} title="App.tsx" label="Quick start example" />
+          </Reveal>
         </Grid>
       </Grid>
-    </Container>
+    </Section>
+  );
+}
+
+export function PricingSection() {
+  return (
+    <Section id="pricing">
+      <SectionTitle center eyebrow="Pricing" title="Free and open source" lead="The library is MIT licensed and stays that way. A Pro kit with templates is planned; nothing is for sale yet." />
+      <Reveal>
+        <Pricing />
+      </Reveal>
+    </Section>
+  );
+}
+
+export function FAQSection() {
+  return (
+    <Section>
+      <SectionTitle center eyebrow="FAQ" title="Questions, answered" />
+      <Reveal>
+        <FAQ />
+      </Reveal>
+    </Section>
   );
 }
 
 export function CallToAction() {
+  const reduce = useReducedMotion();
   return (
-    <Container component="section" maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
-      <Box
-        sx={(t) => ({
-          position: 'relative',
-          overflow: 'hidden',
-          borderRadius: 5,
-          px: { xs: 3, md: 8 },
-          py: { xs: 6, md: 8 },
-          textAlign: 'center',
-          border: 1,
-          borderColor: 'divider',
-          background:
-            t.palette.mode === 'dark'
-              ? 'linear-gradient(135deg, #0c4a6e 0%, #3b0764 100%)'
-              : 'linear-gradient(135deg, #e0f2fe 0%, #fae8ff 55%, #ffe4e6 100%)',
-        })}
-      >
-        <Typography component="h2" sx={{ fontWeight: 800, fontSize: { xs: 28, md: 40 }, letterSpacing: '-0.03em' }}>
-          Ready for a softer Material UI?
-        </Typography>
-        <Typography sx={{ mt: 1.5, fontSize: 18, opacity: 0.85 }}>
-          Read the docs, then try every component in the playground.
-        </Typography>
-        <Stack direction="row" spacing={1.5} justifyContent="center" sx={{ mt: 4 }} flexWrap="wrap" useFlexGap>
-          <LinkButton href="/docs" variant="contained" size="large" disableElevation sx={{ borderRadius: 2.5, px: 3 }}>
-            Get started
-          </LinkButton>
-          <LinkButton href="/docs/components/button" variant="outlined" size="large" sx={{ borderRadius: 2.5, px: 3, bgcolor: 'background.paper' }}>
-            Open the playground
-          </LinkButton>
-        </Stack>
-      </Box>
-    </Container>
+    <Section py={{ xs: 4, md: 6 }}>
+      <Reveal>
+        <Box
+          sx={(t) => ({
+            position: 'relative',
+            overflow: 'hidden',
+            borderRadius: 6,
+            px: { xs: 3, md: 8 },
+            py: { xs: 7, md: 10 },
+            textAlign: 'center',
+            border: 1,
+            borderColor: 'divider',
+            background:
+              t.palette.mode === 'dark'
+                ? 'linear-gradient(135deg, #0c4a6e 0%, #3b0764 100%)'
+                : 'linear-gradient(135deg, #e0f2fe 0%, #fae8ff 55%, #ffe4e6 100%)',
+          })}
+        >
+          {/* Slowly drifting scoops in the background. */}
+          {!reduce &&
+            [colorPalette.primary[300], colorPalette.secondary[300], colorPalette.danger[300]].map((c, i) => (
+              <motion.div
+                key={c}
+                aria-hidden
+                animate={{ x: [0, 30 - i * 20, 0], y: [0, -20 + i * 10, 0] }}
+                transition={{ duration: 9 + i * 2, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ position: 'absolute', width: 240, height: 240, borderRadius: '50%', background: c, opacity: 0.35, filter: 'blur(50px)', left: `${10 + i * 32}%`, top: i % 2 ? '50%' : '-10%' }}
+              />
+            ))}
+          <Box sx={{ position: 'relative' }}>
+            <Typography component="h2" sx={{ fontWeight: 800, fontSize: { xs: 30, md: 46 }, letterSpacing: '-0.035em' }}>
+              Ready for a softer Material UI?
+            </Typography>
+            <Typography sx={{ mt: 1.5, fontSize: 18, opacity: 0.85 }}>Read the docs, browse the blocks, then copy what you need.</Typography>
+            <Stack direction="row" spacing={1.5} justifyContent="center" sx={{ mt: 4 }} flexWrap="wrap" useFlexGap>
+              <LinkButton href="/docs" variant="contained" size="large" disableElevation sx={{ borderRadius: 2.5, px: 3 }}>
+                Get started
+              </LinkButton>
+              <LinkButton href="/blocks" variant="outlined" size="large" sx={{ borderRadius: 2.5, px: 3, bgcolor: 'background.paper' }}>
+                Browse blocks
+              </LinkButton>
+            </Stack>
+            <Typography variant="body2" sx={{ mt: 3, opacity: 0.8 }}>
+              <Box component="a" href={SITE.github} rel="noopener" sx={{ color: 'inherit' }}>
+                Star Sorbet UI on GitHub
+              </Box>
+            </Typography>
+          </Box>
+        </Box>
+      </Reveal>
+    </Section>
   );
 }

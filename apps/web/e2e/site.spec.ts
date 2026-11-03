@@ -7,8 +7,18 @@ const ROUTES = [
   '/docs',
   '/docs/theming',
   '/docs/components',
+  '/blocks',
   ...CATALOG.map((c) => `/docs/components/${c.slug}`),
 ];
+
+// The star widgets call the GitHub API; stub it so tests are offline-safe and
+// never hit rate limits.
+const stubGitHub = (target: Page | import('@playwright/test').BrowserContext) =>
+  target.route('https://api.github.com/**', (r) => r.fulfill({ json: { stargazers_count: 42 } }));
+
+test.beforeEach(async ({ page }) => {
+  await stubGitHub(page);
+});
 
 // Collect console errors, page errors and failed same-origin requests.
 function watch(page: Page) {
@@ -111,9 +121,12 @@ test('keyboard: skip link reaches main content', async ({ page }) => {
 });
 
 for (const theme of ['light', 'dark'] as const) {
-  for (const route of ['/', '/docs', '/docs/components/button', '/docs/components/table']) {
+  for (const route of ['/', '/blocks', '/docs', '/docs/components/button', '/docs/components/table']) {
     test(`a11y (axe) ${theme} ${route}`, async ({ browser }) => {
-      const ctx = await browser.newContext({ colorScheme: theme });
+      // Reduced motion renders every section in its final state, so axe never
+      // measures text mid-fade.
+      const ctx = await browser.newContext({ colorScheme: theme, reducedMotion: 'reduce' });
+      await stubGitHub(ctx);
       const page = await ctx.newPage();
       await page.goto(route);
       await page.waitForLoadState('networkidle');
@@ -143,3 +156,48 @@ for (const theme of ['light', 'dark'] as const) {
     });
   }
 }
+
+test('landing: live star count from the GitHub API', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('link', { name: 'Star Sorbet UI on GitHub, 42 stars' }).first()).toBeVisible();
+});
+
+test('landing: before/after slider moves with the keyboard', async ({ page }) => {
+  await page.goto('/');
+  const slider = page.getByRole('slider', { name: 'Compare default Material UI with Sorbet UI' });
+  await slider.focus();
+  await page.keyboard.press('Home');
+  await expect(slider).toHaveValue('0');
+  await page.keyboard.press('End');
+  await expect(slider).toHaveValue('100');
+});
+
+test('landing: playground controls rewrite the source', async ({ page }) => {
+  await page.goto('/');
+  const code = page.locator('pre[aria-label="Playground source"]');
+  await page.getByRole('group', { name: 'Variant' }).getByRole('button', { name: 'dash' }).click();
+  await page.getByRole('radio', { name: 'danger' }).click();
+  await expect(code).toContainText('variant="dash"');
+  await expect(code).toContainText('color="danger"');
+  await expect(page.getByTestId('playground-preview').getByRole('button', { name: 'Ship it' })).toBeVisible();
+});
+
+test('landing: command menu filters the catalog', async ({ page }) => {
+  await page.goto('/');
+  const menu = page.getByTestId('bento-cmdk');
+  await menu.getByRole('combobox', { name: 'Search components' }).fill('tab');
+  await expect(menu.getByRole('option')).toHaveText(['Tabs', 'Table']);
+});
+
+test('landing: hero dashboard tabs switch data', async ({ page }) => {
+  await page.goto('/');
+  const dash = page.getByTestId('hero-dashboard');
+  await dash.getByRole('tab', { name: 'Orders' }).click();
+  await expect(dash.getByRole('img', { name: /Orders over the last 8 weeks/ })).toBeVisible();
+});
+
+test('blocks: code tab shows the block source', async ({ page }) => {
+  await page.goto('/blocks');
+  await page.getByRole('group', { name: 'Centered view' }).getByRole('button', { name: 'Code' }).click();
+  await expect(page.locator('pre[aria-label="Centered source"]')).toContainText('export default function HeroCentered');
+});

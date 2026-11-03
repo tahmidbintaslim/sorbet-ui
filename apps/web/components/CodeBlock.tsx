@@ -72,14 +72,14 @@ function CopyButton({ text, onDark }: { text: string; onDark?: boolean }) {
 }
 
 /** One-line shell command in a pill, with a `$` prompt and a copy button that never overlaps the text. */
-export function CommandLine({ command, label = 'Install command' }: { command: string; label?: string }) {
+export function CommandLine({ command, label = 'Install command', mt = 3 }: { command: string; label?: string; mt?: number }) {
   return (
     <Box
       sx={{
         display: 'flex',
         alignItems: 'center',
         gap: 1,
-        mt: 3,
+        mt,
         pl: 2,
         pr: 0.5,
         py: 0.5,

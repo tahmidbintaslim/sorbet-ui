@@ -4,6 +4,9 @@ import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { Button, Chip } from '@sorbet-ui/react';
 import { COLORS, SIZES, VARIANTS, type Size } from '@/lib/site';
 
+// Button has two extra variants beyond the shared five.
+const BUTTON_VARIANTS = [...VARIANTS.slice(0, 3), 'dash', 'ghost', 'plain', 'link'] as const;
+
 type Kind = 'button' | 'chip';
 
 // Every variant × color combination, live. Scrolls inside its own box on
@@ -64,7 +67,7 @@ export default function VariantMatrix() {
               {c}
             </Typography>
           ))}
-          {VARIANTS.map((v) => (
+          {(kind === 'button' ? BUTTON_VARIANTS : VARIANTS).map((v) => (
             <React.Fragment key={v}>
               <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
                 {v}
@@ -76,7 +79,7 @@ export default function VariantMatrix() {
                       Button
                     </Button>
                   ) : (
-                    <Chip label="Chip" variant={v} color={c} />
+                    <Chip label="Chip" variant={v as (typeof VARIANTS)[number]} color={c} />
                   )}
                 </Box>
               ))}

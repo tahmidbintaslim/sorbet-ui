@@ -9,12 +9,14 @@ import LightMode from '@mui/icons-material/LightMode';
 import GitHub from '@mui/icons-material/GitHub';
 import { useColorMode } from './ColorMode';
 import Logo from './Logo';
+import GitHubStars from './GitHubStars';
 import { SITE } from '@/lib/site';
 
 const NAV = [
   { href: '/docs', label: 'Docs' },
   { href: '/docs/components', label: 'Components' },
   { href: '/docs/theming', label: 'Theming' },
+  { href: '/blocks', label: 'Blocks' },
 ];
 
 const FOOTER = [
@@ -24,6 +26,7 @@ const FOOTER = [
       { href: '/docs', label: 'Getting started' },
       { href: '/docs/components', label: 'Components' },
       { href: '/docs/theming', label: 'Theming' },
+      { href: '/blocks', label: 'Blocks' },
     ],
   },
   {
@@ -152,7 +155,10 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
               variant="outlined"
               sx={{ display: { xs: 'none', sm: 'inline-flex' }, fontWeight: 600, mr: 0.5 }}
             />
-            <IconButton component="a" href={SITE.github} aria-label="Sorbet UI on GitHub" rel="noopener">
+            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+              <GitHubStars />
+            </Box>
+            <IconButton component="a" href={SITE.github} aria-label="Sorbet UI on GitHub" rel="noopener" sx={{ display: { sm: 'none' } }}>
               <GitHub />
             </IconButton>
             <IconButton
@@ -202,9 +208,20 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
               </Grid>
             ))}
           </Grid>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 5, pt: 3, borderTop: 1, borderColor: 'divider' }}>
-            MIT licensed. Built on Material UI v7.
-          </Typography>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            justifyContent="space-between"
+            alignItems={{ sm: 'center' }}
+            sx={{ mt: 5, pt: 3, borderTop: 1, borderColor: 'divider' }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              MIT licensed. Built on Material UI v7.
+            </Typography>
+            <Box>
+              <GitHubStars />
+            </Box>
+          </Stack>
         </Container>
       </Box>
     </Box>
