@@ -1,24 +1,39 @@
-# Sorbet UI landing page
+# Sorbet UI website
 
-A one-page demo of Sorbet UI components, built with React, Vite and Material UI. It is not deployed.
+The landing page and docs site for Sorbet UI, built with Next.js (App Router) and exported as static HTML.
+It imports the workspace packages, so it doubles as a real-world consumer test of the library.
+
+## Pages
+
+- `/` landing page with a live component showcase and quick start
+- `/docs` getting started for Vite and Next.js App Router
+- `/docs/theming` light and dark themes
+- `/docs/components` and `/docs/components/<name>` live previews with variant, color and size pickers and matching source
+
+Autocomplete, DatePicker, Dialog, Drawer, Popover and Snackbar are linked to Storybook for now.
 
 ## Development
 
 ```bash
-# Install dependencies (from the repo root)
 pnpm install
-
-# Build the workspace packages it imports
-pnpm build:packages
-
-# Start the dev server on http://localhost:3000
-pnpm web:dev
-
-# Production build into apps/web/dist
-pnpm web:build
+pnpm build:packages      # the site imports the packages' dist builds
+pnpm web:dev             # http://localhost:3000
+pnpm web:build           # static export into apps/web/out
+pnpm web:e2e             # Playwright against the export (build first)
 ```
 
-## What it shows
+To add a component page, add an entry to `lib/catalog.ts` (server-safe metadata) and a matching
+`render`/`code` pair in `components/demos.tsx`.
 
-- Hero, feature cards and a component showcase built with Sorbet UI components
-- A light and dark theme toggle using `lightTheme` and `darkTheme` from `@sorbet-ui/theme`
+## Tests
+
+`e2e/site.spec.ts` (Playwright, desktop and 375px mobile) checks that every route returns 200 with no
+console errors or horizontal scroll, the dark toggle persists and follows the OS setting, navigation and
+the playground work, the copy button works, and axe finds no WCAG A/AA violations in light and dark.
+Library demos in dark mode skip the color-contrast rule because darkTheme's primary color is
+2.77:1 against white text (see `packages/tokens/src/contrast.test.ts`).
+
+## Deploying
+
+The root `vercel.json` currently deploys Storybook to sorbet-ui.vercel.app. Deploy this site as a
+separate Vercel project with root directory `apps/web` and output directory `out`.

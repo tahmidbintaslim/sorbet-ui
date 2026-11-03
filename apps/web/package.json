@@ -1,35 +1,41 @@
 {
-    "name": "web",
-    "version": "0.1.0",
-    "type": "module",
-    "private": true,
-    "scripts": {
-        "build": "vite build",
-        "dev": "vite",
-        "preview": "vite preview",
-        "lint": "eslint src",
-        "type-check": "tsc --noEmit",
-        "clean": "rm -rf dist"
-    },
-    "dependencies": {
-        "@emotion/react": "^11.14.0",
-        "@emotion/styled": "^11.14.1",
-        "@mui/icons-material": "^7.3.5",
-        "@mui/material": "^7.3.5",
-        "@sorbet-ui/core": "workspace:*",
-        "@sorbet-ui/react": "workspace:*",
-        "@sorbet-ui/theme": "workspace:*",
-        "@sorbet-ui/tokens": "workspace:*",
-        "react": "^19.2.0",
-        "react-dom": "^19.2.0",
-        "react-router-dom": "^6.30.6"
-    },
-    "devDependencies": {
-        "@types/react": "^19.2.9",
-        "@types/react-dom": "^19.2.3",
-        "@vitejs/plugin-react": "^4.3.3",
-        "eslint": "^9.39.2",
-        "typescript": "^5.9.3",
-        "vite": "^7.3.7"
-    }
+  "name": "web",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/gen-blocks.mjs && next build",
+    "dev": "node scripts/gen-blocks.mjs && next dev -p 3000",
+    "start": "next start -p 3000",
+    "lint": "eslint app components lib e2e blocks scripts",
+    "type-check": "tsc --noEmit",
+    "test:e2e": "playwright test",
+    "clean": "rm -rf .next out",
+    "gen:blocks": "node scripts/gen-blocks.mjs"
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.5",
+    "@mui/material": "^7.3.5",
+    "@mui/material-nextjs": "^7.3.5",
+    "@sorbet-ui/core": "workspace:*",
+    "@sorbet-ui/react": "workspace:*",
+    "@sorbet-ui/theme": "workspace:*",
+    "@sorbet-ui/tokens": "workspace:*",
+    "motion": "^12.43.0",
+    "next": "^16.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^24.10.9",
+    "@types/react": "^19.2.9",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.2",
+    "typescript": "^5.9.3"
+  }
 }

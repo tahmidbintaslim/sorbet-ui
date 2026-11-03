@@ -59,7 +59,8 @@
     "web:dev": "pnpm --filter=web dev",
     "storybook:build": "pnpm --filter=docs storybook:build",
     "storybook:dev": "pnpm --filter=docs storybook",
-    "clean": "turbo run clean && rm -rf node_modules pnpm-lock.yaml"
+    "clean": "turbo run clean && rm -rf node_modules pnpm-lock.yaml",
+    "web:e2e": "pnpm --filter=web test:e2e"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
