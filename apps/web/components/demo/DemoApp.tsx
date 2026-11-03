@@ -169,7 +169,7 @@ function Overview({ orders, onOpenOrder }: { orders: Order[]; onOpenOrder: (o: O
         </Grid>
       </Grid>
       <Panel title="Recent orders">
-        <Box sx={{ overflowX: 'auto' }}>
+        <Box tabIndex={0} role="region" aria-label="Recent orders table" sx={{ overflowX: 'auto' }}>
           <Table
             size="sm"
             data={orders.slice(0, 5)}
@@ -235,7 +235,7 @@ function Orders({ orders, onOpenOrder, onNew }: { orders: Order[]; onOpenOrder: 
             ))}
           </Stack>
         </Stack>
-        <Box sx={{ overflowX: 'auto' }}>
+        <Box tabIndex={0} role="region" aria-label="Orders table" sx={{ overflowX: 'auto' }}>
           <Table
             data={rows.slice((page - 1) * PAGE, page * PAGE)}
             getRowId={(o) => o.id}
@@ -431,7 +431,7 @@ export default function DemoApp() {
 
   const nav = (
     <Box component="nav" aria-label="Demo app">
-      <List sx={{ p: 1 }}>
+      <List component="div" sx={{ p: 1 }}>
         {NAV.map((n) => (
           <ListItemButton
             key={n.id}

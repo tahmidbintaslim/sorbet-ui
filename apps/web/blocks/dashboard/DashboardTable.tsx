@@ -83,7 +83,7 @@ export default function DashboardTable() {
               sx={{ width: { xs: '100%', sm: 260 } }}
             />
           </Stack>
-          <Box sx={{ mt: 2.5, overflowX: 'auto' }}>
+          <Box tabIndex={0} role="region" aria-label="Orders table" sx={{ mt: 2.5, overflowX: 'auto' }}>
             <Table<Order>
               data={rows}
               columns={columns}

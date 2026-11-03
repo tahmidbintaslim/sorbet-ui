@@ -60,7 +60,7 @@ export default function PricingCompare() {
           </Box>
           <Button variant="outlined">Talk to sales</Button>
         </Stack>
-        <Box sx={{ overflowX: 'auto' }}>
+        <Box tabIndex={0} role="region" aria-label="Plan comparison table" sx={{ overflowX: 'auto' }}>
           <Box sx={{ minWidth: 600 }}>
             <Table data={ROWS} columns={COLUMNS} striped getRowId={(r) => r.id} caption="Plan comparison" />
           </Box>

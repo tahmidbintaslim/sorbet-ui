@@ -69,7 +69,7 @@ export default function HeroImageCard() {
                   <Chip size="sm" variant="outlined" color="neutral" label="4 tasks" />
                   <Chip size="sm" variant="outlined" color="success" label="1 shipped" />
                 </Stack>
-                <Box sx={{ overflowX: 'auto' }}>
+                <Box tabIndex={0} role="region" aria-label="Sprint 24 tasks table" sx={{ overflowX: 'auto' }}>
                   <Box sx={{ minWidth: 420 }}>
                     <Table data={TASKS} columns={COLUMNS} size="sm" hoverable getRowId={(r) => r.id} caption="Sprint 24 tasks" />
                   </Box>

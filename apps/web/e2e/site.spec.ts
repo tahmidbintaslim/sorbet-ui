@@ -1,6 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { CATALOG } from '../lib/catalog';
+import { categoriesWithBlocks } from '../lib/blocks';
+
+const BLOCK_ROUTES = categoriesWithBlocks().map((c) => `/blocks/${c.id}`);
 
 const ROUTES = [
   '/',
@@ -8,6 +11,8 @@ const ROUTES = [
   '/docs/theming',
   '/docs/components',
   '/blocks',
+  '/demo',
+  ...BLOCK_ROUTES,
   ...CATALOG.map((c) => `/docs/components/${c.slug}`),
 ];
 
@@ -121,7 +126,7 @@ test('keyboard: skip link reaches main content', async ({ page }) => {
 });
 
 for (const theme of ['light', 'dark'] as const) {
-  for (const route of ['/', '/blocks', '/docs', '/docs/components/button', '/docs/components/table']) {
+  for (const route of ['/', '/blocks', '/demo', '/docs', '/docs/components/button', '/docs/components/table', ...BLOCK_ROUTES]) {
     test(`a11y (axe) ${theme} ${route}`, async ({ browser }) => {
       // Reduced motion renders every section in its final state, so axe never
       // measures text mid-fade.
@@ -182,7 +187,31 @@ test('landing: hero dashboard tabs switch data', async ({ page }) => {
 });
 
 test('blocks: code tab shows the block source', async ({ page }) => {
-  await page.goto('/blocks');
+  await page.goto('/blocks/hero');
   await page.getByRole('group', { name: 'Centered view' }).getByRole('button', { name: 'Code' }).click();
   await expect(page.locator('pre[aria-label="Centered source"]')).toContainText('export default function HeroCentered');
+});
+
+test('blocks: index lists 40+ blocks and search finds one', async ({ page }) => {
+  await page.goto('/blocks');
+  const placeholder = await page.getByRole('textbox', { name: 'Search blocks' }).getAttribute('placeholder');
+  expect(Number(placeholder?.match(/\d+/)?.[0])).toBeGreaterThanOrEqual(40);
+  await page.getByRole('textbox', { name: 'Search blocks' }).fill('pricing');
+  await expect(page.getByTestId('block-search-results').getByRole('link').first()).toBeVisible();
+});
+
+test('demo: create an order, filter it, and see the toast', async ({ page }) => {
+  await page.goto('/demo');
+  const app = page.getByTestId('demo-app');
+  const nav = app.getByRole('navigation', { name: 'Demo app' }).first();
+  if (!(await nav.isVisible())) await app.getByRole('button', { name: 'Open menu' }).click();
+  await page.getByRole('navigation', { name: 'Demo app' }).filter({ visible: true }).getByRole('button', { name: /Orders/ }).click();
+  await app.getByRole('button', { name: 'New order' }).click();
+  const dialog = page.getByRole('dialog', { name: 'New order' });
+  await dialog.getByRole('textbox', { name: 'Customer name' }).fill('Test Buyer');
+  await dialog.getByRole('spinbutton', { name: 'Amount (USD)' }).fill('120');
+  await dialog.getByRole('button', { name: 'Create order' }).click();
+  await expect(page.getByText(/Order #\d+ created/)).toBeVisible();
+  await app.getByRole('textbox', { name: 'Search orders' }).fill('Test Buyer');
+  await expect(app.getByRole('cell', { name: 'Test Buyer' })).toBeVisible();
 });
