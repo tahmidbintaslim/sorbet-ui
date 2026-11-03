@@ -182,10 +182,10 @@ function ThemeSplit() {
       </Stack>
       <Slider aria-label="Volume" defaultValue={60} size="sm" />
       <Stack direction="row" spacing={1}>
-        <Button size="sm" fullWidth>
+        <Button size="sm" sx={{ flex: 1 }}>
           Save
         </Button>
-        <Button size="sm" variant="ghost" fullWidth>
+        <Button size="sm" variant="ghost" sx={{ flex: 1 }}>
           Reset
         </Button>
       </Stack>
