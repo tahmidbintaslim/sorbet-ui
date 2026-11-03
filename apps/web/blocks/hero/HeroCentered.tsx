@@ -1,4 +1,5 @@
 'use client';
+// @block {"name": "Centered", "description": "Badge, headline, two actions and a row of cards."}
 import { Box, Container, Grid, Stack, Typography } from '@mui/material';
 import { Button, Card, Chip } from '@sorbet-ui/react';
 

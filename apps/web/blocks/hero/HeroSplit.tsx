@@ -1,4 +1,5 @@
 'use client';
+// @block {"name": "Split with signup", "description": "Copy and email capture beside a report card."}
 import { Box, Container, Grid, Stack, Typography } from '@mui/material';
 import { Avatar, Button, Card, Chip, Progress, TextField } from '@sorbet-ui/react';
 
