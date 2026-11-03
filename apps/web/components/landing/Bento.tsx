@@ -172,12 +172,20 @@ function ThemeSplit() {
   const [pos, setPos] = React.useState(50);
   const card = (
     <Stack spacing={1.5} sx={{ p: 2.5, bgcolor: 'background.paper', color: 'text.primary', height: '100%' }}>
-      <Typography sx={{ fontWeight: 700 }}>Notifications</Typography>
-      <Switch label="Email" defaultChecked size="sm" />
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography sx={{ fontWeight: 700 }}>Notifications</Typography>
+        <Chip size="xs" label="3 new" variant="soft" color="secondary" />
+      </Stack>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Switch label="Email" defaultChecked size="sm" />
+        <Switch label="Push" size="sm" />
+      </Stack>
       <Slider aria-label="Volume" defaultValue={60} size="sm" />
       <Stack direction="row" spacing={1}>
-        <Button size="sm">Save</Button>
-        <Button size="sm" variant="ghost">
+        <Button size="sm" fullWidth>
+          Save
+        </Button>
+        <Button size="sm" variant="ghost" fullWidth>
           Reset
         </Button>
       </Stack>
@@ -214,9 +222,11 @@ function StarsCard() {
       <motion.div whileHover={{ rotate: 18, scale: 1.1 }} transition={{ type: 'spring', stiffness: 300 }}>
         <StarRounded sx={{ fontSize: 56, color: colorPalette.warning[400] }} />
       </motion.div>
-      <Typography component="p" sx={{ fontWeight: 800, fontSize: 40, lineHeight: 1 }}>
-        {stars ? formatStars(stars) : '★'}
-      </Typography>
+      {!!stars && (
+        <Typography component="p" sx={{ fontWeight: 800, fontSize: 40, lineHeight: 1 }}>
+          {formatStars(stars)}
+        </Typography>
+      )}
       <Typography variant="body2" color="text.secondary">
         {!stars ? 'Be one of the first to star it' : stars === 1 ? 'star on GitHub' : 'stars on GitHub'}
       </Typography>
