@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Chip,
   Autocomplete as MuiAutocomplete,
   AutocompleteProps as MuiAutocompleteProps,
   Paper,
@@ -9,7 +8,19 @@ import {
   TextField,
   TextFieldProps,
 } from '@mui/material';
+import {
+  animations,
+  colors,
+  colorScaleForMode,
+  radius,
+  shadows,
+  sizing,
+  solidActiveShade,
+  textColorsForMode,
+  typography,
+} from '@sorbet-ui/tokens';
 import * as React from 'react';
+import { Chip, ChipProps } from './Chip';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Type Definitions
@@ -21,7 +32,7 @@ export type AutocompleteColor =
   | 'secondary'
   | 'success'
   | 'warning'
-  | 'error'
+  | 'danger'
   | 'info'
   | 'neutral';
 export type AutocompleteSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -42,31 +53,31 @@ const sizeConfig = {
     fontSize: '0.75rem',
     padding: '4px 8px',
     height: '28px',
-    chipSize: 'small' as const,
+    chipSize: 'sm' as const,
   },
   sm: {
     fontSize: '0.813rem',
     padding: '6px 10px',
     height: '32px',
-    chipSize: 'small' as const,
+    chipSize: 'sm' as const,
   },
   md: {
     fontSize: '0.875rem',
     padding: '8px 12px',
     height: '40px',
-    chipSize: 'small' as const,
+    chipSize: 'sm' as const,
   },
   lg: {
     fontSize: '1rem',
     padding: '10px 14px',
     height: '48px',
-    chipSize: 'medium' as const,
+    chipSize: 'md' as const,
   },
   xl: {
     fontSize: '1.125rem',
     padding: '12px 16px',
     height: '56px',
-    chipSize: 'medium' as const,
+    chipSize: 'md' as const,
   },
 };
 
@@ -77,12 +88,13 @@ const sizeConfig = {
 const getVariantStyles = (
   variant: AutocompleteVariant,
   color: AutocompleteColor,
-  size: AutocompleteSize
+  size: AutocompleteSize,
+  isDark: boolean
 ) => {
   const config = sizeConfig[size];
-  const colorValue = `var(--sun-color-${color}-500, #1976d2)`;
-  const colorLight = `var(--sun-color-${color}-100, #e3f2fd)`;
-  const colorDark = `var(--sun-color-${color}-700, #1565c0)`;
+  const colorScale = colorScaleForMode(color, isDark);
+  const text = textColorsForMode(isDark);
+  const neutral = colors.semantic.neutral;
 
   const baseStyles = {
     fontSize: config.fontSize,
@@ -100,69 +112,102 @@ const getVariantStyles = (
       return {
         ...baseStyles,
         '& .MuiOutlinedInput-root': {
-          backgroundColor: colorValue,
-          color: '#fff',
+          backgroundColor: colorScale.main,
+          color: colorScale.contrastText,
           '& fieldset': {
-            borderColor: colorValue,
+            borderColor: colorScale.main,
           },
           '&:hover fieldset': {
-            borderColor: colorDark,
+            borderColor: solidActiveShade(colorScale),
           },
           '&.Mui-focused fieldset': {
-            borderColor: colorDark,
+            borderColor: solidActiveShade(colorScale),
           },
           '& .MuiSvgIcon-root': {
-            color: '#fff',
+            color: colorScale.contrastText,
           },
           '& input::placeholder': {
-            color: 'rgba(255, 255, 255, 0.7)',
+            color: colorScale.contrastText,
+            opacity: 0.85,
+          },
+          '&.Mui-disabled': {
+            backgroundColor: isDark ? neutral[700] : neutral[200],
+            color: text.disabled,
+            '& fieldset': { borderColor: 'transparent' },
+            '& .MuiSvgIcon-root': { color: text.disabled },
           },
         },
+        // The label sits on the solid fill, so it takes the fill's text color. Once
+        // it shrinks onto the border it gets the fill behind it too, so it stays
+        // readable over whatever surface surrounds the field.
         '& .MuiInputLabel-root': {
-          color: 'rgba(255, 255, 255, 0.7)',
+          color: colorScale.contrastText,
           '&.Mui-focused': {
-            color: '#fff',
+            color: colorScale.contrastText,
+          },
+          '&.MuiInputLabel-shrink': {
+            backgroundColor: colorScale.main,
+            borderRadius: radius.sm,
+            padding: '0 6px',
+          },
+          '&.Mui-disabled': {
+            color: text.disabled,
+            backgroundColor: 'transparent',
           },
         },
       };
 
-    case 'soft':
+    case 'soft': {
+      const softText = isDark ? colorScale.light : colorScale.dark;
       return {
         ...baseStyles,
         '& .MuiOutlinedInput-root': {
-          backgroundColor: colorLight,
+          backgroundColor: isDark ? colorScale.alpha20 : colorScale.alpha12,
+          color: softText,
           '& fieldset': {
             borderColor: 'transparent',
           },
           '&:hover': {
-            backgroundColor: colorLight,
-            filter: 'brightness(0.95)',
+            backgroundColor: isDark ? colorScale.alpha30 : colorScale.alpha20,
           },
           '&:hover fieldset': {
-            borderColor: colorValue,
+            borderColor: colorScale.main,
           },
           '&.Mui-focused': {
-            backgroundColor: colorLight,
+            backgroundColor: isDark ? colorScale.alpha20 : colorScale.alpha12,
           },
           '&.Mui-focused fieldset': {
-            borderColor: colorValue,
+            borderColor: colorScale.main,
+          },
+          '& .MuiSvgIcon-root': {
+            color: softText,
+          },
+        },
+        '& .MuiInputLabel-root': {
+          color: softText,
+          '&.Mui-focused': {
+            color: softText,
           },
         },
       };
+    }
 
     case 'outlined':
       return {
         ...baseStyles,
         '& .MuiOutlinedInput-root': {
           '& fieldset': {
-            borderColor: colorValue,
+            borderColor: colorScale.main,
           },
           '&:hover fieldset': {
-            borderColor: colorDark,
+            borderColor: colorScale.dark,
           },
           '&.Mui-focused fieldset': {
-            borderColor: colorValue,
+            borderColor: colorScale.main,
           },
+        },
+        '& .MuiInputLabel-root.Mui-focused': {
+          color: colorScale.main,
         },
       };
 
@@ -174,17 +219,20 @@ const getVariantStyles = (
             borderColor: 'transparent',
           },
           '&:hover': {
-            backgroundColor: `var(--sun-color-${color}-50, rgba(25, 118, 210, 0.08))`,
+            backgroundColor: colorScale.alpha8,
           },
           '&:hover fieldset': {
             borderColor: 'transparent',
           },
           '&.Mui-focused': {
-            backgroundColor: `var(--sun-color-${color}-100, rgba(25, 118, 210, 0.12))`,
+            backgroundColor: colorScale.alpha12,
           },
           '&.Mui-focused fieldset': {
-            borderColor: colorValue,
+            borderColor: colorScale.main,
           },
+        },
+        '& .MuiInputLabel-root.Mui-focused': {
+          color: colorScale.main,
         },
       };
 
@@ -200,8 +248,11 @@ const getVariantStyles = (
           },
           '&.Mui-focused fieldset': {
             border: 'none',
-            boxShadow: `0 1px 0 0 ${colorValue}`,
+            boxShadow: `0 1px 0 0 ${colorScale.main}`,
           },
+        },
+        '& .MuiInputLabel-root.Mui-focused': {
+          color: colorScale.main,
         },
       };
 
@@ -217,8 +268,13 @@ const getVariantStyles = (
 const StyledAutocomplete = styled(MuiAutocomplete, {
   shouldForwardProp: (prop) =>
     !['$variant', '$color', '$size', '$fullWidth'].includes(prop as string),
-})<StyledProps>(({ $variant, $color, $size, $fullWidth }) => {
-  const variantStyles = getVariantStyles($variant, $color, $size) as Record<string, unknown>;
+})<StyledProps>(({ theme, $variant, $color, $size, $fullWidth }) => {
+  const variantStyles = getVariantStyles(
+    $variant,
+    $color,
+    $size,
+    theme.palette.mode === 'dark'
+  ) as Record<string, unknown>;
   const inputRootStyles = (variantStyles['& .MuiOutlinedInput-root'] ?? {}) as Record<
     string,
     unknown
@@ -226,47 +282,63 @@ const StyledAutocomplete = styled(MuiAutocomplete, {
 
   return {
     width: $fullWidth ? '100%' : 'auto',
+    fontFamily: typography.fontFamily.sans,
     ...variantStyles,
     '& .MuiOutlinedInput-root': {
-      borderRadius: 'var(--sun-radius-md, 8px)',
-      transition: 'var(--sun-transition-normal, all 0.2s ease)',
+      borderRadius: radius.md,
+      transition: animations.transitions.input,
       ...inputRootStyles,
     },
-    '&.Mui-disabled': {
-      opacity: 0.5,
-      pointerEvents: 'none',
+    // Disabled fields keep their colors (MUI's disabled palette); fading the whole
+    // field with opacity would also fade the label and value below 4.5:1.
+    '& .Mui-disabled': {
+      cursor: 'not-allowed',
     },
   };
 });
 
-const StyledPaper = styled(Paper)(() => ({
-  borderRadius: 'var(--sun-radius-md, 8px)',
-  boxShadow: 'var(--sun-shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.15))',
-  marginTop: 4,
-  '& .MuiAutocomplete-listbox': {
-    padding: 'var(--sun-spacing-1, 4px)',
-    '& .MuiAutocomplete-option': {
-      borderRadius: 'var(--sun-radius-sm, 4px)',
-      margin: '2px 0',
-      '&[aria-selected="true"]': {
-        backgroundColor: 'var(--sun-color-primary-100, #e3f2fd)',
-      },
-      '&.Mui-focused': {
-        backgroundColor: 'var(--sun-color-neutral-100, #f5f5f5)',
-      },
-      '&[aria-selected="true"].Mui-focused': {
-        backgroundColor: 'var(--sun-color-primary-200, #bbdefb)',
+const StyledPaper = styled(Paper)(({ theme }) => {
+  const isDark = theme.palette.mode === 'dark';
+  const neutral = colors.semantic.neutral;
+  const primary = colorScaleForMode('primary', isDark);
+  const text = textColorsForMode(isDark);
+
+  return {
+    borderRadius: radius.md,
+    boxShadow: shadows.lg,
+    marginTop: 4,
+    fontFamily: typography.fontFamily.sans,
+    '& .MuiAutocomplete-listbox': {
+      padding: sizing.spacing[1],
+      '& .MuiAutocomplete-option': {
+        borderRadius: radius.sm,
+        margin: '2px 0',
+        '&[aria-selected="true"]': {
+          backgroundColor: isDark ? primary.alpha20 : primary.alpha12,
+        },
+        '&.Mui-focused': {
+          backgroundColor: isDark ? neutral[700] : neutral[100],
+        },
+        '&[aria-selected="true"].Mui-focused': {
+          backgroundColor: isDark ? primary.alpha30 : primary.alpha20,
+        },
       },
     },
-  },
-  '& .MuiAutocomplete-noOptions': {
-    padding: 'var(--sun-spacing-3, 12px)',
-    color: 'var(--sun-color-neutral-500, #9e9e9e)',
-  },
-  '& .MuiAutocomplete-loading': {
-    padding: 'var(--sun-spacing-3, 12px)',
-    color: 'var(--sun-color-neutral-500, #9e9e9e)',
-  },
+    '& .MuiAutocomplete-noOptions': {
+      padding: sizing.spacing[3],
+      color: text.secondary,
+    },
+    '& .MuiAutocomplete-loading': {
+      padding: sizing.spacing[3],
+      color: text.secondary,
+    },
+  };
+});
+
+const OptionDescription = styled('span')(({ theme }) => ({
+  display: 'block',
+  fontSize: '0.75rem',
+  color: textColorsForMode(theme.palette.mode === 'dark').secondary,
 }));
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -282,24 +354,30 @@ interface AutocompleteChipProps {
   disabled?: boolean;
 }
 
-const AutocompleteChip = React.forwardRef<HTMLDivElement, AutocompleteChipProps>(
-  ({ label, onDelete, variant, color, size, disabled, ...props }, ref) => {
-    const chipVariant = variant === 'solid' ? 'filled' : 'outlined';
-    const chipColor = color === 'neutral' ? 'default' : color;
+// Tags inside a solid field use the neutral `plain` chip so they stand out from the
+// fill; the other field variants use the matching chip variant.
+const chipVariantFor: Record<AutocompleteVariant, ChipProps['variant']> = {
+  solid: 'plain',
+  soft: 'soft',
+  outlined: 'outlined',
+  ghost: 'outlined',
+  plain: 'outlined',
+};
 
-    return (
-      <Chip
-        ref={ref}
-        label={label}
-        size={sizeConfig[size].chipSize}
-        variant={chipVariant}
-        color={chipColor as any}
-        onDelete={disabled ? undefined : onDelete}
-        disabled={disabled}
-        {...props}
-      />
-    );
-  }
+const AutocompleteChip = React.forwardRef<HTMLDivElement, AutocompleteChipProps>(
+  ({ label, onDelete, variant, color, size, disabled, ...props }, ref) => (
+    <Chip
+      ref={ref}
+      label={label}
+      size={sizeConfig[size].chipSize}
+      variant={chipVariantFor[variant]}
+      color={color}
+      onDelete={disabled ? undefined : onDelete}
+      disabled={disabled}
+      disableAnimation
+      {...props}
+    />
+  )
 );
 
 AutocompleteChip.displayName = 'AutocompleteChip';
@@ -442,15 +520,7 @@ function AutocompleteInner<
             <span>
               {opt.label}
               {opt.description && (
-                <span
-                  style={{
-                    display: 'block',
-                    fontSize: '0.75rem',
-                    color: 'var(--sun-color-neutral-500, #9e9e9e)',
-                  }}
-                >
-                  {opt.description}
-                </span>
+<OptionDescription>{opt.description}</OptionDescription>
               )}
             </span>
           </span>

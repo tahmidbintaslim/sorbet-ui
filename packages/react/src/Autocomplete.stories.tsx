@@ -31,7 +31,7 @@ single/multiple selection, free solo input, and custom option rendering.
     },
     color: {
       control: 'select',
-      options: ['primary', 'secondary', 'success', 'warning', 'error', 'info', 'neutral'],
+      options: ['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'neutral'],
       description: 'Color theme of the autocomplete',
     },
     size: {
@@ -165,7 +165,7 @@ export const AllColors: Story = {
   render: () => (
     <Stack spacing={3} sx={{ width: 350 }}>
       <Typography variant="h6">All Colors</Typography>
-      {(['primary', 'secondary', 'success', 'warning', 'error', 'info', 'neutral'] as const).map(
+      {(['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'neutral'] as const).map(
         (color) => (
           <Autocomplete
             key={color}
@@ -317,7 +317,7 @@ export const WithError: Story = {
         error
         helperText="This field is required"
         required
-        color="error"
+        color="danger"
       />
     </Stack>
   ),
@@ -375,6 +375,9 @@ export const Loading: Story = {
 };
 
 export const DarkMode: Story = {
+  // Render with the dark theme (see .storybook/preview.tsx) so the component uses
+  // its dark-mode colors instead of light-theme colors on a dark box.
+  globals: { backgrounds: { value: 'dark' } },
   render: () => (
     <Box
       sx={{
@@ -396,11 +399,6 @@ export const DarkMode: Story = {
             placeholder="Select..."
             variant={variant}
             color="primary"
-            sx={{
-              '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
-              '& .MuiInputBase-input': { color: 'white' },
-              '& .MuiSvgIcon-root': { color: 'rgba(255,255,255,0.7)' },
-            }}
           />
         ))}
       </Stack>

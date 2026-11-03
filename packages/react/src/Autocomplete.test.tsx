@@ -61,7 +61,7 @@ describe('Autocomplete', () => {
       'secondary',
       'success',
       'warning',
-      'error',
+      'danger',
       'info',
       'neutral',
     ] as const;
@@ -71,6 +71,24 @@ describe('Autocomplete', () => {
         render(<Autocomplete options={options} label={`${color} color`} color={color} />);
         expect(screen.getByLabelText(`${color} color`)).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('Theme colors', () => {
+    it('fills a solid danger field with the Sorbet danger palette', () => {
+      const { container } = render(
+        <Autocomplete options={options} label="Danger" color="danger" variant="solid" />
+      );
+      // danger main (#e11d48) with white text, not the old hard-coded MUI blue
+      expect(container.querySelector('.MuiOutlinedInput-root')).toHaveStyle({
+        backgroundColor: 'rgb(225, 29, 72)',
+        color: 'rgb(255, 255, 255)',
+      });
+    });
+
+    it('does not fade a disabled field with opacity', () => {
+      const { container } = render(<Autocomplete options={options} label="Off" disabled />);
+      expect(getComputedStyle(container.firstChild as Element).opacity).not.toBe('0.5');
     });
   });
 
