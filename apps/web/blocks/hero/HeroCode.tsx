@@ -1,4 +1,5 @@
 'use client';
+// @block {"name": "Developer", "description": "Announcement, runtime chips and a code sample."}
 import { Box, Container, Grid, Stack, Typography } from '@mui/material';
 import { Alert, Button, Chip } from '@sorbet-ui/react';
 
