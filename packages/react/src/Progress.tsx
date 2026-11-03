@@ -6,7 +6,7 @@ import MuiLinearProgress, {
   LinearProgressProps as MuiLinearProgressProps,
 } from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
+import { styled, type SxProps, type Theme } from '@mui/material/styles';
 import type { SorbetColor, SorbetSize, SorbetVariant } from '@sorbet-ui/core';
 import { calculateProgressState, clampProgress, getProgressAriaProps } from '@sorbet-ui/core';
 import { colors, ColorScale, radius, transitions } from '@sorbet-ui/tokens';
@@ -40,6 +40,21 @@ interface BaseProgressProps {
   formatLabel?: (value: number) => string;
   /** Additional class name */
   className?: string;
+  /** Accessible name. Defaults to "Progress" (or "Loading" when indeterminate). */
+  'aria-label'?: string;
+  /** Id of an element that names the progress bar; overrides the default name. */
+  'aria-labelledby'?: string;
+  /** MUI system styles for the progress element. */
+  sx?: SxProps<Theme>;
+}
+
+/**
+ * Every progressbar needs an accessible name (WCAG 4.1.2). Use the caller's
+ * aria-label / aria-labelledby when given, otherwise a generic one.
+ */
+function defaultName(props: { 'aria-label'?: string; 'aria-labelledby'?: string }, indeterminate: boolean) {
+  if (props['aria-label'] || props['aria-labelledby']) return {};
+  return { 'aria-label': indeterminate ? 'Loading' : 'Progress' };
 }
 
 export interface LinearProgressProps extends BaseProgressProps {
@@ -401,6 +416,7 @@ const LinearProgress = React.forwardRef<HTMLSpanElement, LinearProgressProps>((p
       $height={height}
       className={className}
       {...ariaProps}
+      {...defaultName(rest, indeterminate)}
       {...(rest as MuiLinearProgressProps)}
     />
   );
@@ -476,6 +492,7 @@ const CircularProgress = React.forwardRef<HTMLSpanElement, CircularProgressProps
       $color={color}
       className={className}
       {...ariaProps}
+      {...defaultName(rest, indeterminate)}
       {...(rest as MuiCircularProgressProps)}
     />
   );

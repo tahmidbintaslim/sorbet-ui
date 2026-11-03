@@ -26,7 +26,8 @@ const themeOptions: ThemeOptions = {
     },
     text: {
       primary: sorbetPalette.neutral[900],
-      secondary: sorbetPalette.neutral[500],
+      // gray-600: 7.6:1 on white and 6.7:1+ on the soft color tints (gray-500 dips below 4.5:1 there).
+      secondary: sorbetPalette.neutral[600],
     },
   },
   shape: {

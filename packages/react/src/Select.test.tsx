@@ -41,4 +41,13 @@ describe('Select', () => {
       unmount();
     });
   });
+
+  it('links the visible label to the combobox', () => {
+    render(
+      <Select label="Topic" value="a" onChange={() => {}}>
+        <MenuItem value="a">Billing</MenuItem>
+      </Select>
+    );
+    expect(screen.getByRole('combobox', { name: /^Topic/ })).toBeInTheDocument();
+  });
 });

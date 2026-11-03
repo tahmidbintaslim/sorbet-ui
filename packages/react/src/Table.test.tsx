@@ -157,4 +157,10 @@ describe('Table', () => {
 
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
+
+  it('wraps the table in a focusable, labeled scroll region', () => {
+    render(<Table data={[{ id: '1', name: 'A' }]} columns={[{ id: 'name', header: 'Name', accessor: 'name' }]} caption="People" />);
+    const region = screen.getByRole('region', { name: 'People' });
+    expect(region).toHaveAttribute('tabindex', '0');
+  });
 });

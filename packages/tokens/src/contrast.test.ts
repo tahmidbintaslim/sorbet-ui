@@ -196,3 +196,11 @@ describe.each(Object.keys(sorbetPalette) as (keyof typeof sorbetPalette)[])(
     });
   }
 );
+
+// lightTheme in @sorbet-ui/theme uses neutral 600 for secondary text. It must stay readable on
+// cards tinted with any soft color (alpha12 of the 500 shade over white).
+describe.each(semanticColors)('secondary text on the %s soft tint (light)', (name) => {
+  it('reaches 4.5:1', () => {
+    expect(contrast(sorbetPalette.neutral[600], colorPalette[name].alpha12, WHITE)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+});

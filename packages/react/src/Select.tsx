@@ -280,6 +280,9 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     },
     ref
   ) => {
+    // Link the visible label to the combobox so screen readers announce it.
+    const autoId = React.useId();
+    const labelId = (rest as { labelId?: string }).labelId ?? `${autoId}-label`;
     const startAdornment = (startIcon || loading) && (
       <InputAdornment position="start">
         {loading ? (
@@ -301,7 +304,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         disabled={disabled || loading}
         fullWidth
       >
-        {label && <InputLabel>{label}</InputLabel>}
+        {label && <InputLabel id={labelId}>{label}</InputLabel>}
         <StyledSelect
           ref={ref}
           variant="outlined"
@@ -313,6 +316,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           error={error}
           startAdornment={startAdornment}
           {...(rest as any)}
+          labelId={label ? labelId : (rest as { labelId?: string }).labelId}
         >
           {children}
         </StyledSelect>

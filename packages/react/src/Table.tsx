@@ -158,7 +158,8 @@ const StyledTableContainer = styled(MuiTableContainer, {
 
   return {
     borderRadius: radius.lg,
-    overflow: 'hidden',
+    // Scroll wide tables instead of clipping columns; still clips to the radius.
+    overflow: 'auto',
     maxHeight: $maxHeight,
     ...variantStyles[$variant],
   };
@@ -397,6 +398,11 @@ function TableInner<T>(
         $color={color}
         $size={effectiveSize}
         $maxHeight={maxHeight}
+        // The container scrolls when the table is wider (or taller) than its space,
+        // so keyboard users must be able to focus it to scroll (WCAG 2.1.1).
+        tabIndex={0}
+        role="region"
+        aria-label={caption ?? 'Table'}
       >
         <StyledTable
           ref={ref}
