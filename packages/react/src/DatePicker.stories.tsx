@@ -346,6 +346,8 @@ export const OpenTo: Story = {
 };
 
 export const DarkMode: Story = {
+  // Rendered with darkTheme (see preview.tsx), so the picker's own dark styles apply.
+  globals: { backgrounds: { value: 'dark' } },
   render: () => {
     const DarkModeDemo = () => {
       const [values, setValues] = useState<Record<string, Dayjs | null>>({});
@@ -355,11 +357,11 @@ export const DarkMode: Story = {
           sx={{
             p: 4,
             borderRadius: 2,
-            backgroundColor: '#1a1a2e',
+            bgcolor: 'background.default',
             width: 450,
           }}
         >
-          <Typography variant="h6" color="white" gutterBottom>
+          <Typography variant="h6" gutterBottom>
             Dark Mode
           </Typography>
           <Stack spacing={3}>
@@ -371,13 +373,6 @@ export const DarkMode: Story = {
                 color="primary"
                 value={values[variant] || null}
                 onChange={(newValue) => setValues((v) => ({ ...v, [variant]: newValue }))}
-                inputProps={{
-                  sx: {
-                    '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
-                    '& .MuiInputBase-input': { color: 'white' },
-                    '& .MuiSvgIcon-root': { color: 'rgba(255,255,255,0.7)' },
-                  },
-                }}
               />
             ))}
           </Stack>

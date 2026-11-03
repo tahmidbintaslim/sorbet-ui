@@ -1,4 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { colorScaleForMode } from '@sorbet-ui/tokens';
 import userEvent from '@testing-library/user-event';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { describe, expect, it, vi } from 'vitest';
@@ -70,6 +72,38 @@ describe('DatePicker', () => {
       it(`renders ${color} color`, () => {
         render(<DatePicker label={`${color} color`} color={color} />);
         expect(screen.getAllByText(`${color} color`).length).toBeGreaterThan(0);
+      });
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Theme colors reach the MUI X picker field (MuiPickersOutlinedInput, not
+  // MuiOutlinedInput) and the calendar, in both modes.
+  // ─────────────────────────────────────────────────────────────────────────────
+  const cssFor = (needle: string) =>
+    Array.from(document.head.querySelectorAll('style'))
+      .map((s) => s.textContent ?? '')
+      .filter((css) => css.includes(needle))
+      .join('');
+
+  describe.each([
+    ['light', false],
+    ['dark', true],
+  ] as const)('%s mode colors', (mode, isDark) => {
+    it('styles the picker field and the selected day from the token scale', async () => {
+      const scale = colorScaleForMode('danger', isDark);
+      render(
+        <ThemeProvider theme={createTheme({ palette: { mode } })}>
+          <DatePicker label="Date" variant="solid" color="danger" value={dayjs('2024-01-15')} />
+        </ThemeProvider>
+      );
+      const field = cssFor('.MuiPickersOutlinedInput-root');
+      expect(field).toContain(`background-color:${scale.main}`);
+      expect(field).toContain('.MuiPickersOutlinedInput-notchedOutline');
+
+      await userEvent.click(screen.getByRole('button'));
+      await waitFor(() => {
+        expect(cssFor('.MuiPickersDay-root.Mui-selected')).toContain(`background-color:${scale.main}`);
       });
     });
   });

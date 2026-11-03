@@ -91,12 +91,12 @@ const getVariantStyles = (
 
   const baseStyles = {
     fontSize: config.fontSize,
-    '& .MuiInputBase-root': {
+    '& .MuiPickersInputBase-root': {
       minHeight: config.height,
       fontSize: config.fontSize,
       color: text,
     },
-    '& .MuiInputBase-input': {
+    '& .MuiPickersInputBase-sectionsContainer': {
       padding: config.padding,
     },
     '& .MuiSvgIcon-root': {
@@ -112,12 +112,12 @@ const getVariantStyles = (
     case 'solid':
       return {
         ...baseStyles,
-        '& .MuiOutlinedInput-root': {
+        '& .MuiPickersOutlinedInput-root': {
           backgroundColor: scale.main,
           color: scale.contrastText,
-          '& fieldset': { borderColor: scale.main },
-          '&:hover fieldset': { borderColor: solidActiveShade(scale) },
-          '&.Mui-focused fieldset': { borderColor: solidActiveShade(scale) },
+          '& .MuiPickersOutlinedInput-notchedOutline': { borderColor: scale.main },
+          '&:hover .MuiPickersOutlinedInput-notchedOutline': { borderColor: solidActiveShade(scale) },
+          '&.Mui-focused .MuiPickersOutlinedInput-notchedOutline': { borderColor: solidActiveShade(scale) },
           '& .MuiSvgIcon-root, & .MuiIconButton-root': { color: scale.contrastText },
           '& input::placeholder': { color: scale.contrastText, opacity: 0.85 },
         },
@@ -133,14 +133,14 @@ const getVariantStyles = (
     case 'soft':
       return {
         ...baseStyles,
-        '& .MuiOutlinedInput-root': {
+        '& .MuiPickersOutlinedInput-root': {
           backgroundColor: scale.alpha12,
           color: text,
-          '& fieldset': { borderColor: 'transparent' },
+          '& .MuiPickersOutlinedInput-notchedOutline': { borderColor: 'transparent' },
           '&:hover': { backgroundColor: scale.alpha20 },
-          '&:hover fieldset': { borderColor: scale.main },
+          '&:hover .MuiPickersOutlinedInput-notchedOutline': { borderColor: scale.main },
           '&.Mui-focused': { backgroundColor: scale.alpha12 },
-          '&.Mui-focused fieldset': { borderColor: scale.main },
+          '&.Mui-focused .MuiPickersOutlinedInput-notchedOutline': { borderColor: scale.main },
           '& .MuiSvgIcon-root': { color: tintText },
         },
       };
@@ -148,32 +148,32 @@ const getVariantStyles = (
     case 'outlined':
       return {
         ...baseStyles,
-        '& .MuiOutlinedInput-root': {
-          '& fieldset': { borderColor: scale.main },
-          '&:hover fieldset': { borderColor: tintText },
-          '&.Mui-focused fieldset': { borderColor: scale.main },
+        '& .MuiPickersOutlinedInput-root': {
+          '& .MuiPickersOutlinedInput-notchedOutline': { borderColor: scale.main },
+          '&:hover .MuiPickersOutlinedInput-notchedOutline': { borderColor: tintText },
+          '&.Mui-focused .MuiPickersOutlinedInput-notchedOutline': { borderColor: scale.main },
         },
       };
 
     case 'ghost':
       return {
         ...baseStyles,
-        '& .MuiOutlinedInput-root': {
-          '& fieldset': { borderColor: 'transparent' },
+        '& .MuiPickersOutlinedInput-root': {
+          '& .MuiPickersOutlinedInput-notchedOutline': { borderColor: 'transparent' },
           '&:hover': { backgroundColor: scale.alpha8 },
-          '&:hover fieldset': { borderColor: 'transparent' },
+          '&:hover .MuiPickersOutlinedInput-notchedOutline': { borderColor: 'transparent' },
           '&.Mui-focused': { backgroundColor: scale.alpha12 },
-          '&.Mui-focused fieldset': { borderColor: scale.main },
+          '&.Mui-focused .MuiPickersOutlinedInput-notchedOutline': { borderColor: scale.main },
         },
       };
 
     case 'plain':
       return {
         ...baseStyles,
-        '& .MuiOutlinedInput-root': {
-          '& fieldset': { border: 'none' },
-          '&:hover fieldset': { border: 'none' },
-          '&.Mui-focused fieldset': { border: 'none', boxShadow: `0 1px 0 0 ${scale.main}` },
+        '& .MuiPickersOutlinedInput-root': {
+          '& .MuiPickersOutlinedInput-notchedOutline': { border: 'none' },
+          '&:hover .MuiPickersOutlinedInput-notchedOutline': { border: 'none' },
+          '&.Mui-focused .MuiPickersOutlinedInput-notchedOutline': { border: 'none', boxShadow: `0 1px 0 0 ${scale.main}` },
         },
       };
 
@@ -196,7 +196,7 @@ const DatePickerWrapper = styled('div', {
     $size,
     theme.palette.mode === 'dark'
   ) as Record<string, unknown>;
-  const inputRootStyles = (variantStyles['& .MuiOutlinedInput-root'] ?? {}) as Record<
+  const inputRootStyles = (variantStyles['& .MuiPickersOutlinedInput-root'] ?? {}) as Record<
     string,
     unknown
   >;
@@ -205,7 +205,7 @@ const DatePickerWrapper = styled('div', {
     width: $fullWidth ? '100%' : 'auto',
     display: 'inline-flex',
     ...variantStyles,
-    '& .MuiOutlinedInput-root': {
+    '& .MuiPickersOutlinedInput-root': {
       borderRadius: sizing.radius.md,
       transition: animations.transitions.smooth,
       ...inputRootStyles,
