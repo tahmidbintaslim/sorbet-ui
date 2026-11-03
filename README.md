@@ -53,9 +53,9 @@ Sorbet UI is a good fit if you already use Material UI and MUI X and want soft, 
 - 26 components, from Button and TextField to Table, DatePicker and Autocomplete, each with the variant, color and size props above (exceptions are listed under [Components](#components)).
 - `@sorbet-ui/tokens`: 7 color scales with alpha steps, spacing, radius, shadows, z-index, breakpoints, typography and animations, as plain TypeScript objects.
 - `@sorbet-ui/theme`: `lightTheme` and `darkTheme`, built with MUI `createTheme` from those tokens.
-- Dark mode: 22 of the 26 components read the MUI palette mode and switch to lighter shades under `darkTheme`. Autocomplete, DatePicker, Progress and Rating use the same shades in both modes.
+- Dark mode: 24 of the 26 components read the MUI palette mode and switch to lighter shades under `darkTheme`. Progress and Rating use the same shades in both modes.
 - ESM and CommonJS builds with TypeScript types for every published package; `@sorbet-ui/react` starts with a `"use client"` directive.
-- 505 unit tests (Vitest, Testing Library, jest-axe in six files) and 372 Storybook stories that run as browser tests in Chromium.
+- 578 unit tests (Vitest, Testing Library, jest-axe in six files) and 374 Storybook stories that run as browser tests in Chromium, each checked with axe.
 
 ## Screenshots
 
@@ -126,6 +126,30 @@ export function App() {
 
 Use `darkTheme` for dark mode. More examples are in [DOCUMENTATION.md](DOCUMENTATION.md) and in the [Storybook](https://sorbet-ui.vercel.app).
 
+### Next.js App Router
+
+`@sorbet-ui/react` ships with `"use client"`, so components can be imported from Server Components. Wrap the app in MUI's Emotion cache provider so styles are server-rendered in order (install `@mui/material-nextjs`), and put the `ThemeProvider` in a client component:
+
+```tsx
+// app/layout.tsx
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
+import Providers from './Providers'; // 'use client': ThemeProvider + CssBaseline as above
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <AppRouterCacheProvider>
+          <Providers>{children}</Providers>
+        </AppRouterCacheProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+Vite needs no extra setup. Both setups were checked with the packed packages: a fresh Next.js 16 app (static prerender, no hydration warnings) and a Vite 7 app (strict `tsc`) build and render every component family in light and dark.
+
 ## Components
 
 All components take the 5 sizes above. The 7 colors apply everywhere except in three components:
@@ -195,7 +219,7 @@ flowchart LR
   react["@sorbet-ui/react<br/>26 components"]
   mui[("Material UI 7, MUI X 8, Emotion<br/>peer dependencies")]
   docs["apps/docs<br/>Storybook, deployed on Vercel"]
-  web["apps/web<br/>Vite demo page, not deployed"]
+  web["apps/web<br/>Next.js docs site, blocks, templates, demo"]
 
   tokens --> core
   tokens --> theme
@@ -249,13 +273,16 @@ No environment variables are needed to install, build or test. The optional ones
 
 ## Tests
 
-- 505 unit tests in 29 files (Vitest, Testing Library, jsdom): 376 for the components, 35 that render components and the core variant helpers in light and dark mode, 5 that load the built CommonJS bundle with `require()` (skipped until `pnpm build:packages` has run), and 89 contrast checks for the tokens.
-- 372 Storybook stories, each run as a test in headless Chromium through Vitest browser mode, including 54 interaction (`play`) functions.
+- 578 unit tests in 29 files (Vitest, Testing Library, jsdom), including the component tests, light/dark rendering of components and the core variant helpers, a CommonJS `require()` check of the built bundle (skipped until `pnpm build:packages` has run), and 118 contrast checks for the tokens.
+- 374 Storybook stories, each run as a test in headless Chromium through Vitest browser mode with axe (any WCAG A/AA violation fails), including 128 interaction (`play`) functions.
+- The docs site (`apps/web`) has a Playwright suite that runs axe on every page in light and dark.
 - The CI workflow (`.github/workflows/test.yml`) runs lint, type-check, both test suites and a full build on every push and pull request to `main`. See [TESTING_GUIDE.md](TESTING_GUIDE.md) for the other workflows.
 
 ## Deployment
 
 - **Storybook**: Vercel's GitHub integration builds every push with the settings in `vercel.json` (`turbo run build --filter=docs`, output `apps/docs/storybook-static`). `main` deploys to production at https://sorbet-ui.vercel.app; pull requests get preview deployments, which sit behind Vercel Authentication. After each production deployment, `.github/workflows/storybook-deploy-check.yml` checks that the public URL serves every component.
+- **Website**: the `sorbet-ui-web` Vercel project builds `apps/web` (settings in `apps/web/vercel.json`: a Next.js static export served with clean URLs) and deploys `main` to https://sorbet-ui-web.vercel.app.
+- Both projects skip a build when `turbo-ignore` finds that neither the app nor its workspace dependencies changed.
 - **Visual review**: the CI workflow publishes Storybook to Chromatic on pushes to `main` and on pull requests from this repo, using the `CHROMATIC_PROJECT_TOKEN` secret.
 - **npm**: `.github/workflows/publish.yml` publishes the public packages when the maintainer publishes a GitHub release tagged `v<version>`. It has not run yet; see [TESTING_GUIDE.md](TESTING_GUIDE.md#releasing).
 
@@ -265,7 +292,7 @@ No environment variables are needed to install, build or test. The optional ones
 sorbet-ui/
 ├── apps/
 │   ├── docs/        Storybook config (deployed to Vercel)
-│   └── web/         Vite demo page (not deployed)
+│   └── web/         Next.js docs site, blocks, templates and demo (deployed to Vercel)
 ├── packages/
 │   ├── react/       Components, unit tests and stories
 │   ├── theme/       MUI light and dark themes
@@ -282,7 +309,6 @@ sorbet-ui/
 - Not published to npm yet. The first release needs the `NPM_TOKEN` secret (the `sorbet-ui` npm org exists).
 - `@sorbet-ui/icons` is empty.
 - No screen reader testing yet (see [Accessibility](#accessibility)).
-- The packed packages have been imported and server-rendered from Node (ESM and CommonJS), but not yet tested inside a Next.js or Vite app ([#15](https://github.com/tahmidbintaslim/sorbet-ui/issues/15)).
 
 ## Contributing
 
