@@ -198,11 +198,12 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         $loading={loading}
         $disableAnimation={disableAnimation}
         onClick={onClick}
+        aria-busy={loading || undefined}
         {...rest}
       >
         {loading && (
           <LoadingOverlay className="card-loading-overlay">
-            <CircularProgress size={32} />
+            <CircularProgress size={32} aria-label="Loading" />
           </LoadingOverlay>
         )}
         {children}

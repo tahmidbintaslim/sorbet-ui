@@ -135,4 +135,19 @@ describe('Breadcrumbs', () => {
     // Menu should be open with hidden items
     expect(screen.getByRole('menu')).toBeInTheDocument();
   });
+
+  it('forwards aria-label so several breadcrumb navs can be told apart', () => {
+    const items: BreadcrumbItem[] = [
+      { id: 'home', label: 'Home', href: '/' },
+      { id: 'page', label: 'Page' },
+    ];
+    render(
+      <>
+        <Breadcrumbs items={items} aria-label="Primary breadcrumb" />
+        <Breadcrumbs items={items} aria-label="Secondary breadcrumb" />
+      </>
+    );
+    expect(screen.getByRole('navigation', { name: 'Primary breadcrumb' })).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: 'Secondary breadcrumb' })).toBeInTheDocument();
+  });
 });

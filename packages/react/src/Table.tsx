@@ -339,6 +339,8 @@ function TableInner<T>(
     loading = false,
     caption,
     maxHeight,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledBy,
     ...rest
   }: TableProps<T>,
   ref: React.ForwardedRef<HTMLTableElement>
@@ -402,13 +404,19 @@ function TableInner<T>(
         // so keyboard users must be able to focus it to scroll (WCAG 2.1.1).
         tabIndex={0}
         role="region"
-        aria-label={caption ?? 'Table'}
+        // Each region landmark needs a unique name, so the caption or the
+        // aria-label / aria-labelledby passed in names both the region and the table.
+        // 'Table' is only a last-resort fallback for a single unlabeled table.
+        aria-labelledby={ariaLabelledBy}
+        aria-label={ariaLabelledBy ? undefined : (caption ?? ariaLabel ?? 'Table')}
+        aria-busy={loading || undefined}
       >
         <StyledTable
           ref={ref}
           stickyHeader={stickyHeader}
           size={dense ? 'small' : 'medium'}
-          aria-label={caption}
+          aria-labelledby={ariaLabelledBy}
+          aria-label={ariaLabelledBy ? undefined : (caption ?? ariaLabel)}
           {...rest}
         >
           {caption && (
@@ -541,7 +549,7 @@ function TableInner<T>(
 
       {loading && (
         <LoadingOverlay>
-          <CircularProgress color="inherit" />
+          <CircularProgress color="inherit" aria-label="Loading" />
         </LoadingOverlay>
       )}
     </Box>

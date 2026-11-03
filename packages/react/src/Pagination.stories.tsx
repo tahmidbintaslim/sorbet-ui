@@ -120,7 +120,7 @@ export const AllVariants: Story = {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
             {variant.charAt(0).toUpperCase() + variant.slice(1)}
           </Typography>
-          <Pagination count={10} variant={variant} />
+          <Pagination count={10} variant={variant} aria-label={`Pagination (${variant})`} />
         </Box>
       ))}
     </Stack>
@@ -143,7 +143,12 @@ export const Colors: Story = {
             <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
               {color.charAt(0).toUpperCase() + color.slice(1)}
             </Typography>
-            <Pagination count={10} variant="solid" color={color} />
+            <Pagination
+              count={10}
+              variant="solid"
+              color={color}
+              aria-label={`Pagination (solid ${color})`}
+            />
           </Box>
         )
       )}
@@ -163,7 +168,12 @@ export const SoftColors: Story = {
             <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
               {color.charAt(0).toUpperCase() + color.slice(1)}
             </Typography>
-            <Pagination count={10} variant="soft" color={color} />
+            <Pagination
+              count={10}
+              variant="soft"
+              color={color}
+              aria-label={`Pagination (soft ${color})`}
+            />
           </Box>
         )
       )}
@@ -186,7 +196,12 @@ export const Sizes: Story = {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
             Size: {size.toUpperCase()}
           </Typography>
-          <Pagination count={10} size={size} variant="outlined" />
+          <Pagination
+            count={10}
+            size={size}
+            variant="outlined"
+            aria-label={`Pagination (${size})`}
+          />
         </Box>
       ))}
     </Stack>
@@ -323,11 +338,41 @@ export const FullDemo: Story = {
             Variants
           </Typography>
           <Stack spacing={2} sx={{ mt: 1 }}>
-            <Pagination count={10} variant="solid" page={page} onChange={(_, p) => setPage(p)} />
-            <Pagination count={10} variant="soft" page={page} onChange={(_, p) => setPage(p)} />
-            <Pagination count={10} variant="outlined" page={page} onChange={(_, p) => setPage(p)} />
-            <Pagination count={10} variant="ghost" page={page} onChange={(_, p) => setPage(p)} />
-            <Pagination count={10} variant="plain" page={page} onChange={(_, p) => setPage(p)} />
+            <Pagination
+              count={10}
+              variant="solid"
+              page={page}
+              onChange={(_, p) => setPage(p)}
+              aria-label="Pagination (solid)"
+            />
+            <Pagination
+              count={10}
+              variant="soft"
+              page={page}
+              onChange={(_, p) => setPage(p)}
+              aria-label="Pagination (soft)"
+            />
+            <Pagination
+              count={10}
+              variant="outlined"
+              page={page}
+              onChange={(_, p) => setPage(p)}
+              aria-label="Pagination (outlined)"
+            />
+            <Pagination
+              count={10}
+              variant="ghost"
+              page={page}
+              onChange={(_, p) => setPage(p)}
+              aria-label="Pagination (ghost)"
+            />
+            <Pagination
+              count={10}
+              variant="plain"
+              page={page}
+              onChange={(_, p) => setPage(p)}
+              aria-label="Pagination (plain)"
+            />
           </Stack>
         </Box>
 
@@ -343,6 +388,7 @@ export const FullDemo: Story = {
             showLastButton
             variant="solid"
             color="primary"
+            aria-label="Pagination (all controls)"
           />
         </Box>
 

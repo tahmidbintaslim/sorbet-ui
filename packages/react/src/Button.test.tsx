@@ -25,4 +25,10 @@ describe('Button', () => {
     render(<Button disabled>Disabled</Button>);
     expect(screen.getByRole('button')).toBeDisabled();
   });
+
+  it('keeps a dark pressed fill for an active solid button', () => {
+    render(<Button active>Active</Button>);
+    // primary 700, not the pale alpha tint that put white text below 4.5:1
+    expect(screen.getByRole('button')).toHaveStyle({ backgroundColor: 'rgb(3, 105, 161)' });
+  });
 });

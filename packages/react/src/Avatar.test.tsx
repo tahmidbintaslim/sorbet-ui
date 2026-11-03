@@ -39,4 +39,20 @@ describe('Avatar', () => {
     );
     expect(screen.getByTestId('avatar-custom')).toBeInTheDocument();
   });
+
+  it('gives the loading spinner an accessible name and marks the avatar busy', () => {
+    const { container } = render(<Avatar loading>JD</Avatar>);
+    expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
+    expect(container.firstChild).toHaveAttribute('aria-busy', 'true');
+  });
+
+  it('uses the darker shade for outlined initials in light mode', () => {
+    render(
+      <Avatar variant="outlined" color="danger" data-testid="avatar-outlined">
+        DA
+      </Avatar>
+    );
+    // danger `dark` (#be123c), not `main` (#e11d48), which is below 4.5:1 on the tint
+    expect(screen.getByTestId('avatar-outlined')).toHaveStyle({ color: 'rgb(190, 18, 60)' });
+  });
 });

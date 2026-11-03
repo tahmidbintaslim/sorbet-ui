@@ -181,7 +181,11 @@ export const AllVariants: Story = {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
             {variant.charAt(0).toUpperCase() + variant.slice(1)}
           </Typography>
-          <Breadcrumbs items={basicItems} variant={variant} />
+          <Breadcrumbs
+            items={basicItems}
+            variant={variant}
+            aria-label={`Breadcrumb (${variant})`}
+          />
         </Box>
       ))}
     </Stack>
@@ -204,7 +208,12 @@ export const Colors: Story = {
             <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
               {color.charAt(0).toUpperCase() + color.slice(1)}
             </Typography>
-            <Breadcrumbs items={basicItems} variant="soft" color={color} />
+            <Breadcrumbs
+              items={basicItems}
+              variant="soft"
+              color={color}
+              aria-label={`Breadcrumb (${color})`}
+            />
           </Box>
         )
       )}
@@ -227,7 +236,12 @@ export const Sizes: Story = {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
             Size: {size.toUpperCase()}
           </Typography>
-          <Breadcrumbs items={basicItems} size={size} variant="outlined" />
+          <Breadcrumbs
+            items={basicItems}
+            size={size}
+            variant="outlined"
+            aria-label={`Breadcrumb (${size})`}
+          />
         </Box>
       ))}
     </Stack>
@@ -349,42 +363,52 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Solid (with background)
         </Typography>
-        <Breadcrumbs items={itemsWithIcons} variant="solid" />
+        <Breadcrumbs items={itemsWithIcons} variant="solid" aria-label="Breadcrumb (solid)" />
       </Box>
 
       <Box>
         <Typography variant="overline" color="text.secondary">
           Soft (tinted background)
         </Typography>
-        <Breadcrumbs items={itemsWithIcons} variant="soft" color="primary" />
+        <Breadcrumbs
+          items={itemsWithIcons}
+          variant="soft"
+          color="primary"
+          aria-label="Breadcrumb (soft)"
+        />
       </Box>
 
       <Box>
         <Typography variant="overline" color="text.secondary">
           Outlined (bordered)
         </Typography>
-        <Breadcrumbs items={basicItems} variant="outlined" />
+        <Breadcrumbs items={basicItems} variant="outlined" aria-label="Breadcrumb (outlined)" />
       </Box>
 
       <Box>
         <Typography variant="overline" color="text.secondary">
           Ghost (hover effect)
         </Typography>
-        <Breadcrumbs items={basicItems} variant="ghost" />
+        <Breadcrumbs items={basicItems} variant="ghost" aria-label="Breadcrumb (ghost)" />
       </Box>
 
       <Box>
         <Typography variant="overline" color="text.secondary">
           Plain (minimal)
         </Typography>
-        <Breadcrumbs items={basicItems} variant="plain" />
+        <Breadcrumbs items={basicItems} variant="plain" aria-label="Breadcrumb (plain)" />
       </Box>
 
       <Box>
         <Typography variant="overline" color="text.secondary">
           Collapsed (many items)
         </Typography>
-        <Breadcrumbs items={manyItems} maxItems={4} variant="outlined" />
+        <Breadcrumbs
+          items={manyItems}
+          maxItems={4}
+          variant="outlined"
+          aria-label="Breadcrumb (collapsed)"
+        />
       </Box>
     </Stack>
   ),

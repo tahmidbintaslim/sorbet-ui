@@ -505,9 +505,9 @@ export const InteractiveDemo: Story = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const DarkMode: Story = {
-  parameters: {
-    backgrounds: { default: 'dark' },
-  },
+  // Render with the dark theme (see .storybook/preview.tsx) so labels use the
+  // dark-mode text colors instead of light-theme ink on the dark box.
+  globals: { backgrounds: { value: 'dark' } },
   render: () => {
     const variants: ProgressVariant[] = ['solid', 'soft', 'outlined', 'ghost', 'plain'];
 

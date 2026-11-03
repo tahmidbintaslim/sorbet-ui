@@ -151,10 +151,12 @@ const BreadcrumbLink = styled(Link, {
     switch ($variant) {
       case 'solid':
       case 'soft':
+        // These links sit on a tinted container, where light-mode `main` drops
+        // below 4.5:1 for some colors (danger, neutral); `dark` keeps the contrast.
         return {
-          color: colorScale.main,
+          color: isDark ? colorScale.main : colorScale.dark,
           '&:hover': {
-            color: colorScale.dark,
+            color: isDark ? colorScale.dark : colorScale[900],
             textDecoration: 'underline',
           },
         };
@@ -167,8 +169,10 @@ const BreadcrumbLink = styled(Link, {
           },
         };
       case 'ghost':
+        // neutral 600, not 500: 500 is only 4.5:1 on pure white and fails on any
+        // light-grey surface the breadcrumbs are placed on.
         return {
-          color: isDark ? neutralScale[400] : neutralScale[500],
+          color: isDark ? neutralScale[400] : neutralScale[600],
           padding: '2px 6px',
           borderRadius: radius.sm,
           '&:hover': {
@@ -179,7 +183,7 @@ const BreadcrumbLink = styled(Link, {
         };
       case 'plain':
         return {
-          color: isDark ? neutralScale[400] : neutralScale[500],
+          color: isDark ? neutralScale[400] : neutralScale[600],
           '&:hover': {
             color: colorScale.main,
             textDecoration: 'underline',
@@ -229,7 +233,7 @@ const EllipsisButton = styled(IconButton, {
     width: size.fontSize + 8,
     height: size.fontSize + 8,
     fontSize: size.fontSize,
-    color: isDark ? neutralScale[400] : neutralScale[500],
+    color: isDark ? neutralScale[400] : neutralScale[600],
     '&:hover': {
       backgroundColor: isDark ? neutralScale[800] : neutralScale[100],
       color: colorScale.main,
