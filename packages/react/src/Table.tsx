@@ -158,7 +158,8 @@ const StyledTableContainer = styled(MuiTableContainer, {
 
   return {
     borderRadius: radius.lg,
-    overflow: 'hidden',
+    // Scroll wide tables instead of clipping columns; still clips to the radius.
+    overflow: 'auto',
     maxHeight: $maxHeight,
     ...variantStyles[$variant],
   };
