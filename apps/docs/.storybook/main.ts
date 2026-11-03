@@ -16,7 +16,14 @@ const config: StorybookConfig = {
     getAbsolutePath('@storybook/addon-a11y'),
     getAbsolutePath('@storybook/addon-themes'),
     getAbsolutePath('@chromatic-com/storybook'),
+    // MCP server at http://localhost:6006/mcp for AI coding agents (see AGENTS.md).
+    getAbsolutePath('@storybook/addon-mcp'),
   ],
+
+  features: {
+    // Component manifest powers the MCP docs tools (props, stories, examples).
+    componentsManifest: true,
+  },
   framework: {
     name: getAbsolutePath('@storybook/react-vite'),
     options: {},
