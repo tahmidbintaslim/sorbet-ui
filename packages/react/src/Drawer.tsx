@@ -5,7 +5,7 @@ import {
   DrawerProps as MuiDrawerProps,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { animations, colors, sizing, typography } from '@sorbet-ui/tokens';
+import { animations, colors, colorScaleForMode, sizing, typography } from '@sorbet-ui/tokens';
 import * as React from 'react';
 
 // =============================================================================
@@ -58,9 +58,20 @@ const StyledDrawer = styled(MuiDrawer, {
     !['sorbetVariant', 'sorbetColor', 'sorbetSize', '$loading', '$disableAnimation'].includes(
       prop as string
     ),
-})<StyledProps>(({ theme, sorbetVariant, sorbetSize, $loading, $disableAnimation, anchor }) => {
+})<StyledProps>(({
+  theme,
+  sorbetVariant,
+  sorbetColor,
+  sorbetSize,
+  $loading,
+  $disableAnimation,
+  anchor,
+}) => {
   const sizeStyles = sizeConfig[sorbetSize];
   const isDark = theme.palette.mode === 'dark';
+  // The color shows as an accent (edge, tint or border); text stays text.primary,
+  // so contrast never depends on the chosen color.
+  const scale = colorScaleForMode(sorbetColor, isDark);
   const isHorizontal = anchor === 'left' || anchor === 'right';
 
   const baseStyles = {
@@ -79,13 +90,21 @@ const StyledDrawer = styled(MuiDrawer, {
     },
   };
 
-  const getBorderStyle = () => {
-    if (anchor === 'left') return { borderRight: `1px solid` };
-    if (anchor === 'right') return { borderLeft: `1px solid` };
-    if (anchor === 'top') return { borderBottom: `1px solid` };
-    if (anchor === 'bottom') return { borderTop: `1px solid` };
-    return { borderRight: `1px solid` };
-  };
+  // The inner edge is the one facing the page content.
+  const edge =
+    anchor === 'right'
+      ? 'Left'
+      : anchor === 'top'
+        ? 'Bottom'
+        : anchor === 'bottom'
+          ? 'Top'
+          : 'Right';
+  const edgeStyle = (width: number, color: string) => ({
+    [`border${edge}`]: `${width}px solid ${color}`,
+  });
+  // Neutral (the default) keeps the plain surface; any other color adds its accent.
+  const accented = sorbetColor !== 'neutral';
+  const accent = (width: number, color: string) => (accented ? edgeStyle(width, color) : {});
 
   const variantStyles = {
     solid: {
@@ -93,11 +112,13 @@ const StyledDrawer = styled(MuiDrawer, {
         backgroundColor: isDark ? colors.semantic.neutral[900] : theme.palette.background.paper,
         color: theme.palette.text.primary,
         boxShadow: sizing.shadows['2xl'],
+        ...accent(4, scale.main),
       },
     },
     soft: {
       '& .MuiDrawer-paper': {
         backgroundColor: isDark ? colors.semantic.neutral[800] : colors.semantic.neutral[50],
+        ...(accented && { backgroundImage: `linear-gradient(${scale.alpha12}, ${scale.alpha12})` }),
         color: theme.palette.text.primary,
         boxShadow: sizing.shadows.xl,
       },
@@ -107,8 +128,9 @@ const StyledDrawer = styled(MuiDrawer, {
         backgroundColor: isDark ? colors.semantic.neutral[900] : theme.palette.background.paper,
         color: theme.palette.text.primary,
         boxShadow: 'none',
-        ...getBorderStyle(),
-        borderColor: isDark ? colors.semantic.neutral[700] : colors.semantic.neutral[300],
+        ...(accented
+          ? edgeStyle(2, scale.main)
+          : edgeStyle(1, isDark ? colors.semantic.neutral[700] : colors.semantic.neutral[300])),
       },
     },
     ghost: {
@@ -117,6 +139,7 @@ const StyledDrawer = styled(MuiDrawer, {
         color: theme.palette.text.primary,
         backdropFilter: 'blur(8px)',
         boxShadow: sizing.shadows.lg,
+        ...accent(2, scale.alpha40),
       },
     },
     plain: {
@@ -124,6 +147,7 @@ const StyledDrawer = styled(MuiDrawer, {
         backgroundColor: isDark ? colors.semantic.neutral[900] : theme.palette.background.paper,
         color: theme.palette.text.primary,
         boxShadow: 'none',
+        ...accent(1, scale.alpha40),
       },
     },
   };

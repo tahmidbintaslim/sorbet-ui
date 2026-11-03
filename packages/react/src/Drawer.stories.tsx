@@ -24,10 +24,16 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+type DrawerColor = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'neutral';
+
 function DrawerExample({
   variant,
+  color,
+  label = 'Open Drawer',
 }: {
   variant?: 'solid' | 'soft' | 'outlined' | 'ghost' | 'plain';
+  color?: DrawerColor;
+  label?: string;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -37,9 +43,9 @@ function DrawerExample({
   return (
     <>
       <Button onClick={handleOpen} variant="soft">
-        Open Drawer
+        {label}
       </Button>
-      <Drawer open={open} onClose={handleClose} variant={variant} anchor="left">
+      <Drawer open={open} onClose={handleClose} variant={variant} color={color} anchor="left">
         <Box sx={{ width: 280, p: 2 }}>
           <List>
             {['Item 1', 'Item 2', 'Item 3', 'Item 4'].map((item) => (
@@ -94,6 +100,38 @@ export const AllVariants: Story = {
     const buttons = canvas.getAllByRole('button', { name: /open drawer/i });
     await expect(buttons).toHaveLength(5);
   },
+};
+
+/** `color` adds an accent: an inner-edge stripe (solid, ghost, plain), a tint (soft) or the border (outlined). */
+export const Colors: Story = {
+  render: () => (
+    <Stack direction="row" spacing={2} useFlexGap flexWrap="wrap">
+      {(['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'neutral'] as const).map(
+        (c) => (
+          <DrawerExample key={c} variant="solid" color={c} label={`Open ${c} drawer`} />
+        )
+      )}
+    </Stack>
+  ),
+};
+
+/** Opened by default so the accent is visible (and checked by axe) without interaction. */
+export const ColorAccentOpen: Story = {
+  render: () => (
+    <Drawer open variant="soft" color="primary" anchor="left" disablePortal hideBackdrop>
+      <Box sx={{ width: 280, p: 2 }} role="navigation" aria-label="Project menu">
+        <List>
+          {['Overview', 'Deployments', 'Settings'].map((item) => (
+            <ListItem key={item} disablePadding>
+              <ListItemButton>
+                <ListItemText primary={item} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    </Drawer>
+  ),
 };
 
 export const RightAnchor: Story = {
