@@ -348,7 +348,8 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
               $color={color}
               $size={size}
               id={`${tabsId}-tab-${tab.id}`}
-              aria-controls={`${tabsId}-panel-${tab.id}`}
+              // Only point at a panel that exists; a dangling id is invalid ARIA.
+              aria-controls={renderPanels ? `${tabsId}-panel-${tab.id}` : undefined}
             />
           ))}
         </StyledTabs>
