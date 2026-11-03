@@ -115,6 +115,38 @@ test('every component preview renders something visible', async ({ page }) => {
   }
 });
 
+// Overlay demos: the trigger opens the overlay, axe passes with it open, Escape closes it.
+const OVERLAYS = [
+  { slug: 'dialog', trigger: 'Open dialog', role: 'dialog', name: 'Delete project?' },
+  { slug: 'drawer', trigger: 'Open drawer', role: 'navigation', name: 'Drawer menu' },
+  { slug: 'popover', trigger: 'Show details', role: 'presentation', name: undefined },
+] as const;
+for (const theme of ['light', 'dark'] as const) {
+  for (const o of OVERLAYS) {
+    test(`overlay ${o.slug} opens, passes axe and closes (${theme})`, async ({ browser }) => {
+      const ctx = await browser.newContext({ colorScheme: theme, reducedMotion: 'reduce' });
+      await stubGitHub(ctx);
+      const page = await ctx.newPage();
+      await page.goto(`/docs/components/${o.slug}`);
+      await page.getByTestId('preview').getByRole('button', { name: o.trigger }).click();
+      const overlay = o.name ? page.getByRole(o.role, { name: o.name }) : page.locator('.MuiPopover-paper');
+      await expect(overlay).toBeVisible();
+      const r = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+      const summary = r.violations.map((v) => `${v.id}: ${v.nodes[0]?.html.slice(0, 120)}`);
+      expect(summary, summary.join('\n')).toEqual([]);
+      await page.keyboard.press('Escape');
+      await expect(overlay).toBeHidden();
+      await ctx.close();
+    });
+  }
+}
+
+test('snackbar demo shows its message', async ({ page }) => {
+  await page.goto('/docs/components/snackbar');
+  await page.getByTestId('preview').getByRole('button', { name: 'Save changes' }).click();
+  await expect(page.locator('.MuiSnackbar-root').getByText('Changes saved')).toBeVisible();
+});
+
 test('copy button copies the source', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto('/docs/components/button');
@@ -131,7 +163,7 @@ test('keyboard: skip link reaches main content', async ({ page }) => {
 });
 
 for (const theme of ['light', 'dark'] as const) {
-  for (const route of ['/', '/blocks', '/demo', '/docs', '/docs/components/button', '/docs/components/table', '/templates', ...TEMPLATE_ROUTES, ...BLOCK_ROUTES]) {
+  for (const route of ['/', '/blocks', '/demo', '/docs', '/docs/components/button', '/docs/components/table', '/docs/components/autocomplete', '/docs/components/date-picker', '/templates', ...TEMPLATE_ROUTES, ...BLOCK_ROUTES]) {
     test(`a11y (axe) ${theme} ${route}`, async ({ browser }) => {
       // Reduced motion renders every section in its final state, so axe never
       // measures text mid-fade.

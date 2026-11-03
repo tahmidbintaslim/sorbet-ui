@@ -109,6 +109,42 @@ export const CATALOG: CatalogEntry[] = [
     description: 'Hover or focus hint.',
     imports: ['Tooltip'],
   },
+  {
+    slug: 'autocomplete',
+    name: 'Autocomplete',
+    description: 'Searchable combobox with option groups, descriptions and multi-select chips.',
+    imports: ['Autocomplete'],
+  },
+  {
+    slug: 'date-picker',
+    name: 'DatePicker',
+    description: 'Calendar date input built on MUI X, with dayjs re-exported for values.',
+    imports: ['DatePicker', 'dayjs'],
+  },
+  {
+    slug: 'dialog',
+    name: 'Dialog',
+    description: 'Modal dialog with title, content and actions slots.',
+    imports: ['Dialog', 'DialogTitle', 'DialogContent', 'DialogActions'],
+  },
+  {
+    slug: 'drawer',
+    name: 'Drawer',
+    description: 'Side sheet that slides in from any edge.',
+    imports: ['Drawer'],
+  },
+  {
+    slug: 'popover',
+    name: 'Popover',
+    description: 'Floating panel anchored to an element.',
+    imports: ['Popover'],
+  },
+  {
+    slug: 'snackbar',
+    name: 'Snackbar',
+    description: 'Brief, non-blocking message at the edge of the screen.',
+    imports: ['Snackbar'],
+  },
 ];
 
 export const getEntry = (slug: string) => CATALOG.find((c) => c.slug === slug);
