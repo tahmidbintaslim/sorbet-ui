@@ -18,5 +18,6 @@
         }
       ]
     }
-  ]
+  ],
+  "ignoreCommand": "npx -y turbo-ignore@2.11.10 docs --fallback=HEAD^"
 }
