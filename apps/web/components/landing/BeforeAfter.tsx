@@ -6,6 +6,7 @@ import * as React from 'react';
 import { Box, Button as MuiButton, Chip as MuiChip, Stack, TextField as MuiTextField, ThemeProvider, Typography, createTheme } from '@mui/material';
 import { Button, Chip, TextField } from '@sorbet-ui/react';
 import UnfoldMore from '@mui/icons-material/UnfoldMore';
+import { animate, useInView, useReducedMotion } from 'motion/react';
 
 // Stock MUI theme (no CssBaseline here: a nested one would restyle <body>).
 const muiDefault = createTheme();
@@ -56,9 +57,28 @@ function Form({ sorbet }: { sorbet: boolean }) {
 
 export default function BeforeAfter() {
   const [pos, setPos] = React.useState(50);
+  const ref = React.useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.6 });
+  const reduce = useReducedMotion();
+  const touched = React.useRef(false);
+
+  // One-time sweep when scrolled into view, so it reads as draggable.
+  React.useEffect(() => {
+    if (!inView || reduce) return;
+    const ctl = animate(50, [50, 82, 18, 38], {
+      duration: 2.2,
+      ease: 'easeInOut',
+      onUpdate: (v) => {
+        if (!touched.current) setPos(Math.round(v));
+      },
+    });
+    return () => ctl.stop();
+  }, [inView, reduce]);
+
   return (
     <Box>
       <Box
+        ref={ref}
         sx={{
           position: 'relative',
           borderRadius: 4,
@@ -70,13 +90,13 @@ export default function BeforeAfter() {
         }}
       >
         {/* Sorbet (right/back layer) */}
-        <Box data-known-contrast sx={{ position: 'absolute', inset: 0 }}>
+        <Box data-known-contrast sx={{ position: 'absolute', inset: 0, zIndex: 0, isolation: 'isolate' }}>
           <Form sorbet />
         </Box>
         {/* Stock MUI (front layer, clipped to the handle position). Always light, like an unthemed app. */}
         <Box
           aria-hidden={pos < 4}
-          sx={{ position: 'absolute', inset: 0, clipPath: `inset(0 ${100 - pos}% 0 0)`, transition: 'clip-path .05s linear' }}
+          sx={{ position: 'absolute', inset: 0, zIndex: 1, isolation: 'isolate', clipPath: `inset(0 ${100 - pos}% 0 0)`, transition: 'clip-path .05s linear' }}
         >
           <ThemeProvider theme={muiDefault}>
             <Box sx={{ position: 'absolute', inset: 0, bgcolor: '#fff', color: 'rgba(0,0,0,.87)' }}>
@@ -87,7 +107,7 @@ export default function BeforeAfter() {
         {/* Divider + handle */}
         <Box
           aria-hidden
-          sx={{ position: 'absolute', top: 0, bottom: 0, left: `${pos}%`, width: 2, ml: '-1px', bgcolor: 'primary.main', pointerEvents: 'none' }}
+          sx={{ position: 'absolute', zIndex: 2, top: 0, bottom: 0, left: `${pos}%`, width: 2, ml: '-1px', bgcolor: 'primary.main', pointerEvents: 'none' }}
         >
           <Box
             sx={{
@@ -116,10 +136,14 @@ export default function BeforeAfter() {
           value={pos}
           aria-label="Compare default Material UI with Sorbet UI"
           aria-valuetext={`${pos}% default Material UI`}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPos(Number(e.target.value))}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            touched.current = true;
+            setPos(Number(e.target.value));
+          }}
           sx={{
             position: 'absolute',
             inset: 0,
+            zIndex: 3,
             width: '100%',
             height: '100%',
             m: 0,
@@ -131,7 +155,7 @@ export default function BeforeAfter() {
         <Box
           className="ba-focus"
           aria-hidden
-          sx={{ position: 'absolute', inset: 0, borderRadius: 4, outline: '3px solid', outlineColor: 'primary.main', outlineOffset: -3, opacity: 0, pointerEvents: 'none' }}
+          sx={{ position: 'absolute', zIndex: 3, inset: 0, borderRadius: 4, outline: '3px solid', outlineColor: 'primary.main', outlineOffset: -3, opacity: 0, pointerEvents: 'none' }}
         />
       </Box>
       <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5, textAlign: 'center' }}>
