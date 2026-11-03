@@ -342,4 +342,21 @@ describe('Progress', () => {
       expect(progress).toBeInTheDocument();
     });
   });
+
+  describe('Accessible name', () => {
+    it('defaults to "Progress"', () => {
+      render(<Progress value={40} />);
+      expect(screen.getByRole('progressbar', { name: 'Progress' })).toBeInTheDocument();
+    });
+
+    it('defaults to "Loading" when indeterminate', () => {
+      render(<Progress indeterminate type="circular" />);
+      expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
+    });
+
+    it('uses the caller aria-label', () => {
+      render(<Progress value={40} aria-label="Upload" />);
+      expect(screen.getByRole('progressbar', { name: 'Upload' })).toBeInTheDocument();
+    });
+  });
 });
