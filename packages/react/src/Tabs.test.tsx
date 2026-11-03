@@ -126,6 +126,12 @@ describe('Tabs', () => {
     expect(screen.queryByText('First content')).not.toBeInTheDocument();
   });
 
+  it('omits aria-controls when panels are not rendered', () => {
+    render(<Tabs tabs={testTabs} renderPanels={false} />);
+
+    for (const tab of screen.getAllByRole('tab')) expect(tab).not.toHaveAttribute('aria-controls');
+  });
+
   it('uses defaultValue for uncontrolled mode', () => {
     render(<Tabs tabs={testTabs} defaultValue="tab3" />);
 
