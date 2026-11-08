@@ -14,6 +14,17 @@ describe('Drawer', () => {
     expect(screen.getByText('Drawer content')).toBeInTheDocument();
   });
 
+  it('names the modal dialog with aria-label (MUI v7 and v9)', () => {
+    render(
+      <Drawer open onClose={() => {}} aria-label="Project menu">
+        <div>Drawer content</div>
+      </Drawer>
+    );
+    const dialog = screen.getByRole('dialog', { name: 'Project menu' });
+    expect(dialog).toHaveAttribute('aria-modal', 'true');
+    expect(dialog).toHaveTextContent('Drawer content');
+  });
+
   it('renders all variants', () => {
     const variants = ['solid', 'soft', 'outlined', 'ghost', 'plain'] as const;
     variants.forEach((variant) => {

@@ -45,7 +45,7 @@ function DrawerExample({
       <Button onClick={handleOpen} variant="soft">
         {label}
       </Button>
-      <Drawer open={open} onClose={handleClose} variant={variant} color={color} anchor="left">
+      <Drawer open={open} onClose={handleClose} variant={variant} color={color} anchor="left" aria-label="Navigation">
         <Box sx={{ width: 280, p: 2 }}>
           <List>
             {['Item 1', 'Item 2', 'Item 3', 'Item 4'].map((item) => (
@@ -118,7 +118,15 @@ export const Colors: Story = {
 /** Opened by default so the accent is visible (and checked by axe) without interaction. */
 export const ColorAccentOpen: Story = {
   render: () => (
-    <Drawer open variant="soft" color="primary" anchor="left" disablePortal hideBackdrop>
+    <Drawer
+      open
+      variant="soft"
+      color="primary"
+      anchor="left"
+      disablePortal
+      hideBackdrop
+      aria-label="Project drawer"
+    >
       <Box sx={{ width: 280, p: 2 }} role="navigation" aria-label="Project menu">
         <List>
           {['Overview', 'Deployments', 'Settings'].map((item) => (
@@ -146,7 +154,7 @@ export const RightAnchor: Story = {
         <Button onClick={handleOpen} variant="soft">
           Open Right Drawer
         </Button>
-        <Drawer open={open} onClose={handleClose} variant="solid" anchor="right">
+        <Drawer open={open} onClose={handleClose} variant="solid" anchor="right" aria-label="Account">
           <Box sx={{ width: 280, p: 2 }}>
             <List>
               {['Settings', 'Profile', 'Help', 'Logout'].map((item) => (
@@ -176,7 +184,7 @@ export const BottomAnchor: Story = {
         <Button onClick={handleOpen} variant="soft">
           Open Bottom Drawer
         </Button>
-        <Drawer open={open} onClose={handleClose} variant="solid" anchor="bottom">
+        <Drawer open={open} onClose={handleClose} variant="solid" anchor="bottom" aria-label="Options">
           <Box sx={{ p: 2, textAlign: 'center', minHeight: 200 }}>
             <List>
               {['Option 1', 'Option 2', 'Option 3'].map((item) => (
