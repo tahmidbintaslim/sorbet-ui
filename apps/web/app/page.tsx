@@ -10,6 +10,7 @@ import {
   PricingSection,
   QuickStart,
   Showcase,
+  WhoFor,
 } from '@/components/Landing';
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
       <Hero />
       <Marquee />
       <Compare />
+      <WhoFor />
       <Playground />
       <Matrix />
       <Showcase />
