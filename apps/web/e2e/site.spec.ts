@@ -174,7 +174,9 @@ for (const theme of ['light', 'dark'] as const) {
       await page.waitForLoadState('networkidle');
       await expect(page.locator('html')).toHaveAttribute('data-mode', theme);
       // Full WCAG A/AA in both themes, library demos included.
-      const passes = [await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()];
+      // The before/after's "default MUI" layer renders stock MUI on purpose (it is the
+      // "before", aria-hidden, and includes MUI's own sub-AA pairs); the Sorbet layer is scanned.
+      const passes = [await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).exclude('[data-ba-layer="default"]').analyze()];
       const summary = passes.flatMap((r) =>
         r.violations.map((v) => `${v.id} (${v.impact}): ${v.nodes.length} nodes, e.g. ${v.nodes[0]?.html.slice(0, 120)}`),
       );
@@ -191,12 +193,28 @@ test('landing: live star count from the GitHub API', async ({ page }) => {
 
 test('landing: before/after slider moves with the keyboard', async ({ page }) => {
   await page.goto('/');
-  const slider = page.getByRole('slider', { name: 'Compare default Material UI with Sorbet UI' });
+  const slider = page.getByRole('slider', { name: 'Compare the default Material UI theme with the Sorbet theme' });
   await slider.focus();
   await page.keyboard.press('Home');
   await expect(slider).toHaveValue('0');
   await page.keyboard.press('End');
   await expect(slider).toHaveValue('100');
+});
+
+test('landing: both sides of the before/after render the same MUI markup', async ({ page }) => {
+  await page.goto('/');
+  // Each side is the same @mui/material Dashboard; only the theme differs.
+  const shapes = await page.getByTestId('before-after').evaluate((root) =>
+    [...root.children].slice(0, 2).map((layer) =>
+      // Compare which components render, in order (their *-root classes). Modifier classes
+      // can differ because the Sorbet theme sets defaultProps (e.g. outlined Cards).
+      [...layer.querySelectorAll('[class*="-root"]')]
+        .map((el) => [...el.classList].filter((c) => /^Mui\w+-root$/.test(c)).sort().join('.'))
+        .join('|'),
+    ),
+  );
+  expect(shapes[0].length).toBeGreaterThan(300);
+  expect(shapes[0]).toBe(shapes[1]);
 });
 
 test('landing: playground controls rewrite the source', async ({ page }) => {

@@ -1,25 +1,31 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
-import { DARK_INK, radiusScale, sorbetPalette } from '@sorbet-ui/tokens';
+import { colorScaleForMode, radiusScale, sorbetPalette, type SemanticColor } from '@sorbet-ui/tokens';
+import { sorbetComponents } from './components';
+
+// MUI palette entries come from the same AA-tested token scales the Sorbet components
+// use (colorScaleForMode), so stock MUI Buttons, Chips and links get the same contrast
+// guarantees. MUI's `secondary` maps to Sorbet's neutral scale; `error` to danger.
+const PALETTE_KEYS: Record<'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info', SemanticColor> = {
+  primary: 'primary',
+  secondary: 'neutral',
+  success: 'success',
+  warning: 'warning',
+  error: 'danger',
+  info: 'info',
+};
+
+function semanticPalette(isDark: boolean) {
+  return Object.fromEntries(
+    Object.entries(PALETTE_KEYS).map(([key, color]) => {
+      const scale = colorScaleForMode(color, isDark);
+      return [key, { main: scale.main, dark: scale.dark, light: scale.light, contrastText: scale.contrastText }];
+    })
+  ) as Record<keyof typeof PALETTE_KEYS, { main: string; dark: string; light: string; contrastText: string }>;
+}
 
 const themeOptions: ThemeOptions = {
   palette: {
-    primary: {
-      main: sorbetPalette.primary.main,
-      dark: sorbetPalette.primary.dark,
-      light: sorbetPalette.primary.light,
-    },
-    secondary: {
-      main: sorbetPalette.neutral.main,
-    },
-    success: {
-      main: sorbetPalette.success.main,
-    },
-    warning: {
-      main: sorbetPalette.warning.main,
-    },
-    error: {
-      main: sorbetPalette.danger.main,
-    },
+    ...semanticPalette(false),
     background: {
       default: '#ffffff',
       paper: '#ffffff',
@@ -35,7 +41,11 @@ const themeOptions: ThemeOptions = {
   },
   typography: {
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif',
+    button: { textTransform: 'none', fontWeight: 600 },
   },
+  // Restyle stock @mui/material components, so an existing MUI app changes look
+  // by wrapping it in this theme, with no other code changes.
+  components: sorbetComponents,
 };
 
 export const lightTheme = createTheme(themeOptions);
@@ -48,25 +58,7 @@ export const darkTheme = createTheme({
   palette: {
     ...themeOptions.palette,
     mode: 'dark',
-    // Dark ink on the bright 500 fills: white on them is below 4.5:1.
-    primary: {
-      main: sorbetPalette.primary[500],
-      dark: sorbetPalette.primary[400],
-      light: sorbetPalette.primary.light,
-      contrastText: DARK_INK,
-    },
-    success: {
-      main: sorbetPalette.success[500],
-      contrastText: DARK_INK,
-    },
-    warning: {
-      main: sorbetPalette.warning[500],
-      contrastText: DARK_INK,
-    },
-    error: {
-      main: sorbetPalette.danger[500],
-      contrastText: DARK_INK,
-    },
+    ...semanticPalette(true),
     background: {
       default: sorbetPalette.neutral[900],
       paper: sorbetPalette.neutral[800],
