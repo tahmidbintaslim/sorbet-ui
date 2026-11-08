@@ -86,7 +86,7 @@ export const AllVariants: Story = {
         5 Variant Presets (Off → On)
       </Typography>
       {(['solid', 'soft', 'outlined', 'ghost', 'plain'] as const).map((variant) => (
-        <Stack key={variant} direction="row" spacing={4} alignItems="center">
+        <Stack key={variant} direction="row" spacing={4} sx={{ alignItems: 'center' }}>
           <Box sx={{ width: 100 }}>
             <Typography variant="caption" color="text.secondary">
               {variant.charAt(0).toUpperCase() + variant.slice(1)}
@@ -117,7 +117,7 @@ export const Colors: Story = {
       <Stack spacing={2}>
         {(['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'neutral'] as const).map(
           (color) => (
-            <Stack key={color} direction="row" spacing={3} alignItems="center">
+            <Stack key={color} direction="row" spacing={3} sx={{ alignItems: 'center' }}>
               <Switch
                 variant="solid"
                 color={color}
@@ -143,7 +143,7 @@ export const ColorsByVariant: Story = {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
             {variant.charAt(0).toUpperCase() + variant.slice(1)}
           </Typography>
-          <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }} useFlexGap>
             {(['primary', 'secondary', 'success', 'warning', 'danger', 'info'] as const).map(
               (color) => (
                 <Switch
@@ -172,7 +172,7 @@ export const Sizes: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         5 Size Options
       </Typography>
-      <Stack direction="row" spacing={3} alignItems="center">
+      <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
         <Switch size="xs" label="XS" defaultChecked />
         <Switch size="sm" label="SM" defaultChecked />
         <Switch size="md" label="MD" defaultChecked />
@@ -262,7 +262,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Variants (On)
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Switch variant="solid" defaultChecked aria-label="Solid" />
           <Switch variant="soft" defaultChecked aria-label="Soft" />
           <Switch variant="outlined" defaultChecked aria-label="Outlined" />
@@ -275,7 +275,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Colors (Solid)
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Switch variant="solid" color="primary" defaultChecked aria-label="Primary" />
           <Switch variant="solid" color="secondary" defaultChecked aria-label="Secondary" />
           <Switch variant="solid" color="success" defaultChecked aria-label="Success" />
@@ -290,7 +290,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Sizes
         </Typography>
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1 }}>
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 1 }}>
           <Switch size="xs" defaultChecked aria-label="Size xs" />
           <Switch size="sm" defaultChecked aria-label="Size sm" />
           <Switch size="md" defaultChecked aria-label="Size md" />
@@ -303,7 +303,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           States
         </Typography>
-        <Stack direction="row" spacing={3} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={3} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Switch label="Off" />
           <Switch label="On" defaultChecked />
           <Switch label="Loading" loading />

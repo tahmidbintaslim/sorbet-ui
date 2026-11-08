@@ -177,7 +177,7 @@ export const AllVariants: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         7 Variant Presets
       </Typography>
-      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }} useFlexGap>
         <Button variant="solid">Solid</Button>
         <Button variant="soft">Soft</Button>
         <Button variant="outlined">Outlined</Button>
@@ -205,7 +205,7 @@ export const Colors: Story = {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
             {variant.charAt(0).toUpperCase() + variant.slice(1)}
           </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+          <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }} useFlexGap>
             <Button variant={variant} color="primary">
               Primary
             </Button>
@@ -244,7 +244,7 @@ export const Sizes: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         5 Size Options (DaisyUI-inspired scale)
       </Typography>
-      <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap' }} useFlexGap>
         <Button size="xs">Xsmall</Button>
         <Button size="sm">Small</Button>
         <Button size="md">Medium</Button>
@@ -294,7 +294,7 @@ export const Shapes: Story = {
         <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
           Square & Circle
         </Typography>
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
           <Button shape="square" size="xs" aria-label="Add">
             <PlusIcon />
           </Button>
@@ -311,7 +311,7 @@ export const Shapes: Story = {
             <PlusIcon />
           </Button>
         </Stack>
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 2 }}>
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 2 }}>
           <Button shape="circle" size="xs" color="danger" aria-label="Like">
             <HeartIcon />
           </Button>
@@ -351,7 +351,7 @@ export const LoadingPositions: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         Loading Indicator Positions
       </Typography>
-      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }} useFlexGap>
         <Button loading loadingPosition="start">
           Start
         </Button>
@@ -362,7 +362,7 @@ export const LoadingPositions: Story = {
           End
         </Button>
       </Stack>
-      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }} useFlexGap>
         <Button variant="soft" loading loadingPosition="start">
           Soft Start
         </Button>
@@ -381,7 +381,7 @@ export const Active: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         Active/Pressed State
       </Typography>
-      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }} useFlexGap>
         <Button active>Active Solid</Button>
         <Button variant="soft" active>
           Active Soft
@@ -416,7 +416,7 @@ export const DisabledVariants: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         Disabled State
       </Typography>
-      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }} useFlexGap>
         <Button variant="solid" disabled>
           Solid
         </Button>
@@ -453,7 +453,7 @@ export const WithIcons: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         Icon Support
       </Typography>
-      <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap' }} useFlexGap>
         <Button startIcon={<PlusIcon />}>Create New</Button>
         <Button variant="soft" endIcon={<ArrowRightIcon />}>
           Continue
@@ -469,7 +469,7 @@ export const WithIcons: Story = {
       <Typography variant="caption" color="text.secondary">
         Icon-only buttons (use shape="square" or shape="circle")
       </Typography>
-      <Stack direction="row" spacing={2} alignItems="center">
+      <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
         <Button shape="square" variant="solid" aria-label="Add">
           <PlusIcon />
         </Button>
@@ -500,7 +500,7 @@ export const Animations: Story = {
       <Typography variant="caption" color="text.secondary">
         Solid buttons lift on hover with shadow. Active press brings them back down.
       </Typography>
-      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }} useFlexGap>
         <Button>Hover Me (with lift)</Button>
         <Button disableElevation>No Elevation</Button>
       </Stack>
@@ -538,7 +538,7 @@ export const Accessibility: Story = {
       <Typography variant="caption" color="text.secondary">
         All buttons support aria-label, aria-busy, aria-disabled, and focus-visible styling.
       </Typography>
-      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }} useFlexGap>
         {/* The aria-label starts with the visible text, so speech users can say it (WCAG 2.5.3). */}
         <Button aria-label="Submit form">Submit</Button>
         <Button variant="soft" loading aria-busy="true">
@@ -576,7 +576,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Variants
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Button variant="solid">Solid</Button>
           <Button variant="soft">Soft</Button>
           <Button variant="outlined">Outlined</Button>
@@ -591,7 +591,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Colors (Solid Variant)
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Button color="primary">Primary</Button>
           <Button color="secondary">Secondary</Button>
           <Button color="success">Success</Button>
@@ -609,9 +609,7 @@ export const FullDemo: Story = {
         <Stack
           direction="row"
           spacing={1}
-          alignItems="center"
-          sx={{ mt: 1 }}
-          flexWrap="wrap"
+          sx={{ alignItems: 'center', flexWrap: 'wrap', mt: 1 }}
           useFlexGap
         >
           <Button size="xs">XS</Button>
@@ -629,9 +627,7 @@ export const FullDemo: Story = {
         <Stack
           direction="row"
           spacing={1}
-          alignItems="center"
-          sx={{ mt: 1 }}
-          flexWrap="wrap"
+          sx={{ alignItems: 'center', flexWrap: 'wrap', mt: 1 }}
           useFlexGap
         >
           <Button shape="square" aria-label="Add">
@@ -648,7 +644,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           States
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Button>Default</Button>
           <Button loading>Loading</Button>
           <Button active>Active</Button>

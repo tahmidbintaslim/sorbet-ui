@@ -169,7 +169,7 @@ export const Colors: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         7 Color Options (Soft Variant)
       </Typography>
-      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }} useFlexGap>
         <Card variant="soft" color="primary" sx={{ width: 150 }}>
           <CardContent>
             <Typography variant="body2">Primary</Typography>
@@ -220,7 +220,7 @@ export const Sizes: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         5 Size Options (Padding)
       </Typography>
-      <Stack direction="row" spacing={2} alignItems="flex-start" flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start', flexWrap: 'wrap' }} useFlexGap>
         <Card variant="outlined" size="xs" sx={{ width: 120 }}>
           <CardContent>
             <Typography variant="caption">XS</Typography>
@@ -346,7 +346,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Variants
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Card variant="solid" sx={{ width: 100 }}>
             <CardContent>Solid</CardContent>
           </Card>
@@ -369,7 +369,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Colors × Outlined
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Card variant="outlined" color="primary" sx={{ width: 80 }}>
             <CardContent>PR</CardContent>
           </Card>

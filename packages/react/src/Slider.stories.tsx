@@ -460,7 +460,7 @@ export const InteractiveDemo: Story = {
         <Typography variant="subtitle2" sx={{ mb: 2 }}>
           Volume Control
         </Typography>
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
           <VolumeDown />
           <Slider
             aria-label="Volume"

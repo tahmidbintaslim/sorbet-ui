@@ -80,7 +80,7 @@ export const Plain: Story = {
 
 export const AllVariants: Story = {
   render: () => (
-    <Stack direction="row" spacing={1} flexWrap="wrap">
+    <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
       <Chip variant="solid" label="Solid" />
       <Chip variant="soft" label="Soft" />
       <Chip variant="outlined" label="Outlined" />
@@ -92,7 +92,7 @@ export const AllVariants: Story = {
 
 export const WithDelete: Story = {
   render: () => (
-    <Stack direction="row" spacing={1} flexWrap="wrap">
+    <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
       <Chip variant="solid" label="Solid" onDelete={() => {}} />
       <Chip variant="soft" label="Soft" onDelete={() => {}} />
       <Chip variant="outlined" label="Outlined" onDelete={() => {}} />
@@ -131,7 +131,7 @@ export const Colors: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         7 Color Options
       </Typography>
-      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }} useFlexGap>
         <Chip variant="solid" color="primary" label="Primary" />
         <Chip variant="solid" color="secondary" label="Secondary" />
         <Chip variant="solid" color="success" label="Success" />
@@ -143,7 +143,7 @@ export const Colors: Story = {
       <Typography variant="caption" color="text.secondary">
         Colors work with all variants
       </Typography>
-      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }} useFlexGap>
         <Chip variant="soft" color="primary" label="Soft Primary" />
         <Chip variant="soft" color="success" label="Soft Success" />
         <Chip variant="outlined" color="danger" label="Outlined Danger" />
@@ -163,7 +163,7 @@ export const Sizes: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         5 Size Options
       </Typography>
-      <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }} useFlexGap>
         <Chip variant="solid" size="xs" label="XS" />
         <Chip variant="solid" size="sm" label="SM" />
         <Chip variant="solid" size="md" label="MD" />
@@ -184,7 +184,7 @@ export const Loading: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         Loading States
       </Typography>
-      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }} useFlexGap>
         <Chip variant="solid" loading label="Loading..." />
         <Chip variant="soft" loading color="success" label="Processing" />
         <Chip variant="outlined" loading color="primary" label="Saving" />
@@ -213,7 +213,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Variants
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Chip variant="solid" label="Solid" />
           <Chip variant="soft" label="Soft" />
           <Chip variant="outlined" label="Outlined" />
@@ -226,7 +226,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Colors
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Chip color="primary" label="Primary" />
           <Chip color="secondary" label="Secondary" />
           <Chip color="success" label="Success" />
@@ -244,9 +244,7 @@ export const FullDemo: Story = {
         <Stack
           direction="row"
           spacing={1}
-          sx={{ mt: 1 }}
-          alignItems="center"
-          flexWrap="wrap"
+          sx={{ alignItems: 'center', flexWrap: 'wrap', mt: 1 }}
           useFlexGap
         >
           <Chip size="xs" label="XS" />
@@ -261,7 +259,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           States
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Chip label="Normal" />
           <Chip loading label="Loading" />
           <Chip disabled label="Disabled" />

@@ -90,7 +90,7 @@ export const AllVariants: Story = {
         5 Variant Presets (Unchecked → Checked)
       </Typography>
       {(['solid', 'soft', 'outlined', 'ghost', 'plain'] as const).map((variant) => (
-        <Stack key={variant} direction="row" spacing={4} alignItems="center">
+        <Stack key={variant} direction="row" spacing={4} sx={{ alignItems: 'center' }}>
           <Box sx={{ width: 120 }}>
             <Typography variant="caption" color="text.secondary">
               {variant.charAt(0).toUpperCase() + variant.slice(1)}
@@ -122,7 +122,7 @@ export const Colors: Story = {
       <Stack spacing={2}>
         {(['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'neutral'] as const).map(
           (color) => (
-            <Stack key={color} direction="row" spacing={3} alignItems="center">
+            <Stack key={color} direction="row" spacing={3} sx={{ alignItems: 'center' }}>
               <Checkbox
                 variant="solid"
                 color={color}
@@ -153,7 +153,7 @@ export const ColorsByVariant: Story = {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
             {variant.charAt(0).toUpperCase() + variant.slice(1)}
           </Typography>
-          <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }} useFlexGap>
             {(['primary', 'secondary', 'success', 'warning', 'danger', 'info'] as const).map(
               (color) => (
                 <Checkbox
@@ -182,7 +182,7 @@ export const Sizes: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         5 Size Options
       </Typography>
-      <Stack direction="row" spacing={3} alignItems="center">
+      <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
         <Checkbox size="xs" label="XS" defaultChecked />
         <Checkbox size="sm" label="SM" defaultChecked />
         <Checkbox size="md" label="MD" defaultChecked />
@@ -281,7 +281,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Variants (Checked)
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Checkbox variant="solid" defaultChecked aria-label="Solid" />
           <Checkbox variant="soft" defaultChecked aria-label="Soft" />
           <Checkbox variant="outlined" defaultChecked aria-label="Outlined" />
@@ -294,7 +294,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Colors (Solid)
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Checkbox variant="solid" color="primary" defaultChecked aria-label="Primary" />
           <Checkbox variant="solid" color="secondary" defaultChecked aria-label="Secondary" />
           <Checkbox variant="solid" color="success" defaultChecked aria-label="Success" />
@@ -309,7 +309,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Sizes
         </Typography>
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1 }}>
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 1 }}>
           <Checkbox size="xs" defaultChecked aria-label="Size xs" />
           <Checkbox size="sm" defaultChecked aria-label="Size sm" />
           <Checkbox size="md" defaultChecked aria-label="Size md" />
@@ -322,7 +322,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           States
         </Typography>
-        <Stack direction="row" spacing={3} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={3} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Checkbox label="Default" />
           <Checkbox label="Checked" defaultChecked />
           <Checkbox label="Indeterminate" indeterminate />

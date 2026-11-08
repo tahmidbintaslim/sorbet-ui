@@ -105,7 +105,7 @@ export const AllVariants: Story = {
 /** `color` adds an accent: an inner-edge stripe (solid, ghost, plain), a tint (soft) or the border (outlined). */
 export const Colors: Story = {
   render: () => (
-    <Stack direction="row" spacing={2} useFlexGap flexWrap="wrap">
+    <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
       {(['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'neutral'] as const).map(
         (c) => (
           <DrawerExample key={c} variant="solid" color={c} label={`Open ${c} drawer`} />
