@@ -284,6 +284,9 @@ export const DatePicker = React.forwardRef<HTMLDivElement, SorbetDatePickerProps
           onChange={onChange}
           disabled={disabled}
           slotProps={{
+            // MUI X v8 types this slot as TextField | PickersTextField props, v9 as
+            // PickersTextField props only (no `placeholder`). The props are the same
+            // at runtime in both, so the object is cast to fit either version.
             textField: {
               label,
               placeholder,
@@ -293,7 +296,7 @@ export const DatePicker = React.forwardRef<HTMLDivElement, SorbetDatePickerProps
               variant: 'outlined',
               fullWidth,
               ...inputProps,
-            },
+            } as never,
             popper: {
               sx: (theme) => {
                 const scale = colorScaleForMode(color, theme.palette.mode === 'dark');
@@ -307,12 +310,13 @@ export const DatePicker = React.forwardRef<HTMLDivElement, SorbetDatePickerProps
                     borderRadius: sizing.radius.lg,
                     boxShadow: sizing.shadows.lg,
                   },
-                  '& .MuiPickersDay-root': {
+                  // MUI X v8 names the day `MuiPickersDay`, v9 `MuiPickerDay`.
+                  '& .MuiPickersDay-root, & .MuiPickerDay-root': {
                     borderRadius: sizing.radius.full,
                     '&:hover': { backgroundColor: scale.alpha12 },
                     '&.Mui-selected': selected,
                   },
-                  '& .MuiPickersYear-yearButton, & .MuiPickersMonth-monthButton': {
+                  '& .MuiYearCalendar-button, & .MuiMonthCalendar-button': {
                     borderRadius: sizing.radius.md,
                     '&.Mui-selected': selected,
                   },

@@ -439,7 +439,7 @@ function TableInner<T>(
                     indeterminate={someSelected}
                     checked={allSelected}
                     onChange={handleSelectAll}
-                    inputProps={{ 'aria-label': 'Select all rows' }}
+                    slotProps={{ input: { 'aria-label': 'Select all rows' } }}
                     sx={{ color: variant === 'solid' ? 'inherit' : undefined }}
                   />
                 </MuiTableCell>
@@ -514,7 +514,7 @@ function TableInner<T>(
                             e.stopPropagation();
                             handleSelectRow(rowId);
                           }}
-                          inputProps={{ 'aria-label': `Select row ${rowId}` }}
+                          slotProps={{ input: { 'aria-label': `Select row ${rowId}` } }}
                         />
                       </MuiTableCell>
                     )}

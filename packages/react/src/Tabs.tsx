@@ -165,7 +165,7 @@ const StyledTabs = styled(MuiTabs, {
       transition: transitions.smooth,
       ...getIndicatorStyles(),
     },
-    '& .MuiTabs-flexContainer': {
+    '& .MuiTabs-list': {
       gap: $variant === 'solid' || $variant === 'soft' ? '4px' : 0,
     },
   };
@@ -267,7 +267,7 @@ const StyledTab = styled(MuiTab, {
       boxShadow: `0 0 0 3px ${colorScale.alpha40}`,
       borderRadius: radius.md,
     },
-    '& .MuiTab-iconWrapper': {
+    '& .MuiTab-icon': {
       fontSize: size.iconSize,
       marginBottom: 0,
     },

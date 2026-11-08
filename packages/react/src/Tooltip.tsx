@@ -151,11 +151,25 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       disableAnimation = false,
       title,
       slotProps,
-      TransitionProps,
-      ...rest
+      ...restProps
     },
     ref
   ) => {
+    // MUI v9 removed `TransitionProps`; `slotProps.transition` exists in v7 and v9.
+    // A v7 consumer may still pass it, so it is read untyped and merged under it.
+    const { TransitionProps: legacyTransitionProps, ...rest } = restProps as typeof restProps & {
+      TransitionProps?: Record<string, unknown>;
+    };
+    const externalTransition = slotProps?.transition;
+    const withTimeout = (props: Record<string, unknown> | undefined) => {
+      const merged = { ...legacyTransitionProps, ...props };
+      return { ...merged, timeout: disableAnimation ? 0 : merged.timeout };
+    };
+    const transitionSlotProps =
+      typeof externalTransition === 'function'
+        ? (ownerState: Parameters<typeof externalTransition>[0]) =>
+            withTimeout(externalTransition(ownerState) as Record<string, unknown>)
+        : withTimeout(externalTransition as Record<string, unknown> | undefined);
     const sizeStyles = sizeConfig[size];
     const theme = useTheme();
     const colorScale = colorScaleForMode(color, theme.palette.mode === 'dark');
@@ -185,12 +199,9 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       <MuiTooltip
         ref={ref}
         title={renderTitle()}
-        TransitionProps={{
-          ...TransitionProps,
-          timeout: disableAnimation ? 0 : TransitionProps?.timeout,
-        }}
         slotProps={{
           ...slotProps,
+          transition: transitionSlotProps as never,
           tooltip: {
             ...slotProps?.tooltip,
             sx: {

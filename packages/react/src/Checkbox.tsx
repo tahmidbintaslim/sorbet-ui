@@ -15,7 +15,11 @@ import {
   typography,
 } from '@sorbet-ui/tokens';
 import * as React from 'react';
-import { mergeInputSlotProps, pickAriaNameProps } from './internal/inputSlotProps';
+import {
+  mergeInputSlotProps,
+  pickAriaNameProps,
+  takeLegacyInputProps,
+} from './internal/inputSlotProps';
 
 // =============================================================================
 // TYPES
@@ -191,13 +195,11 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
       indeterminate,
       onChange,
       defaultChecked,
-      inputRef,
-      inputProps,
       slotProps,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledby,
       'aria-describedby': ariaDescribedby,
-      ...rest
+      ...restProps
     },
     ref
   ) => {
@@ -214,21 +216,16 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
 
     // A native checkbox reports "mixed" through its `indeterminate` DOM property;
     // `aria-checked` is not allowed on it (axe: aria-conditional-attr).
+    // MUI v9 sets it too; v7 does not, so Sorbet sets it in both. The ref goes
+    // through `slotProps.input.ref` (MUI v9 removed `inputRef`) and is forked with
+    // any ref the consumer put there.
     const nativeInputRef = React.useRef<HTMLInputElement | null>(null);
     React.useEffect(() => {
       if (nativeInputRef.current) {
         nativeInputRef.current.indeterminate = Boolean(indeterminate);
       }
     }, [indeterminate]);
-    const handleInputRef = React.useCallback(
-      (node: HTMLInputElement | null) => {
-        nativeInputRef.current = node;
-        if (typeof inputRef === 'function') inputRef(node);
-        else if (inputRef)
-          (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
-      },
-      [inputRef]
-    );
+    const [legacyInputProps, rest] = takeLegacyInputProps(restProps);
 
     // aria-label/-labelledby/-describedby must reach the <input>, not the wrapper
     // span, so an unlabeled checkbox can still be named. aria-checked is dropped
@@ -239,9 +236,10 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         'aria-labelledby': ariaLabelledby,
         'aria-describedby': ariaDescribedby,
       }),
-      inputProps,
+      legacyInputProps,
       slotProps?.input as Parameters<typeof mergeInputSlotProps>[2],
-      { 'aria-checked': undefined }
+      { 'aria-checked': undefined },
+      nativeInputRef
     );
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -259,7 +257,6 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         indeterminate={indeterminate}
         disabled={disabled || loading}
         onChange={handleChange}
-        inputRef={handleInputRef}
         slotProps={{ ...slotProps, input: inputSlotProps as never }}
         aria-busy={loading || undefined}
         icon={

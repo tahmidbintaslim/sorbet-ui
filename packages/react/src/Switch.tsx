@@ -15,7 +15,11 @@ import {
   typography,
 } from '@sorbet-ui/tokens';
 import * as React from 'react';
-import { mergeInputSlotProps, pickAriaNameProps } from './internal/inputSlotProps';
+import {
+  mergeInputSlotProps,
+  pickAriaNameProps,
+  takeLegacyInputProps,
+} from './internal/inputSlotProps';
 
 // =============================================================================
 // TYPES
@@ -185,25 +189,25 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
       label,
       loading = false,
       disabled,
-      inputProps,
       slotProps,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledby,
       'aria-describedby': ariaDescribedby,
-      ...rest
+      ...restProps
     },
     ref
   ) => {
     const sizeStyles = sizeConfig[size];
     // Naming attributes belong on the <input role="switch">, not MUI's wrapper span,
     // so a switch without a visible label can still be named.
+    const [legacyInputProps, rest] = takeLegacyInputProps(restProps);
     const inputSlotProps = mergeInputSlotProps(
       pickAriaNameProps({
         'aria-label': ariaLabel,
         'aria-labelledby': ariaLabelledby,
         'aria-describedby': ariaDescribedby,
       }),
-      inputProps,
+      legacyInputProps,
       slotProps?.input as Parameters<typeof mergeInputSlotProps>[2]
     );
     const loadingSize = sizeStyles.thumb * 0.6;

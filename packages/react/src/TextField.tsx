@@ -269,15 +269,24 @@ export const TextField = React.forwardRef<HTMLDivElement, TextFieldProps>(
       startIcon,
       endIcon,
       disabled,
-      InputProps,
-      inputProps,
       slotProps,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledby,
-      ...rest
+      ...restProps
     },
     ref
   ) => {
+    // MUI v9 removed `InputProps` / `inputProps`; only `slotProps.input` and
+    // `slotProps.htmlInput` exist in both v7 and v9. A v7 consumer may still pass
+    // the legacy props, so they are read untyped and merged under the slot props.
+    const {
+      InputProps: legacyInputProps,
+      inputProps: legacyHtmlInputProps,
+      ...rest
+    } = restProps as typeof restProps & {
+      InputProps?: Record<string, unknown>;
+      inputProps?: Record<string, unknown>;
+    };
     // MUI puts aria-label on the outer FormControl <div>; the <input> needs it so a
     // field without a visible label can still be named.
     const ariaNameProps = {
@@ -289,13 +298,13 @@ export const TextField = React.forwardRef<HTMLDivElement, TextFieldProps>(
       typeof externalHtmlInput === 'function'
         ? (ownerState: Parameters<typeof externalHtmlInput>[0]) => ({
             ...ariaNameProps,
-            ...inputProps,
+            ...legacyHtmlInputProps,
             ...externalHtmlInput(ownerState),
             ...(loading && { 'aria-busy': true }),
           })
         : {
             ...ariaNameProps,
-            ...inputProps,
+            ...legacyHtmlInputProps,
             ...externalHtmlInput,
             ...(loading && { 'aria-busy': true }),
           };
@@ -316,6 +325,22 @@ export const TextField = React.forwardRef<HTMLDivElement, TextFieldProps>(
 
     const endAdornment = endIcon && <InputAdornment position="end">{endIcon}</InputAdornment>;
 
+    // Sorbet's adornments win over the consumer's; otherwise theirs are kept.
+    const externalInput = slotProps?.input;
+    const withAdornments = (props: Record<string, unknown> | undefined) => {
+      const merged = { ...legacyInputProps, ...props };
+      return {
+        ...merged,
+        startAdornment: startAdornment || merged.startAdornment,
+        endAdornment: endAdornment || merged.endAdornment,
+      };
+    };
+    const inputSlotProps =
+      typeof externalInput === 'function'
+        ? (ownerState: Parameters<typeof externalInput>[0]) =>
+            withAdornments(externalInput(ownerState) as Record<string, unknown>)
+        : withAdornments(externalInput as Record<string, unknown> | undefined);
+
     // Use MUI's standard variant for plain (underline style), outlined for others
     const muiVariant = variant === 'plain' ? 'standard' : 'outlined';
 
@@ -327,13 +352,8 @@ export const TextField = React.forwardRef<HTMLDivElement, TextFieldProps>(
         sorbetColor={color}
         sorbetSize={size}
         disabled={disabled || loading}
-        InputProps={{
-          ...InputProps,
-          startAdornment: startAdornment || InputProps?.startAdornment,
-          endAdornment: endAdornment || InputProps?.endAdornment,
-        }}
         {...(rest as any)}
-        slotProps={{ ...slotProps, htmlInput: htmlInputSlotProps }}
+        slotProps={{ ...slotProps, input: inputSlotProps, htmlInput: htmlInputSlotProps }}
       />
     );
   }
