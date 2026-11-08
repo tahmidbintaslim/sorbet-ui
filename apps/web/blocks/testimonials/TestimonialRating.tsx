@@ -17,9 +17,7 @@ export default function TestimonialRating() {
         <Stack
           direction={{ xs: 'column', md: 'row' }}
           spacing={3}
-          justifyContent="space-between"
-          alignItems={{ xs: 'flex-start', md: 'flex-end' }}
-          sx={{ mb: 6 }}
+          sx={{ justifyContent: 'space-between', alignItems: { xs: 'flex-start', md: 'flex-end' }, mb: 6 }}
         >
           <Box sx={{ maxWidth: 560 }}>
             <Typography component="h2" sx={{ fontWeight: 800, fontSize: { xs: 32, md: 42 }, letterSpacing: '-0.03em' }}>
@@ -29,7 +27,7 @@ export default function TestimonialRating() {
               Sample testimonials. People, companies and ratings are fictional.
             </Typography>
           </Box>
-          <Stack direction="row" spacing={1.5} alignItems="center">
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
             <Typography sx={{ fontWeight: 800, fontSize: 40, letterSpacing: '-0.03em' }}>{average.toFixed(1)}</Typography>
             <Box>
               <Rating value={average} precision={0.1} readOnly color="warning" size="sm" />
@@ -50,7 +48,7 @@ export default function TestimonialRating() {
                 <Typography component="blockquote" color="text.secondary" sx={{ m: 0, mt: 1, flex: 1 }}>
                   {r.body}
                 </Typography>
-                <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mt: 3 }}>
+                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mt: 3 }}>
                   <Avatar size="sm" variant="soft" color={r.color} aria-hidden>
                     {r.initials}
                   </Avatar>

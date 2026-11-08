@@ -60,7 +60,7 @@ export default function PricingTiers() {
             </ToggleButtonGroup>
           </Box>
         </Box>
-        <Grid container spacing={3} sx={{ mt: 6 }} alignItems="stretch">
+        <Grid container spacing={3} sx={{ alignItems: 'stretch', mt: 6 }}>
           {PLANS.map((plan) => {
             const price = period === 'monthly' ? plan.monthly : plan.yearly;
             return (
@@ -70,7 +70,7 @@ export default function PricingTiers() {
                   color="primary"
                   sx={{ p: { xs: 3, md: 4 }, height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
-                  <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
+                  <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }} spacing={1}>
                     <Typography component="h3" sx={{ fontWeight: 700, fontSize: 20 }}>
                       {plan.name}
                     </Typography>
@@ -79,7 +79,7 @@ export default function PricingTiers() {
                   <Typography color="text.secondary" sx={{ mt: 1 }}>
                     {plan.blurb}
                   </Typography>
-                  <Stack direction="row" alignItems="baseline" spacing={0.75} sx={{ mt: 3 }}>
+                  <Stack direction="row" spacing={0.75} sx={{ alignItems: 'baseline', mt: 3 }}>
                     <Typography sx={{ fontWeight: 800, fontSize: 44, letterSpacing: '-0.03em' }}>${price}</Typography>
                     <Typography color="text.secondary">
                       {price === 0 ? 'forever' : period === 'monthly' ? '/ month' : '/ month, billed yearly'}
@@ -87,7 +87,7 @@ export default function PricingTiers() {
                   </Stack>
                   <Stack component="ul" spacing={1.25} sx={{ listStyle: 'none', p: 0, m: 0, mt: 3, flex: 1 }}>
                     {plan.features.map((f) => (
-                      <Stack component="li" key={f} direction="row" spacing={1} alignItems="center">
+                      <Stack component="li" key={f} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                         <Check fontSize="small" color="success" aria-hidden />
                         <Typography variant="body2">{f}</Typography>
                       </Stack>

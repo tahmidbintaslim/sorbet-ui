@@ -203,7 +203,7 @@ export const Sizes: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         5 Size Options
       </Typography>
-      <Stack direction="row" spacing={3} alignItems="center">
+      <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
         <Badge variant="solid" size="xs" badgeContent={1}>
           <Avatar>XS</Avatar>
         </Badge>

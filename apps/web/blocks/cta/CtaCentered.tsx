@@ -17,7 +17,7 @@ export default function CtaCentered() {
           <Typography color="text.secondary" sx={{ fontSize: 18, mt: 2 }}>
             Acme turns scattered tasks, docs and reviews into one calm workflow your team will actually use.
           </Typography>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} justifyContent="center" sx={{ mt: 4 }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ justifyContent: 'center', mt: 4 }}>
             <Button size="lg" href="#">
               Start free
             </Button>
@@ -29,13 +29,11 @@ export default function CtaCentered() {
             component="ul"
             direction="row"
             useFlexGap
-            flexWrap="wrap"
-            justifyContent="center"
             spacing={{ xs: 1.5, sm: 3 }}
-            sx={{ listStyle: 'none', p: 0, m: 0, mt: 3 }}
+            sx={{ flexWrap: 'wrap', justifyContent: 'center', listStyle: 'none', p: 0, m: 0, mt: 3 }}
           >
             {POINTS.map((p) => (
-              <Stack key={p} component="li" direction="row" spacing={0.75} alignItems="center">
+              <Stack key={p} component="li" direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
                 <CheckCircleOutlined fontSize="small" color="success" aria-hidden />
                 <Typography variant="body2" color="text.secondary">
                   {p}

@@ -11,7 +11,7 @@ export default function FooterNewsletter() {
   return (
     <Box component="footer" sx={{ py: { xs: 8, md: 12 }, borderTop: 1, borderColor: 'divider' }}>
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 4, md: 8 }} alignItems="center">
+        <Grid container spacing={{ xs: 4, md: 8 }} sx={{ alignItems: 'center' }}>
           <Grid size={{ xs: 12, md: 6 }}>
             <Typography component="h2" sx={{ fontWeight: 800, fontSize: { xs: 24, md: 28 }, letterSpacing: '-0.03em' }}>
               Stay in the loop
@@ -44,9 +44,7 @@ export default function FooterNewsletter() {
         <Divider sx={{ my: { xs: 4, md: 6 } }} />
         <Stack
           direction={{ xs: 'column', md: 'row' }}
-          spacing={3}
-          justifyContent="space-between"
-          alignItems={{ xs: 'flex-start', md: 'center' }}
+          spacing={3} sx={{ justifyContent: 'space-between', alignItems: { xs: 'flex-start', md: 'center' } }}
         >
           <Typography sx={{ fontWeight: 800, fontSize: 20, letterSpacing: '-0.03em' }}>Acme</Typography>
           <Stack
@@ -54,9 +52,7 @@ export default function FooterNewsletter() {
             aria-label="Newsletter footer links"
             direction="row"
             spacing={3}
-            useFlexGap
-            flexWrap="wrap"
-            rowGap={1}
+            useFlexGap sx={{ flexWrap: 'wrap', rowGap: 1 }}
           >
             {LINKS.map((l) => (
               <Link key={l} href="#" color="text.secondary" underline="hover" variant="body2">

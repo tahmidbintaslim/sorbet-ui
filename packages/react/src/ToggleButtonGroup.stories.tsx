@@ -496,7 +496,7 @@ export const VariantShowcase: Story = {
             <Typography variant="subtitle2" sx={{ mb: 2, textTransform: 'capitalize' }}>
               {variant}
             </Typography>
-            <Stack direction="row" spacing={3} flexWrap="wrap">
+            <Stack direction="row" spacing={3} sx={{ flexWrap: 'wrap' }}>
               {colors.map((color) => (
                 <Box key={`${variant}-${color}`}>
                   <ToggleButtonGroup variant={variant} color={color} value="b" exclusive size="sm">

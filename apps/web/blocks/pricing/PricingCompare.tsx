@@ -48,9 +48,7 @@ export default function PricingCompare() {
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
           spacing={2}
-          justifyContent="space-between"
-          alignItems={{ xs: 'flex-start', sm: 'flex-end' }}
-          sx={{ mb: 4 }}
+          sx={{ justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'flex-end' }, mb: 4 }}
         >
           <Box sx={{ maxWidth: 560 }}>
             <Chip label="Compare plans" variant="soft" color="primary" />

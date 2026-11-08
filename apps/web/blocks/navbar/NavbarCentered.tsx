@@ -28,10 +28,7 @@ export default function NavbarCentered() {
             direction="row"
             spacing={{ xs: 2, sm: 3 }}
             useFlexGap
-            flexWrap="wrap"
-            justifyContent="center"
-            rowGap={1}
-            sx={{ gridColumn: { xs: '1 / -1', md: 'auto' }, gridRow: { xs: 2, md: 'auto' } }}
+            sx={{ flexWrap: 'wrap', justifyContent: 'center', rowGap: 1, gridColumn: { xs: '1 / -1', md: 'auto' }, gridRow: { xs: 2, md: 'auto' } }}
           >
             {LINKS.map((l) => (
               <Link key={l} href="#" color="text.secondary" underline="none" sx={{ fontWeight: 500, fontSize: 15, '&:hover': { color: 'text.primary' } }}>
@@ -39,7 +36,7 @@ export default function NavbarCentered() {
               </Link>
             ))}
           </Stack>
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ justifySelf: 'end' }}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifySelf: 'end' }}>
             <IconButton aria-label="Search" size="small">
               <Search />
             </IconButton>

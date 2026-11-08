@@ -18,7 +18,7 @@ export default function DashboardActivity() {
     <Box component="section" sx={{ py: { xs: 6, md: 10 } }}>
       <Container maxWidth="sm">
         <Card variant="outlined" sx={{ p: { xs: 2.5, md: 3 } }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="baseline">
+          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
             <Typography component="h2" sx={{ fontWeight: 800, fontSize: 22, letterSpacing: '-0.02em' }}>
               Activity
             </Typography>
@@ -46,7 +46,7 @@ export default function DashboardActivity() {
                         {e.target}
                       </Box>
                     </Typography>
-                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
+                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mt: 0.5 }}>
                       <Typography component="time" dateTime={e.iso} variant="caption" color="text.secondary">
                         {e.time}
                       </Typography>

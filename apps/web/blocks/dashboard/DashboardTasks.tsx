@@ -48,7 +48,7 @@ export default function DashboardTasks() {
             {tasks.map((t, i) => (
               <Box component="li" key={t.id}>
                 {i > 0 && <Divider />}
-                <Stack direction="row" alignItems="center" spacing={1} sx={{ py: 0.75 }}>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center', py: 0.75 }}>
                   <Box sx={{ flex: 1, minWidth: 0 }}>
                     <Checkbox
                       size="sm"

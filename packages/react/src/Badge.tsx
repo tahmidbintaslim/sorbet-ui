@@ -147,11 +147,24 @@ export const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
       pulse = false,
       disableAnimation = false,
       badgeContent,
+      slotProps,
       ...rest
     },
     ref
   ) => {
     const sizeStyles = sizeConfig[size];
+
+    // MUI v9 sets aria-hidden on the badge slot; v7 does not. Sorbet keeps the
+    // content exposed in both, so the loading spinner keeps its "Loading" name.
+    // A consumer can still hide it with `slotProps.badge['aria-hidden']`.
+    const externalBadge = slotProps?.badge;
+    const badgeSlotProps =
+      typeof externalBadge === 'function'
+        ? (ownerState: Parameters<typeof externalBadge>[0]) => ({
+            'aria-hidden': undefined,
+            ...externalBadge(ownerState),
+          })
+        : { 'aria-hidden': undefined, ...externalBadge };
 
     const renderBadgeContent = () => {
       if (loading) {
@@ -169,6 +182,7 @@ export const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
         $pulse={pulse}
         $disableAnimation={disableAnimation}
         badgeContent={renderBadgeContent()}
+        slotProps={{ ...slotProps, badge: badgeSlotProps as never }}
         {...rest}
       />
     );

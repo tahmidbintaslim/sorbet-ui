@@ -280,7 +280,7 @@ export const DEMOS: Demo[] = [
   {
     slug: 'avatar-badge',
     render: (p) => (
-      <Stack direction="row" spacing={3} alignItems="center">
+      <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
         <Avatar {...p} status="online">
           AL
         </Avatar>

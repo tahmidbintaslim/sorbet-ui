@@ -86,7 +86,7 @@ export const AllVariants: Story = {
         5 Variant Presets (Unchecked → Checked)
       </Typography>
       {(['solid', 'soft', 'outlined', 'ghost', 'plain'] as const).map((variant) => (
-        <Stack key={variant} direction="row" spacing={4} alignItems="center">
+        <Stack key={variant} direction="row" spacing={4} sx={{ alignItems: 'center' }}>
           <Box sx={{ width: 120 }}>
             <Typography variant="caption" color="text.secondary">
               {variant.charAt(0).toUpperCase() + variant.slice(1)}
@@ -117,7 +117,7 @@ export const Colors: Story = {
       <Stack spacing={2}>
         {(['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'neutral'] as const).map(
           (color) => (
-            <Stack key={color} direction="row" spacing={3} alignItems="center">
+            <Stack key={color} direction="row" spacing={3} sx={{ alignItems: 'center' }}>
               <Radio
                 variant="solid"
                 color={color}
@@ -143,7 +143,7 @@ export const ColorsByVariant: Story = {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
             {variant.charAt(0).toUpperCase() + variant.slice(1)}
           </Typography>
-          <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }} useFlexGap>
             {(['primary', 'secondary', 'success', 'warning', 'danger', 'info'] as const).map(
               (color) => (
                 <Radio
@@ -172,7 +172,7 @@ export const Sizes: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         5 Size Options
       </Typography>
-      <Stack direction="row" spacing={3} alignItems="center">
+      <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
         <Radio size="xs" label="XS" checked />
         <Radio size="sm" label="SM" checked />
         <Radio size="md" label="MD" checked />
@@ -270,7 +270,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Variants (Checked)
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Radio variant="solid" checked aria-label="Solid" />
           <Radio variant="soft" checked aria-label="Soft" />
           <Radio variant="outlined" checked aria-label="Outlined" />
@@ -283,7 +283,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Colors (Solid)
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Radio variant="solid" color="primary" checked aria-label="Primary" />
           <Radio variant="solid" color="secondary" checked aria-label="Secondary" />
           <Radio variant="solid" color="success" checked aria-label="Success" />
@@ -298,7 +298,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Sizes
         </Typography>
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1 }}>
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 1 }}>
           <Radio size="xs" checked aria-label="Size xs" />
           <Radio size="sm" checked aria-label="Size sm" />
           <Radio size="md" checked aria-label="Size md" />
@@ -311,7 +311,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           States
         </Typography>
-        <Stack direction="row" spacing={3} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={3} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Radio label="Default" />
           <Radio label="Checked" checked />
           <Radio label="Loading" loading />

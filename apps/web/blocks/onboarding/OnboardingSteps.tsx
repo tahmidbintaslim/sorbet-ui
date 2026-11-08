@@ -38,7 +38,7 @@ export default function OnboardingSteps() {
                 const current = !finished && i === step;
                 return (
                   <Grid key={s.title} size={{ xs: 12, sm: 4 }} component="li" aria-current={current ? 'step' : undefined}>
-                    <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                       <Box
                         sx={{
                           width: 32,
@@ -115,7 +115,7 @@ export default function OnboardingSteps() {
               </>
             )}
           </Box>
-          <Stack direction="row" justifyContent="space-between" sx={{ mt: 3 }}>
+          <Stack direction="row" sx={{ justifyContent: 'space-between', mt: 3 }}>
             <Button
               variant="outlined"
               color="neutral"

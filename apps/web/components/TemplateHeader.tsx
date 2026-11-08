@@ -13,9 +13,9 @@ export default function TemplateHeader({ name, description, source, blocks }: { 
       <Link component={NextLink} href="/templates" underline="hover" sx={{ fontSize: 14 }}>
         ← All templates
       </Link>
-      <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems={{ md: 'flex-end' }} spacing={2} sx={{ mt: 1 }}>
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ justifyContent: 'space-between', alignItems: { md: 'flex-end' }, mt: 1 }}>
         <Box>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Typography component="h1" sx={{ fontWeight: 800, fontSize: { xs: 32, md: 44 }, letterSpacing: '-0.035em' }}>
               {name}
             </Typography>

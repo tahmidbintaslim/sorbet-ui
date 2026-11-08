@@ -2,8 +2,8 @@
 // @block {"name":"Contact cards","description":"Three cards for email, live chat and office address, each with an icon and action."}
 import type * as React from 'react';
 import { Box, Container, Grid, Typography } from '@mui/material';
-import ChatBubbleOutline from '@mui/icons-material/ChatBubbleOutline';
-import MailOutline from '@mui/icons-material/MailOutline';
+import ChatBubbleOutline from '@mui/icons-material/ChatBubbleOutlined';
+import MailOutline from '@mui/icons-material/MailOutlined';
 import PlaceOutlined from '@mui/icons-material/PlaceOutlined';
 import { Avatar, Button, Card } from '@sorbet-ui/react';
 

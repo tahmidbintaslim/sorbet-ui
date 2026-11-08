@@ -48,7 +48,7 @@ export default function SettingsNotifications() {
                 {g.items.map((item, i) => (
                   <Box key={item.id}>
                     {i > 0 && <Divider />}
-                    <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" sx={{ p: 2 }}>
+                    <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'space-between', p: 2 }}>
                       <Box sx={{ minWidth: 0 }}>
                         <Typography id={`notif-${item.id}`} sx={{ fontWeight: 600 }}>
                           {item.label}
@@ -77,7 +77,7 @@ export default function SettingsNotifications() {
             <Typography component="h3" variant="overline" color="text.secondary" sx={{ fontWeight: 700 }}>
               Email digest
             </Typography>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'center' }} justifyContent="space-between" sx={{ mt: 1 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { sm: 'center' }, justifyContent: 'space-between', mt: 1 }}>
               <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 360 }}>
                 A summary of everything you missed, bundled into one email.
               </Typography>
@@ -96,7 +96,7 @@ export default function SettingsNotifications() {
               </Box>
             </Stack>
           </Box>
-          <Stack direction="row" justifyContent="flex-end" sx={{ mt: 4 }}>
+          <Stack direction="row" sx={{ justifyContent: 'flex-end', mt: 4 }}>
             <Button>Save preferences</Button>
           </Stack>
         </Card>

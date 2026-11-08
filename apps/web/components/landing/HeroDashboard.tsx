@@ -58,8 +58,8 @@ export default function HeroDashboard() {
         backdropFilter: 'blur(8px)',
       }}
     >
-      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-        <Stack direction="row" spacing={1.25} alignItems="center">
+      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }} spacing={1}>
+        <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
           <Avatar size="sm" status="online">AC</Avatar>
           <Box>
             <Typography sx={{ fontWeight: 700, fontSize: 14 }}>Acme dashboard</Typography>
@@ -82,7 +82,7 @@ export default function HeroDashboard() {
         />
       </Box>
 
-      <Stack direction="row" alignItems="baseline" spacing={1.5} sx={{ mt: 2.5 }}>
+      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'baseline', mt: 2.5 }}>
         <Typography component="p" sx={{ fontWeight: 800, fontSize: 34, letterSpacing: '-0.03em', fontVariantNumeric: 'tabular-nums' }}>
           {d.prefix}
           <CountUp value={d.total} />
@@ -109,7 +109,7 @@ export default function HeroDashboard() {
       </Box>
 
       <Box sx={{ mt: 2.5 }}>
-        <Stack direction="row" justifyContent="space-between">
+        <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
           <Typography variant="caption" color="text.secondary">
             Quarterly goal
           </Typography>
@@ -124,10 +124,8 @@ export default function HeroDashboard() {
 
       <Stack
         direction="row"
-        alignItems="center"
-        justifyContent="space-between"
         spacing={1}
-        sx={{ mt: 2.5, pt: 2, borderTop: 1, borderColor: 'divider' }}
+        sx={{ alignItems: 'center', justifyContent: 'space-between', mt: 2.5, pt: 2, borderTop: 1, borderColor: 'divider' }}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >

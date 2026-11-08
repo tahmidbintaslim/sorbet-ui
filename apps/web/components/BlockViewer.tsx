@@ -13,7 +13,7 @@ export default function BlockViewer({ id, name, description }: { id: string; nam
   const Block = BLOCK_COMPONENTS[id];
   return (
     <Box component="article" id={id} sx={{ scrollMarginTop: 90 }}>
-      <Stack direction="row" alignItems="flex-end" justifyContent="space-between" spacing={2} sx={{ mb: 1.5 }} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', mb: 1.5 }} useFlexGap>
         <Box>
           <Typography component="h3" sx={{ fontWeight: 700, fontSize: 18 }}>
             {name}

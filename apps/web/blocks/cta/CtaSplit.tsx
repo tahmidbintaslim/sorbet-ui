@@ -10,9 +10,7 @@ export default function CtaSplit() {
         <Card variant="soft" color="primary" sx={{ p: { xs: 3, sm: 4, md: 6 } }}>
           <Stack
             direction={{ xs: 'column', md: 'row' }}
-            spacing={{ xs: 3, md: 6 }}
-            alignItems={{ xs: 'flex-start', md: 'center' }}
-            justifyContent="space-between"
+            spacing={{ xs: 3, md: 6 }} sx={{ alignItems: { xs: 'flex-start', md: 'center' }, justifyContent: 'space-between' }}
           >
             <Box sx={{ maxWidth: 560 }}>
               <Typography component="h2" sx={{ fontWeight: 800, fontSize: { xs: 28, md: 36 }, letterSpacing: '-0.03em', lineHeight: 1.15 }}>

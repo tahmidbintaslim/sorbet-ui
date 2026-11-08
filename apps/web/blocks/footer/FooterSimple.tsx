@@ -11,9 +11,7 @@ export default function FooterSimple() {
         <Stack
           direction={{ xs: 'column', md: 'row' }}
           spacing={{ xs: 2, md: 4 }}
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ textAlign: 'center' }}
+          sx={{ justifyContent: 'space-between', alignItems: 'center', textAlign: 'center' }}
         >
           <Typography sx={{ fontWeight: 800, fontSize: 18, letterSpacing: '-0.03em' }}>Acme</Typography>
           <Stack
@@ -21,10 +19,7 @@ export default function FooterSimple() {
             aria-label="Simple footer links"
             direction="row"
             spacing={3}
-            useFlexGap
-            flexWrap="wrap"
-            justifyContent="center"
-            rowGap={1}
+            useFlexGap sx={{ flexWrap: 'wrap', justifyContent: 'center', rowGap: 1 }}
           >
             {LINKS.map((l) => (
               <Link key={l} href="#" color="text.secondary" underline="hover" variant="body2">

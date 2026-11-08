@@ -71,7 +71,7 @@ export default function LivePlayground() {
   };
 
   return (
-    <Grid container spacing={3} alignItems="stretch">
+    <Grid container spacing={3} sx={{ alignItems: 'stretch' }}>
       <Grid size={{ xs: 12, md: 6 }} sx={{ minWidth: 0, order: { xs: 2, md: 1 } }}>
         <ToggleButtonGroup
           size="small"
@@ -116,7 +116,7 @@ export default function LivePlayground() {
                 </ToggleButton>
               ))}
             </ToggleButtonGroup>
-            <Stack direction="row" spacing={1} role="radiogroup" aria-label="Color" flexWrap="wrap" useFlexGap>
+            <Stack direction="row" spacing={1} role="radiogroup" aria-label="Color" sx={{ flexWrap: 'wrap' }} useFlexGap>
               {COLORS.map((c) => (
                 <Box
                   key={c}
@@ -142,7 +142,7 @@ export default function LivePlayground() {
                 />
               ))}
             </Stack>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} alignItems={{ sm: 'center' }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{ alignItems: { sm: 'center' } }}>
               <Box sx={{ flex: 1 }}>
                 <Typography id="pg-size" variant="caption" color="text.secondary">
                   Size: {size}

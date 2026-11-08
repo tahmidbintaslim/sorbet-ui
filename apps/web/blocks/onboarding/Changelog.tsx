@@ -78,7 +78,7 @@ export default function Changelog() {
                 {i < releases.length - 1 && <Box sx={{ width: 2, flex: 1, bgcolor: 'divider', my: 0.5 }} />}
               </Box>
               <Box sx={{ pb: i < releases.length - 1 ? 5 : 0, minWidth: 0, flex: 1 }}>
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ flexWrap: 'wrap', rowGap: 1 }}>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap', rowGap: 1 }}>
                   <Chip size="sm" variant={r.latest ? 'solid' : 'outlined'} color={r.latest ? 'primary' : 'neutral'} label={r.version} />
                   {r.latest && <Chip size="sm" variant="soft" color="success" label="Latest" />}
                   <Typography component="time" dateTime={r.iso} variant="body2" color="text.secondary">
@@ -90,7 +90,7 @@ export default function Changelog() {
                 </Typography>
                 <Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0, mt: 1.5 }}>
                   {r.notes.map(([tag, text]) => (
-                    <Stack component="li" key={text} direction="row" spacing={1.5} alignItems="baseline" sx={{ py: 0.5 }}>
+                    <Stack component="li" key={text} direction="row" spacing={1.5} sx={{ alignItems: 'baseline', py: 0.5 }}>
                       <Box sx={{ flexShrink: 0, width: 96 }}>
                         <Chip size="xs" variant="soft" color={tagColor[tag]} label={tag} />
                       </Box>
