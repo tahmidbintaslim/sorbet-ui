@@ -87,6 +87,8 @@ const getColorStyles = (color: SorbetColor, variant: SorbetVariant, isDark: bool
       },
       '&:active:not(:disabled)': {
         backgroundColor: isDark ? colorScale.alpha40 : colorScale.alpha30,
+        // On dark paper the alpha40 tint leaves `light` at 4.4:1; the 100 shade passes.
+        ...(isDark && { color: colorScale[100] }),
       },
     },
 

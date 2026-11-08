@@ -35,7 +35,7 @@ export default function App() {
 
 ## Links
 
-- Website, docs, blocks and demo: https://sorbet-ui-web-tahmid-bin-taslim-rafis-projects.vercel.app
+- Website, docs, blocks and demo: https://sorbetui.tahmid.space
 - Storybook: https://sorbet-ui.vercel.app
 - Source: https://github.com/tahmidbintaslim/sorbet-ui
 

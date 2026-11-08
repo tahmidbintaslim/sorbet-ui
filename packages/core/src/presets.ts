@@ -5,7 +5,7 @@
  * This ensures visual consistency across all components.
  */
 
-import { colors, colorScaleForMode, type ColorScale } from '@sorbet-ui/tokens';
+import { colors, colorScaleForMode, solidActiveShade, type ColorScale } from '@sorbet-ui/tokens';
 import type { SorbetColor, SorbetVariant } from './types';
 
 /**
@@ -48,8 +48,11 @@ export const getVariantStyles = (
   color: SorbetColor = 'primary',
   isDark = false
 ): VariantStyles => {
+  // Mirrors the Button styles, so every text and background pair here passes the same
+  // WCAG AA checks (see presets.test.ts) in both modes.
   const colorScale = getColorScale(color, isDark);
   const neutralScale = colors.neutral;
+  const focus = { focusOutlineColor: colorScale.alpha40, focusOutlineWidth: '3px', focusOutlineOffset: '2px' };
 
   const baseStyles: Record<SorbetVariant, VariantStyles> = {
     solid: {
@@ -60,30 +63,28 @@ export const getVariantStyles = (
       hoverBackgroundColor: colorScale.dark,
       hoverColor: colorScale.contrastText,
       hoverBorderColor: 'transparent',
-      activeBackgroundColor: colorScale[700],
+      // Light ink (dark mode) gets a lighter pressed shade, white text a darker one.
+      activeBackgroundColor: solidActiveShade(colorScale),
       activeColor: colorScale.contrastText,
-      focusOutlineColor: colorScale.alpha40,
-      focusOutlineWidth: '3px',
-      focusOutlineOffset: '2px',
-      disabledBackgroundColor: neutralScale[200],
-      disabledColor: neutralScale[500],
+      ...focus,
+      disabledBackgroundColor: isDark ? neutralScale[700] : neutralScale[200],
+      disabledColor: isDark ? neutralScale[400] : neutralScale[500],
       disabledBorderColor: 'transparent',
     },
     soft: {
-      backgroundColor: colorScale.alpha12,
-      color: colorScale.dark,
+      backgroundColor: isDark ? colorScale.alpha20 : colorScale.alpha12,
+      color: isDark ? colorScale.light : colorScale.dark,
       borderColor: 'transparent',
       borderWidth: '0px',
-      hoverBackgroundColor: colorScale.alpha20,
-      hoverColor: colorScale.dark,
+      hoverBackgroundColor: isDark ? colorScale.alpha30 : colorScale.alpha20,
+      hoverColor: isDark ? colorScale.light : colorScale.dark,
       hoverBorderColor: 'transparent',
-      activeBackgroundColor: colorScale.alpha30,
-      activeColor: colorScale.dark,
-      focusOutlineColor: colorScale.alpha40,
-      focusOutlineWidth: '3px',
-      focusOutlineOffset: '2px',
-      disabledBackgroundColor: neutralScale[100],
-      disabledColor: neutralScale[400],
+      activeBackgroundColor: isDark ? colorScale.alpha40 : colorScale.alpha30,
+      // The strongest dark-mode tint needs the 100 shade to keep 4.5:1 on paper.
+      activeColor: isDark ? colorScale[100] : colorScale[800],
+      ...focus,
+      disabledBackgroundColor: isDark ? neutralScale[800] : neutralScale[100],
+      disabledColor: isDark ? neutralScale[500] : neutralScale[400],
       disabledBorderColor: 'transparent',
     },
     outlined: {
@@ -92,33 +93,29 @@ export const getVariantStyles = (
       borderColor: colorScale.main,
       borderWidth: '1.5px',
       hoverBackgroundColor: colorScale.alpha8,
-      hoverColor: colorScale.main,
+      hoverColor: colorScale.dark,
       hoverBorderColor: colorScale.dark,
       activeBackgroundColor: colorScale.alpha16,
       activeColor: colorScale.dark,
-      focusOutlineColor: colorScale.alpha40,
-      focusOutlineWidth: '3px',
-      focusOutlineOffset: '2px',
+      ...focus,
       disabledBackgroundColor: 'transparent',
-      disabledColor: neutralScale[400],
-      disabledBorderColor: neutralScale[300],
+      disabledColor: isDark ? neutralScale[500] : neutralScale[400],
+      disabledBorderColor: isDark ? neutralScale[700] : neutralScale[300],
     },
     ghost: {
       backgroundColor: 'transparent',
-      color: neutralScale[700],
-      borderColor: neutralScale[300],
+      color: isDark ? neutralScale[300] : neutralScale[700],
+      borderColor: isDark ? neutralScale[600] : neutralScale[300],
       borderWidth: '1.5px',
-      hoverBackgroundColor: neutralScale[100],
-      hoverColor: neutralScale[800],
-      hoverBorderColor: neutralScale[400],
-      activeBackgroundColor: neutralScale[200],
-      activeColor: neutralScale[900],
-      focusOutlineColor: neutralScale.alpha40,
-      focusOutlineWidth: '3px',
-      focusOutlineOffset: '2px',
+      hoverBackgroundColor: colorScale.alpha8,
+      hoverColor: colorScale.dark,
+      hoverBorderColor: colorScale.main,
+      activeBackgroundColor: colorScale.alpha16,
+      activeColor: colorScale.dark,
+      ...focus,
       disabledBackgroundColor: 'transparent',
-      disabledColor: neutralScale[400],
-      disabledBorderColor: neutralScale[200],
+      disabledColor: isDark ? neutralScale[500] : neutralScale[400],
+      disabledBorderColor: isDark ? neutralScale[700] : neutralScale[200],
     },
     plain: {
       backgroundColor: 'transparent',
@@ -130,11 +127,9 @@ export const getVariantStyles = (
       hoverBorderColor: 'transparent',
       activeBackgroundColor: colorScale.alpha16,
       activeColor: colorScale.dark,
-      focusOutlineColor: colorScale.alpha40,
-      focusOutlineWidth: '3px',
-      focusOutlineOffset: '2px',
+      ...focus,
       disabledBackgroundColor: 'transparent',
-      disabledColor: neutralScale[400],
+      disabledColor: isDark ? neutralScale[500] : neutralScale[400],
       disabledBorderColor: 'transparent',
     },
   };

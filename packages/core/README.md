@@ -6,4 +6,4 @@ Shared types (`SorbetVariant`, `SorbetColor`, `SorbetSize`), variant presets, ac
 npm i @sorbet-ui/core
 ```
 
-Website: https://sorbet-ui-web-tahmid-bin-taslim-rafis-projects.vercel.app · Source: https://github.com/tahmidbintaslim/sorbet-ui · MIT licensed.
+Website: https://sorbetui.tahmid.space · Source: https://github.com/tahmidbintaslim/sorbet-ui · MIT licensed.
