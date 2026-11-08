@@ -5,5 +5,5 @@
   "buildCommand": "cd ../.. && pnpm turbo run build --filter=web",
   "outputDirectory": "out",
   "cleanUrls": true,
-  "ignoreCommand": "npx -y turbo-ignore@2.11.10 web --fallback=HEAD^"
+  "ignoreCommand": "bash ../../scripts/vercel-ignore.sh web"
 }

@@ -123,7 +123,9 @@ export default function GettingStarted() {
       <CodeBlock code={PROVIDER_USE} title="App.tsx" label="Using an installed block" />
       <Typography variant="body2" color="text.secondary">
         The <code>@/</code> alias must point at your source folder (for example <code>src/</code>) in{' '}
-        <code>tsconfig.json</code> and your bundler. The full list is at{' '}
+        <code>tsconfig.json</code> and your bundler. In the Next.js App Router, place{' '}
+        <code>SorbetProvider</code> inside <code>AppRouterCacheProvider</code>, as in the providers
+        file above. The full list is at{' '}
         <a href={`${REGISTRY_URL}/registry.json`}>registry.json</a>.
       </Typography>
 
