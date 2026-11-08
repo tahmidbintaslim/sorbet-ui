@@ -4,9 +4,10 @@
 import * as React from 'react';
 import { Box, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { AnimatePresence, motion } from 'motion/react';
-import CodeBlock from './CodeBlock';
+import CodeBlock, { CommandLine } from './CodeBlock';
 import { BLOCK_SOURCE } from '@/lib/blocks-source';
 import { BLOCK_COMPONENTS } from './blocks-registry';
+import { addCommand, registryName } from '@/lib/registry';
 
 export default function BlockViewer({ id, name, description }: { id: string; name: string; description: string }) {
   const [view, setView] = React.useState<'preview' | 'code'>('preview');
@@ -27,6 +28,10 @@ export default function BlockViewer({ id, name, description }: { id: string; nam
           <ToggleButton value="code">Code</ToggleButton>
         </ToggleButtonGroup>
       </Stack>
+      {/* One-command install through the shadcn CLI (see /docs#cli for the one-time setup). */}
+      <Box sx={{ mb: 1.5 }}>
+        <CommandLine command={addCommand(registryName(id))} label={`Install ${name} with the shadcn CLI`} mt={0} />
+      </Box>
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={view} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
           {view === 'preview' ? (

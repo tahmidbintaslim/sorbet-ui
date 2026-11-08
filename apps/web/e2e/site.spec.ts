@@ -2,6 +2,8 @@ import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { CATALOG } from '../lib/catalog';
 import { categoriesWithBlocks } from '../lib/blocks';
+import { BLOCKS, BLOCK_SOURCE } from '../lib/blocks-source';
+import { registryName } from '../lib/registry';
 import { TEMPLATES } from '../lib/templates';
 
 const TEMPLATE_ROUTES = TEMPLATES.map((t) => `/templates/${t.slug}`);
@@ -245,6 +247,23 @@ test('blocks: code tab shows the block source', async ({ page }) => {
   await page.goto('/blocks/hero');
   await page.getByRole('group', { name: 'Centered view' }).getByRole('button', { name: 'Code' }).click();
   await expect(page.locator('pre[aria-label="Centered source"]')).toContainText('export default function HeroCentered');
+});
+
+test('registry: every block has a shadcn item whose code matches the site source', async ({ request, page }) => {
+  const index = await (await request.get('/r/registry.json')).json();
+  const names = index.items.map((i: { name: string }) => i.name);
+  expect(names).toContain('theme');
+  for (const b of BLOCKS) expect(names).toContain(registryName(b.id));
+  const item = await (await request.get('/r/hero-centered.json')).json();
+  expect(item.type).toBe('registry:block');
+  expect(item.dependencies).toEqual(['@mui/material', '@sorbet-ui/react']);
+  expect(item.registryDependencies[0]).toMatch(/\/r\/theme\.json$/);
+  expect(item.files[0].content).toBe(BLOCK_SOURCE.HeroCentered);
+  const theme = await (await request.get('/r/theme.json')).json();
+  expect(theme.dependencies).toEqual(expect.arrayContaining(['@sorbet-ui/theme', '@mui/material', '@emotion/react', '@emotion/styled']));
+  // The block page shows the matching install command.
+  await page.goto('/blocks/hero');
+  await expect(page.getByLabel('Install Centered with the shadcn CLI')).toHaveText(/shadcn@latest add .*\/r\/hero-centered\.json$/);
 });
 
 test('blocks: index lists 40+ blocks and search finds one', async ({ page }) => {

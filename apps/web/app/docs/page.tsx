@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Typography } from '@mui/material';
-import CodeBlock from '@/components/CodeBlock';
+import CodeBlock, { CommandLine } from '@/components/CodeBlock';
+import { REGISTRY_URL, addCommand } from '@/lib/registry';
 
 export const metadata: Metadata = { title: 'Getting started' };
 
@@ -35,6 +36,29 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         {children}
       </ThemeProvider>
     </AppRouterCacheProvider>
+  );
+}`;
+
+// shadcn needs a components.json. MUI apps do not use Tailwind, so the tailwind
+// fields stay empty. The "registries" entry enables the short @sorbet/<name> form.
+const COMPONENTS_JSON = `{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": { "config": "", "css": "", "baseColor": "neutral", "cssVariables": false },
+  "aliases": { "components": "@/components", "utils": "@/lib/utils" },
+  "registries": { "@sorbet": "${REGISTRY_URL}/{name}.json" }
+}`;
+
+const PROVIDER_USE = `import SorbetProvider from '@/components/sorbet/SorbetProvider';
+import HeroCentered from '@/components/sorbet/HeroCentered';
+
+export default function App() {
+  return (
+    <SorbetProvider mode="system">
+      <HeroCentered />
+    </SorbetProvider>
   );
 }`;
 
@@ -82,6 +106,26 @@ export default function GettingStarted() {
       </Typography>
       <CodeBlock code={NEXT_PROVIDERS} label="Next.js providers" />
       <CodeBlock code={NEXT_PAGE} label="Next.js page" />
+
+      <Typography component="h2" id="cli" variant="h5" sx={{ fontWeight: 700, mt: 4, scrollMarginTop: 90 }}>
+        Add blocks with the shadcn CLI
+      </Typography>
+      <Typography color="text.secondary">
+        Every block on the <a href="/blocks">blocks page</a> installs with one command. The CLI copies the
+        block into <code>components/sorbet/</code>, adds a <code>SorbetProvider</code> theme wrapper, and
+        installs the npm packages it imports. No Tailwind needed. If your project has no{' '}
+        <code>components.json</code> yet, add this one at the root:
+      </Typography>
+      <CodeBlock code={COMPONENTS_JSON} title="components.json" label="components.json for an MUI app" />
+      <Typography color="text.secondary">Then add any block by URL, or by its short name:</Typography>
+      <CommandLine command={addCommand('hero-centered')} label="Add a block by URL" />
+      <CommandLine command="npx shadcn@latest add @sorbet/hero-centered" label="Add a block by short name" mt={1.5} />
+      <CodeBlock code={PROVIDER_USE} title="App.tsx" label="Using an installed block" />
+      <Typography variant="body2" color="text.secondary">
+        The <code>@/</code> alias must point at your source folder (for example <code>src/</code>) in{' '}
+        <code>tsconfig.json</code> and your bundler. The full list is at{' '}
+        <a href={`${REGISTRY_URL}/registry.json`}>registry.json</a>.
+      </Typography>
 
       <Typography component="h2" variant="h5" sx={{ fontWeight: 700, mt: 4 }}>
         The variant, color and size API
