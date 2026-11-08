@@ -86,6 +86,6 @@
     "eslint-plugin-storybook": "^10.6.3",
     "jest-axe": "^9.0.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12"
   }
 }
