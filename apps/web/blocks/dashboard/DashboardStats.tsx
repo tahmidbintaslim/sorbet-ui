@@ -33,7 +33,7 @@ export default function DashboardStats() {
                     {s.label}
                   </Typography>
                   <Typography sx={{ fontWeight: 800, fontSize: 30, letterSpacing: '-0.03em', mt: 1 }}>{s.value}</Typography>
-                  <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1.5 }}>
+                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mt: 1.5 }}>
                     <Chip
                       size="sm"
                       variant="soft"

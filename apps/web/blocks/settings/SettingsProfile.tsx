@@ -44,7 +44,7 @@ export default function SettingsProfile() {
               setStatus('saved');
             }}
           >
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ xs: 'flex-start', sm: 'center' }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { xs: 'flex-start', sm: 'center' } }}>
               <Avatar size="xl" color="primary" variant="soft">
                 {(values.first[0] ?? '') + (values.last[0] ?? '')}
               </Avatar>
@@ -92,7 +92,7 @@ export default function SettingsProfile() {
                 Profile updated.
               </Alert>
             )}
-            <Stack direction={{ xs: 'column-reverse', sm: 'row' }} spacing={1.5} justifyContent="flex-end" sx={{ mt: 3 }}>
+            <Stack direction={{ xs: 'column-reverse', sm: 'row' }} spacing={1.5} sx={{ justifyContent: 'flex-end', mt: 3 }}>
               <Button
                 variant="outlined"
                 color="neutral"

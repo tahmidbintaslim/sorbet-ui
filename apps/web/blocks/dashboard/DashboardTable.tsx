@@ -61,7 +61,7 @@ export default function DashboardTable() {
     <Box component="section" sx={{ py: { xs: 6, md: 10 } }}>
       <Container maxWidth="lg">
         <Card variant="outlined" sx={{ p: { xs: 2, md: 3 } }}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="space-between" alignItems={{ sm: 'center' }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' } }}>
             <Box>
               <Typography component="h2" sx={{ fontWeight: 800, fontSize: 22, letterSpacing: '-0.02em' }}>
                 Recent orders
@@ -93,7 +93,7 @@ export default function DashboardTable() {
               emptyContent={<Typography color="text.secondary">No orders match “{query}”.</Typography>}
             />
           </Box>
-          <Stack direction="row" justifyContent="center" sx={{ mt: 2.5 }}>
+          <Stack direction="row" sx={{ justifyContent: 'center', mt: 2.5 }}>
             <Pagination
               count={pageCount}
               page={current}

@@ -66,7 +66,7 @@ const initials = (n: string) => n.split(' ').map((p) => p[0]).join('');
 function Panel({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
   return (
     <Card variant="outlined" sx={{ p: { xs: 2, sm: 3 }, height: '100%' }}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }} spacing={1}>
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }} spacing={1}>
         <Typography component="h3" sx={{ fontWeight: 700 }}>
           {title}
         </Typography>
@@ -94,7 +94,7 @@ function Overview({ orders, onOpenOrder }: { orders: Order[]; onOpenOrder: (o: O
   ];
   return (
     <Stack spacing={3}>
-      <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ sm: 'center' }} spacing={2}>
+      <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' } }} spacing={2}>
         <Box>
           <Typography component="h2" sx={{ fontWeight: 800, fontSize: 26 }}>
             Good morning, Sam
@@ -118,7 +118,7 @@ function Overview({ orders, onOpenOrder }: { orders: Order[]; onOpenOrder: (o: O
               <Typography variant="body2" color="text.secondary">
                 {k.label}
               </Typography>
-              <Stack direction="row" alignItems="baseline" spacing={1} sx={{ mt: 0.5 }}>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline', mt: 0.5 }}>
                 <Typography component="p" sx={{ fontWeight: 800, fontSize: 28, fontVariantNumeric: 'tabular-nums' }}>
                   <CountUp value={k.value} format={k.fmt} />
                 </Typography>
@@ -153,7 +153,7 @@ function Overview({ orders, onOpenOrder }: { orders: Order[]; onOpenOrder: (o: O
                 ['Support SLA', 91, 'success'],
               ].map(([label, v, c]) => (
                 <Box key={label as string}>
-                  <Stack direction="row" justifyContent="space-between">
+                  <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                     <Typography variant="body2">{label}</Typography>
                     <Typography variant="body2" sx={{ fontWeight: 700 }}>
                       {v}%
@@ -203,7 +203,7 @@ function Orders({ orders, onOpenOrder, onNew }: { orders: Order[]; onOpenOrder: 
   React.useEffect(() => setPage(1), [q, status]);
   return (
     <Stack spacing={3}>
-      <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ sm: 'center' }} spacing={2}>
+      <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' } }} spacing={2}>
         <Box>
           <Typography component="h2" sx={{ fontWeight: 800, fontSize: 26 }}>
             Orders
@@ -215,7 +215,7 @@ function Orders({ orders, onOpenOrder, onNew }: { orders: Order[]; onOpenOrder: 
         </Button>
       </Stack>
       <Card variant="outlined" sx={{ p: { xs: 2, sm: 3 } }}>
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems={{ md: 'center' }} sx={{ mb: 2 }}>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ alignItems: { md: 'center' }, mb: 2 }}>
           <MuiTextField
             size="small"
             value={q}
@@ -227,7 +227,7 @@ function Orders({ orders, onOpenOrder, onNew }: { orders: Order[]; onOpenOrder: 
             }}
             sx={{ flex: 1, maxWidth: { md: 320 } }}
           />
-          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap role="group" aria-label="Filter by status">
+          <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }} useFlexGap role="group" aria-label="Filter by status">
             {(['All', 'Paid', 'Pending', 'Refunded', 'Failed'] as const).map((s) => (
               <Button key={s} size="sm" variant={status === s ? 'soft' : 'ghost'} aria-pressed={status === s} onClick={() => setStatus(s)}>
                 {s}
@@ -254,7 +254,7 @@ function Orders({ orders, onOpenOrder, onNew }: { orders: Order[]; onOpenOrder: 
           />
         </Box>
         {pages > 1 && (
-          <Stack alignItems="center" sx={{ mt: 2 }}>
+          <Stack sx={{ alignItems: 'center', mt: 2 }}>
             <Pagination count={pages} page={page} onChange={(_, p) => setPage(p)} size="sm" />
           </Stack>
         )}
@@ -269,7 +269,7 @@ function Customers({ onOpen }: { onOpen: (c: Customer) => void }) {
   const list = CUSTOMERS.filter((c) => plan === 'All' || c.plan === plan);
   return (
     <Stack spacing={3}>
-      <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ sm: 'center' }} spacing={2}>
+      <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' } }} spacing={2}>
         <Box>
           <Typography component="h2" sx={{ fontWeight: 800, fontSize: 26 }}>
             Customers
@@ -292,7 +292,7 @@ function Customers({ onOpen }: { onOpen: (c: Customer) => void }) {
               sx={{ p: 2.5, height: '100%', cursor: 'pointer', transition: 'border-color .2s, transform .2s', '&:hover': { borderColor: 'primary.main', transform: 'translateY(-2px)' } }}
             >
               <Box component="button" onClick={() => onOpen(c)} aria-label={`Open ${c.name}`} sx={{ all: 'unset', display: 'block', width: '100%', '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 4, borderRadius: 1 } }}>
-                <Stack direction="row" spacing={1.5} alignItems="center">
+                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                   <Avatar status={c.status}>{initials(c.name)}</Avatar>
                   <Box sx={{ minWidth: 0 }}>
                     <Typography sx={{ fontWeight: 700 }} noWrap>
@@ -303,7 +303,7 @@ function Customers({ onOpen }: { onOpen: (c: Customer) => void }) {
                     </Typography>
                   </Box>
                 </Stack>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 2 }}>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
                   <Chip size="sm" variant="soft" color={c.plan === 'Team' ? 'secondary' : c.plan === 'Pro' ? 'primary' : 'neutral'} label={c.plan} />
                   <Typography variant="body2" sx={{ fontWeight: 700 }}>
                     {money(c.spent)}
@@ -338,7 +338,7 @@ function SettingsView({ onSaved }: { onSaved: () => void }) {
               label: 'Profile',
               content: (
                 <Stack spacing={2.5} sx={{ pt: 3, maxWidth: 520 }}>
-                  <Stack direction="row" spacing={2} alignItems="center">
+                  <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                     <Avatar size="lg">{initials(name || 'S R')}</Avatar>
                     <Button variant="soft" size="sm">
                       Change avatar
@@ -376,7 +376,7 @@ function SettingsView({ onSaved }: { onSaved: () => void }) {
               content: (
                 <Stack spacing={2} sx={{ pt: 3, maxWidth: 520 }}>
                   <Alert color="info">You are on the Team plan (sample). Next invoice on Nov 30.</Alert>
-                  <Stack direction="row" justifyContent="space-between">
+                  <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                     <Typography>Seats used</Typography>
                     <Typography sx={{ fontWeight: 700 }}>8 of 10</Typography>
                   </Stack>
@@ -453,7 +453,7 @@ export default function DemoApp() {
     <Box data-testid="demo-app" sx={{ display: 'flex', minHeight: 'calc(100vh - 65px)', bgcolor: 'background.default' }}>
       {/* Sidebar (desktop) */}
       <Box sx={{ display: { xs: 'none', md: 'block' }, width: 240, flexShrink: 0, borderRight: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
-        <Stack direction="row" alignItems="center" spacing={1} sx={{ px: 2.5, py: 2.5 }}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', px: 2.5, py: 2.5 }}>
           <Box sx={{ width: 28, height: 28, borderRadius: 2, background: `linear-gradient(135deg, ${colorPalette.primary[400]}, ${colorPalette.secondary[400]})` }} />
           <Typography sx={{ fontWeight: 800 }}>Acme Admin</Typography>
         </Stack>
@@ -471,7 +471,7 @@ export default function DemoApp() {
       {/* Mobile nav */}
       <Drawer open={mobileNav} onClose={() => setMobileNav(false)} anchor="left">
         <Box sx={{ width: 260 }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 2, py: 1.5 }}>
+          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
             <Typography sx={{ fontWeight: 800 }}>Acme Admin</Typography>
             <IconButton aria-label="Close menu" onClick={() => setMobileNav(false)}>
               <Close />
@@ -483,7 +483,7 @@ export default function DemoApp() {
 
       <Box sx={{ flex: 1, minWidth: 0 }}>
         {/* Top bar */}
-        <Stack direction="row" alignItems="center" spacing={1.5} sx={{ px: { xs: 2, md: 4 }, py: 1.5, borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', px: { xs: 2, md: 4 }, py: 1.5, borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
           <IconButton aria-label="Open menu" aria-expanded={mobileNav} onClick={() => setMobileNav(true)} sx={{ display: { md: 'none' } }}>
             <Menu />
           </IconButton>
@@ -512,19 +512,19 @@ export default function DemoApp() {
             <DialogTitle id="order-title">Order {openOrder.id}</DialogTitle>
             <DialogContent>
               <Stack spacing={1.5}>
-                <Stack direction="row" justifyContent="space-between">
+                <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                   <Typography color="text.secondary">Customer</Typography>
                   <Typography sx={{ fontWeight: 600 }}>{openOrder.customer}</Typography>
                 </Stack>
-                <Stack direction="row" justifyContent="space-between">
+                <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                   <Typography color="text.secondary">Date</Typography>
                   <Typography>{openOrder.date}</Typography>
                 </Stack>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography color="text.secondary">Status</Typography>
                   <StatusChip status={openOrder.status} />
                 </Stack>
-                <Stack direction="row" justifyContent="space-between">
+                <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                   <Typography color="text.secondary">Total</Typography>
                   <Typography sx={{ fontWeight: 800 }}>{money(openOrder.amount)}</Typography>
                 </Stack>
@@ -581,7 +581,7 @@ export default function DemoApp() {
       <Drawer open={customer !== null} onClose={() => setCustomer(null)} anchor="right">
         {customer && (
           <Box sx={{ width: { xs: 300, sm: 360 }, p: 3 }} role="region" aria-label={`${customer.name} details`}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography component="h2" sx={{ fontWeight: 800, fontSize: 20 }}>
                 {customer.name}
               </Typography>
@@ -589,7 +589,7 @@ export default function DemoApp() {
                 <Close />
               </IconButton>
             </Stack>
-            <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mt: 2 }}>
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mt: 2 }}>
               <Avatar size="lg" status={customer.status}>
                 {initials(customer.name)}
               </Avatar>
@@ -602,15 +602,15 @@ export default function DemoApp() {
             </Stack>
             <Divider sx={{ my: 3 }} />
             <Stack spacing={1.5}>
-              <Stack direction="row" justifyContent="space-between">
+              <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                 <Typography color="text.secondary">Plan</Typography>
                 <Typography sx={{ fontWeight: 600 }}>{customer.plan}</Typography>
               </Stack>
-              <Stack direction="row" justifyContent="space-between">
+              <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                 <Typography color="text.secondary">Lifetime spend</Typography>
                 <Typography sx={{ fontWeight: 600 }}>{money(customer.spent)}</Typography>
               </Stack>
-              <Stack direction="row" justifyContent="space-between">
+              <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                 <Typography color="text.secondary">Orders</Typography>
                 <Typography sx={{ fontWeight: 600 }}>{orders.filter((o) => o.customer === customer.name).length}</Typography>
               </Stack>

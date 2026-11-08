@@ -7,7 +7,7 @@ export default function HeroSplit() {
   return (
     <Box component="section" sx={{ py: { xs: 8, md: 12 } }}>
       <Container maxWidth="lg">
-        <Grid container spacing={6} alignItems="center">
+        <Grid container spacing={6} sx={{ alignItems: 'center' }}>
           <Grid size={{ xs: 12, md: 6 }}>
             <Typography variant="overline" color="primary" sx={{ fontWeight: 700 }}>
               For growing teams
@@ -25,7 +25,7 @@ export default function HeroSplit() {
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <Card variant="outlined" sx={{ p: 3 }}>
-              <Stack direction="row" spacing={1.5} alignItems="center">
+              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                 <Avatar status="online">JD</Avatar>
                 <Box sx={{ flex: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>Week 32 summary</Typography>
@@ -41,7 +41,7 @@ export default function HeroSplit() {
                 ['Docs updated', 45],
               ].map(([label, v]) => (
                 <Box key={label} sx={{ mt: 2.5 }}>
-                  <Stack direction="row" justifyContent="space-between">
+                  <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                     <Typography variant="body2">{label}</Typography>
                     <Typography variant="body2" sx={{ fontWeight: 700 }}>
                       {v}%

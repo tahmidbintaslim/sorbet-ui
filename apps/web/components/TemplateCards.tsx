@@ -33,7 +33,7 @@ export default function TemplateCards() {
               </Stack>
             </Box>
             <Box sx={{ p: 2.5 }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
+              <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }} spacing={1}>
                 <Typography component="h2" sx={{ fontWeight: 700, fontSize: 18 }}>
                   {t.name}
                 </Typography>
@@ -42,7 +42,7 @@ export default function TemplateCards() {
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                 {t.description}
               </Typography>
-              <Stack direction="row" spacing={0.75} sx={{ mt: 1.5 }} flexWrap="wrap" useFlexGap>
+              <Stack direction="row" spacing={0.75} sx={{ flexWrap: 'wrap', mt: 1.5 }} useFlexGap>
                 {t.tags.map((tag) => (
                   <Chip key={tag} size="xs" variant="outlined" color="neutral" label={tag} />
                 ))}

@@ -71,7 +71,7 @@ export default function DashboardChart() {
     <Box component="section" sx={{ py: { xs: 6, md: 10 } }}>
       <Container maxWidth="md">
         <Card variant="outlined" sx={{ p: { xs: 2.5, md: 3 } }}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ sm: 'flex-start' }} spacing={2}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ justifyContent: 'space-between', alignItems: { sm: 'flex-start' } }} spacing={2}>
             <Box>
               <Typography component="h2" sx={{ fontWeight: 800, fontSize: 22, letterSpacing: '-0.02em' }}>
                 Revenue

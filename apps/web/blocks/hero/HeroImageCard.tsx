@@ -29,7 +29,7 @@ export default function HeroImageCard() {
   return (
     <Box component="section" sx={{ py: { xs: 8, md: 12 } }}>
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 6, md: 8 }} alignItems="center">
+        <Grid container spacing={{ xs: 6, md: 8 }} sx={{ alignItems: 'center' }}>
           <Grid size={{ xs: 12, md: 5 }}>
             <Chip label="Release tracking" variant="soft" color="primary" />
             <Typography
@@ -53,8 +53,7 @@ export default function HeroImageCard() {
               <Stack
                 direction="row"
                 spacing={1}
-                alignItems="center"
-                sx={{ px: 2, py: 1.5, borderBottom: 1, borderColor: 'divider' }}
+                sx={{ alignItems: 'center', px: 2, py: 1.5, borderBottom: 1, borderColor: 'divider' }}
               >
                 {['#ef4444', '#f59e0b', '#22c55e'].map((c) => (
                   <Box key={c} aria-hidden sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: c }} />
@@ -64,7 +63,7 @@ export default function HeroImageCard() {
                 </Typography>
               </Stack>
               <Box sx={{ p: 2 }}>
-                <Stack direction="row" useFlexGap flexWrap="wrap" spacing={1} sx={{ mb: 2 }}>
+                <Stack direction="row" useFlexGap spacing={1} sx={{ flexWrap: 'wrap', mb: 2 }}>
                   <Chip size="sm" variant="solid" color="primary" label="Sprint 24" />
                   <Chip size="sm" variant="outlined" color="neutral" label="4 tasks" />
                   <Chip size="sm" variant="outlined" color="success" label="1 shipped" />

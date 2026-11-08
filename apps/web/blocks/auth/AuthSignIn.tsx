@@ -40,7 +40,7 @@ export default function AuthSignIn() {
                 variant="soft"
               />
             </Stack>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 1.5, flexWrap: 'wrap', gap: 1 }}>
+            <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mt: 1.5, flexWrap: 'wrap', gap: 1 }}>
               <Checkbox label="Remember me" size="sm" />
               <Link href="#" variant="body2" underline="hover" sx={{ fontWeight: 600 }}>
                 Forgot password?

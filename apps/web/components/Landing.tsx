@@ -83,7 +83,7 @@ export function Hero() {
   return (
     <HeroCanvas>
       <Container maxWidth="lg" sx={{ pt: { xs: 6, md: 11 }, pb: { xs: 6, md: 10 } }}>
-        <Grid container spacing={{ xs: 6, md: 6 }} alignItems="center">
+        <Grid container spacing={{ xs: 6, md: 6 }} sx={{ alignItems: 'center' }}>
           <Grid size={{ xs: 12, md: 6 }} sx={{ minWidth: 0 }}>
             <motion.div {...item(0)}>
               <Box
@@ -144,7 +144,7 @@ export function Hero() {
               </Typography>
             </motion.div>
             <motion.div {...item(3)}>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ mt: 4 }} alignItems={{ sm: 'center' }}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ alignItems: { sm: 'center' }, mt: 4 }}>
                 <LinkButton href="/docs" variant="contained" size="large" disableElevation endIcon={<ArrowForward />} sx={{ borderRadius: 2.5, px: 3, flexShrink: 0 }}>
                   Get started — free
                 </LinkButton>
@@ -154,7 +154,7 @@ export function Hero() {
               </Stack>
             </motion.div>
             <motion.div {...item(4)}>
-              <Stack direction="row" spacing={3} sx={{ mt: 4, color: 'text.secondary', fontSize: 14 }} flexWrap="wrap" useFlexGap>
+              <Stack direction="row" spacing={3} sx={{ flexWrap: 'wrap', mt: 4, color: 'text.secondary', fontSize: 14 }} useFlexGap>
                 <span>MIT licensed</span>
                 <span>React 19 · MUI v7</span>
                 <span>TypeScript</span>
@@ -271,7 +271,7 @@ function LinkCard({ href, count, label, body, color }: { href: string; count: nu
       <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
         {body}
       </Typography>
-      <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mt: 2, fontWeight: 600, fontSize: 14 }}>
+      <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', mt: 2, fontWeight: 600, fontSize: 14 }}>
         <span>Open</span>
         <ArrowForward className="go" sx={{ fontSize: 16, transition: 'transform .2s' }} />
       </Stack>
@@ -297,7 +297,7 @@ const STEPS = [
 export function QuickStart() {
   return (
     <Section>
-      <Grid container spacing={{ xs: 4, md: 8 }} alignItems="center">
+      <Grid container spacing={{ xs: 4, md: 8 }} sx={{ alignItems: 'center' }}>
         <Grid size={{ xs: 12, md: 5 }}>
           <SectionTitle eyebrow="Quick start" title="Up and running in a minute" />
           <Stack component="ol" spacing={3} sx={{ p: 0, m: 0, listStyle: 'none' }}>
@@ -404,7 +404,7 @@ export function CallToAction() {
               Ready for a softer Material UI?
             </Typography>
             <Typography sx={{ mt: 1.5, fontSize: 18, opacity: 0.85 }}>Read the docs, browse the blocks, then copy what you need.</Typography>
-            <Stack direction="row" spacing={1.5} justifyContent="center" sx={{ mt: 4 }} flexWrap="wrap" useFlexGap>
+            <Stack direction="row" spacing={1.5} sx={{ justifyContent: 'center', flexWrap: 'wrap', mt: 4 }} useFlexGap>
               <LinkButton href="/docs" variant="contained" size="large" disableElevation sx={{ borderRadius: 2.5, px: 3 }}>
                 Get started
               </LinkButton>

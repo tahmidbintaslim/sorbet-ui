@@ -20,7 +20,7 @@ export default function HeroCentered() {
         <Typography color="text.secondary" sx={{ fontSize: 19, mt: 2.5, maxWidth: 560, mx: 'auto' }}>
           Acme keeps your roadmap, tasks and reviews together, so the team always knows what ships next.
         </Typography>
-        <Stack direction="row" spacing={1.5} justifyContent="center" sx={{ mt: 4 }}>
+        <Stack direction="row" spacing={1.5} sx={{ justifyContent: 'center', mt: 4 }}>
           <Button size="lg">Start free</Button>
           <Button size="lg" variant="ghost">
             Book a demo

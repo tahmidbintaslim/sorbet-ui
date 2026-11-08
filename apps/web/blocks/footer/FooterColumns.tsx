@@ -44,14 +44,12 @@ export default function FooterColumns() {
         <Divider sx={{ my: { xs: 4, md: 6 } }} />
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
-          spacing={2}
-          justifyContent="space-between"
-          alignItems={{ xs: 'flex-start', sm: 'center' }}
+          spacing={2} sx={{ justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' } }}
         >
           <Typography variant="body2" color="text.secondary">
             © 2026 Acme, Inc. All rights reserved.
           </Typography>
-          <Stack component="nav" aria-label="Footer legal links" direction="row" spacing={3} useFlexGap flexWrap="wrap">
+          <Stack component="nav" aria-label="Footer legal links" direction="row" spacing={3} useFlexGap sx={{ flexWrap: 'wrap' }}>
             {LEGAL.map((l) => (
               <Link key={l} href="#" color="text.secondary" underline="hover" variant="body2">
                 {l}

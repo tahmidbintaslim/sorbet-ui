@@ -17,9 +17,7 @@ export default function StatsProgress() {
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
           spacing={2}
-          justifyContent="space-between"
-          alignItems={{ xs: 'flex-start', sm: 'flex-end' }}
-          sx={{ mb: 5 }}
+          sx={{ justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'flex-end' }, mb: 5 }}
         >
           <Typography component="h2" sx={{ fontWeight: 800, fontSize: { xs: 32, md: 42 }, letterSpacing: '-0.03em' }}>
             Q3 goals
@@ -30,7 +28,7 @@ export default function StatsProgress() {
           {KPIS.map((k) => (
             <Grid key={k.label} size={{ xs: 12, sm: 6, md: 3 }}>
               <Card variant="outlined" sx={{ p: 3, height: '100%' }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }} spacing={1}>
                   <Typography component="h3" color="text.secondary" sx={{ fontWeight: 600, fontSize: 14 }}>
                     {k.label}
                   </Typography>
@@ -40,7 +38,7 @@ export default function StatsProgress() {
                 <Box sx={{ mt: 2 }}>
                   <Progress value={k.percent} color={k.color} size="sm" aria-label={`${k.label}: ${k.percent}% of goal`} />
                 </Box>
-                <Stack direction="row" justifyContent="space-between" sx={{ mt: 1 }}>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', mt: 1 }}>
                   <Typography variant="body2" color="text.secondary">
                     {k.goal}
                   </Typography>

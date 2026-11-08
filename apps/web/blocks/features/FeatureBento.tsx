@@ -77,7 +77,7 @@ export default function FeatureBento() {
           <Grid size={{ xs: 12, md: 4 }}>
             <Card variant="outlined" sx={{ p: { xs: 3, md: 4 }, height: '100%' }}>
               <CardTitle icon={<Lock />} title="Secure by default" body="SSO, audit logs and fine-grained roles on every plan." />
-              <Stack direction="row" useFlexGap flexWrap="wrap" spacing={1} sx={{ mt: 3 }}>
+              <Stack direction="row" useFlexGap spacing={1} sx={{ flexWrap: 'wrap', mt: 3 }}>
                 <Chip size="sm" variant="soft" color="success" label="SSO" />
                 <Chip size="sm" variant="soft" color="success" label="Audit log" />
                 <Chip size="sm" variant="soft" color="success" label="Roles" />
@@ -86,7 +86,7 @@ export default function FeatureBento() {
           </Grid>
           <Grid size={{ xs: 12, md: 8 }}>
             <Card variant="outlined" sx={{ p: { xs: 3, md: 4 }, height: '100%' }}>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} justifyContent="space-between">
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{ justifyContent: 'space-between' }}>
                 <Box sx={{ maxWidth: 380 }}>
                   <CardTitle
                     icon={<Groups />}
@@ -94,7 +94,7 @@ export default function FeatureBento() {
                     body="Comments, mentions and shared views keep everyone on the same page."
                   />
                 </Box>
-                <Stack direction="row" spacing={-1} alignItems="center">
+                <Stack direction="row" spacing={-1} sx={{ alignItems: 'center' }}>
                   {TEAM.map((a) => (
                     <Avatar key={a.initials} color={a.color} variant="solid" sx={{ border: 2, borderColor: 'background.paper' }}>
                       {a.initials}

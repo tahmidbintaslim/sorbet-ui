@@ -3,7 +3,7 @@
 import { Box, Container, Grid, IconButton, Stack, Typography } from '@mui/material';
 import GitHub from '@mui/icons-material/GitHub';
 import LinkedIn from '@mui/icons-material/LinkedIn';
-import MailOutline from '@mui/icons-material/MailOutline';
+import MailOutline from '@mui/icons-material/MailOutlined';
 import { Avatar, Card } from '@sorbet-ui/react';
 
 const PEOPLE = [
@@ -51,7 +51,7 @@ export default function TeamGrid() {
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
                   {p.bio}
                 </Typography>
-                <Stack direction="row" spacing={0.5} justifyContent="center" sx={{ mt: 2 }}>
+                <Stack direction="row" spacing={0.5} sx={{ justifyContent: 'center', mt: 2 }}>
                   <IconButton size="small" href="#" aria-label={`${p.name} on LinkedIn`}>
                     <LinkedIn fontSize="small" />
                   </IconButton>

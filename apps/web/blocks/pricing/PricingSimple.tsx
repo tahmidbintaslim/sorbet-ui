@@ -38,7 +38,7 @@ export default function PricingSimple() {
               <Grid container component="ul" spacing={1.5} sx={{ listStyle: 'none', p: 0, m: 0 }}>
                 {INCLUDED.map((item) => (
                   <Grid key={item} size={{ xs: 12, sm: 6 }} component="li">
-                    <Stack direction="row" spacing={1} alignItems="flex-start">
+                    <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
                       <CheckCircle fontSize="small" color="primary" aria-hidden sx={{ mt: 0.25 }} />
                       <Typography variant="body2">{item}</Typography>
                     </Stack>
@@ -62,7 +62,7 @@ export default function PricingSimple() {
               <Box>
                 <Chip size="sm" label="Billed monthly" variant="soft" color="secondary" />
               </Box>
-              <Stack direction="row" justifyContent="center" alignItems="baseline" spacing={0.75} sx={{ mt: 2 }}>
+              <Stack direction="row" spacing={0.75} sx={{ justifyContent: 'center', alignItems: 'baseline', mt: 2 }}>
                 <Typography sx={{ fontWeight: 800, fontSize: 52, letterSpacing: '-0.04em' }}>$15</Typography>
                 <Typography color="text.secondary">/ member</Typography>
               </Stack>

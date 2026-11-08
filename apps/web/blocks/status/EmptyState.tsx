@@ -41,7 +41,7 @@ export default function EmptyState() {
               “Untitled project” created. Give it a name to invite your team.
             </Alert>
           ) : (
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} justifyContent="center" sx={{ mt: 3 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ justifyContent: 'center', mt: 3 }}>
               <Button size="lg" startIcon={<AddIcon />} onClick={() => setCreated(true)}>
                 New project
               </Button>
