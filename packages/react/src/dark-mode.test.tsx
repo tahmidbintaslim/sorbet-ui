@@ -174,9 +174,9 @@ describe.each([
   it('the core variant helpers return the shades for the mode', () => {
     expect(getColorScale('primary', isDark)).toEqual(primary);
     expect(getVariantStyles('outlined', 'primary', isDark).color).toBe(primary.main);
-    expect(getVariantStyles('soft', 'success', isDark).color).toBe(
-      colorScaleForMode('success', isDark).dark
-    );
+    // Soft text matches Button: `dark` on the light tint, `light` on the dark tint.
+    const success = colorScaleForMode('success', isDark);
+    expect(getVariantStyles('soft', 'success', isDark).color).toBe(isDark ? success.light : success.dark);
     expect(getVariantCss('solid', 'warning', isDark).color).toBe(
       colorScaleForMode('warning', isDark).contrastText
     );

@@ -108,6 +108,8 @@ const StyledPagination = styled(MuiPagination, {
               color: isDark ? colorScale.light : colorScale.dark,
               '&:hover': {
                 backgroundColor: isDark ? colorScale.alpha40 : colorScale.alpha30,
+                // On dark paper the alpha40 tint leaves `light` at 4.4:1; the 100 shade passes.
+                ...(isDark && { color: colorScale[100] }),
               },
             },
           },

@@ -1,6 +1,6 @@
 # @sorbet-ui/theme
 
-Light and dark Material UI v7 themes built from the Sorbet UI design tokens. Use them with any MUI app, with or without `@sorbet-ui/react`.
+Light and dark Material UI v7 or v9 themes built from the Sorbet UI design tokens. Use them with any MUI app, with or without `@sorbet-ui/react`: stock `@mui/material` components (buttons, inputs, cards, chips, tabs, tables, dialogs) restyle with no code changes.
 
 ```bash
 npm i @sorbet-ui/theme @mui/material @emotion/react @emotion/styled
@@ -18,4 +18,4 @@ import { lightTheme, darkTheme } from '@sorbet-ui/theme';
 
 Extend a theme with MUI's `createTheme(lightTheme, { ... })`. Importing the package also adds the Sorbet variants (`soft`, `ghost`, `plain`, ...) to MUI's TypeScript types.
 
-Docs: https://sorbet-ui-web-tahmid-bin-taslim-rafis-projects.vercel.app/docs/theming · Source: https://github.com/tahmidbintaslim/sorbet-ui · MIT licensed.
+Docs: https://sorbetui.tahmid.space/docs/theming · Source: https://github.com/tahmidbintaslim/sorbet-ui · MIT licensed.

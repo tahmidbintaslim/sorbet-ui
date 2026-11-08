@@ -15,4 +15,4 @@ colorScaleForMode('primary', true).contrastText; // dark-mode text on a solid fi
 
 Every color pair used by the components is checked against WCAG AA in `src/contrast.test.ts`.
 
-Website: https://sorbet-ui-web-tahmid-bin-taslim-rafis-projects.vercel.app · Source: https://github.com/tahmidbintaslim/sorbet-ui · MIT licensed.
+Website: https://sorbetui.tahmid.space · Source: https://github.com/tahmidbintaslim/sorbet-ui · MIT licensed.
