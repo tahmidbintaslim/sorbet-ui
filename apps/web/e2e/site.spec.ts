@@ -191,12 +191,27 @@ test('landing: live star count from the GitHub API', async ({ page }) => {
 
 test('landing: before/after slider moves with the keyboard', async ({ page }) => {
   await page.goto('/');
-  const slider = page.getByRole('slider', { name: 'Compare default Material UI with Sorbet UI' });
+  const slider = page.getByRole('slider', { name: 'Compare the default Material UI theme with the Sorbet theme' });
   await slider.focus();
   await page.keyboard.press('Home');
   await expect(slider).toHaveValue('0');
   await page.keyboard.press('End');
   await expect(slider).toHaveValue('100');
+});
+
+test('landing: both sides of the before/after render the same MUI markup', async ({ page }) => {
+  await page.goto('/');
+  // Each side is the same @mui/material Dashboard; only the theme differs, so the
+  // component structure (class names minus the generated hash) must match.
+  const shapes = await page.getByTestId('before-after').evaluate((root) =>
+    [...root.children].slice(0, 2).map((layer) =>
+      [...layer.querySelectorAll('[class*="Mui"]')]
+        .map((el) => [...el.classList].filter((c) => c.startsWith('Mui')).sort().join('.'))
+        .join('|'),
+    ),
+  );
+  expect(shapes[0].length).toBeGreaterThan(500);
+  expect(shapes[0]).toBe(shapes[1]);
 });
 
 test('landing: playground controls rewrite the source', async ({ page }) => {

@@ -1,72 +1,152 @@
 'use client';
-// Drag (or use arrow keys on) the handle to compare the same form in stock
-// Material UI and in Sorbet UI. The handle is a native range input, so it is
-// keyboard and screen-reader accessible for free.
+// The "no rewrite" proof: one dashboard written only with stock @mui/material
+// components, rendered twice. The left layer uses MUI's default theme, the right
+// layer Sorbet's theme. The JSX is identical; only the ThemeProvider changes.
+// Drag the handle (a native range input, so it works with keys and screen readers).
 import * as React from 'react';
-import { Box, Button as MuiButton, Chip as MuiChip, Stack, TextField as MuiTextField, ThemeProvider, Typography, createTheme } from '@mui/material';
-import { Button, Chip, TextField } from '@sorbet-ui/react';
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Grid,
+  LinearProgress,
+  Stack,
+  Tab,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Tabs,
+  TextField,
+  ThemeProvider,
+  Toolbar,
+  Typography,
+  createTheme,
+  useTheme,
+} from '@mui/material';
 import UnfoldMore from '@mui/icons-material/UnfoldMore';
+import { darkTheme, lightTheme } from '@sorbet-ui/theme';
 import { animate, useInView, useReducedMotion } from 'motion/react';
 
-// Stock MUI theme (no CssBaseline here: a nested one would restyle <body>).
-const muiDefault = createTheme();
+// Stock MUI theme in the site's current mode.
+const muiDefault = { light: createTheme(), dark: createTheme({ palette: { mode: 'dark' } }) };
+const sorbet = { light: lightTheme, dark: darkTheme };
 
-function Form({ sorbet }: { sorbet: boolean }) {
+const STATS = [
+  { label: 'Revenue', value: '$48,210', delta: '+12%', color: 'success' as const, progress: 72 },
+  { label: 'Active users', value: '2,431', delta: '+4%', color: 'success' as const, progress: 54 },
+  { label: 'Churn', value: '1.8%', delta: '-0.3%', color: 'error' as const, progress: 18 },
+];
+const ORDERS = [
+  { id: '#1042', customer: 'Northwind Ltd', total: '$1,240', status: 'Paid', color: 'success' as const },
+  { id: '#1041', customer: 'Globex Inc', total: '$860', status: 'Pending', color: 'warning' as const },
+  { id: '#1040', customer: 'Initech', total: '$2,310', status: 'Refunded', color: 'default' as const },
+];
+
+/** Plain Material UI. Nothing here imports Sorbet. */
+function Dashboard({ label }: { label: string }) {
+  const theme = useTheme();
   return (
-    <Stack spacing={2.5} sx={{ p: { xs: 3, sm: 5 }, width: '100%', maxWidth: 560, mx: 'auto' }}>
-      <Typography variant="overline" sx={{ fontWeight: 700, color: 'text.secondary' }}>
-        {sorbet ? 'With Sorbet UI' : 'Default Material UI'}
-      </Typography>
-      <Typography component="p" sx={{ fontWeight: 700, fontSize: 24, mt: '0 !important' }}>
-        Invite a teammate
-      </Typography>
-      {sorbet ? (
-        <>
-          <TextField label="Email" defaultValue="sam@acme.dev" variant="soft" fullWidth />
-          <TextField label="Role" defaultValue="Editor" variant="outlined" fullWidth />
-          <Stack direction="row" spacing={1}>
-            <Chip label="Design" variant="soft" color="primary" />
-            <Chip label="Billing" variant="soft" color="secondary" />
-            <Chip label="Admin" variant="outlined" color="neutral" />
-          </Stack>
-          <Stack direction="row" spacing={1}>
-            <Button variant="solid">Send invite</Button>
-            <Button variant="soft" color="neutral">
-              Cancel
-            </Button>
-          </Stack>
-        </>
-      ) : (
-        <>
-          <MuiTextField label="Email" defaultValue="sam@acme.dev" fullWidth />
-          <MuiTextField label="Role" defaultValue="Editor" fullWidth />
-          <Stack direction="row" spacing={1}>
-            <MuiChip label="Design" />
-            <MuiChip label="Billing" />
-            <MuiChip label="Admin" variant="outlined" />
-          </Stack>
-          <Stack direction="row" spacing={1}>
-            <MuiButton variant="contained">Send invite</MuiButton>
-            <MuiButton>Cancel</MuiButton>
-          </Stack>
-        </>
-      )}
-    </Stack>
+    <Box sx={{ bgcolor: 'background.default', color: 'text.primary', minHeight: '100%' }}>
+      <AppBar position="static">
+        <Toolbar sx={{ gap: 2 }}>
+          <Typography component="p" sx={{ fontWeight: 700, flexGrow: 1 }}>
+            Acme Analytics
+          </Typography>
+          <Avatar sx={{ width: 32, height: 32, fontSize: 14, bgcolor: theme.palette.primary.main }}>SL</Avatar>
+        </Toolbar>
+      </AppBar>
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <Tabs value={0} aria-label={`${label}: sections`} sx={{ mb: 2 }}>
+          <Tab label="Overview" />
+          <Tab label="Orders" />
+          <Tab label="Customers" />
+        </Tabs>
+        <Grid container spacing={2}>
+          {STATS.map((s) => (
+            <Grid key={s.label} size={{ xs: 12, sm: 4 }}>
+              <Card>
+                <CardContent>
+                  <Typography variant="body2" color="text.secondary">
+                    {s.label}
+                  </Typography>
+                  <Stack direction="row" spacing={1} alignItems="center" sx={{ my: 1 }}>
+                    <Typography component="p" sx={{ fontSize: 26, fontWeight: 700 }}>
+                      {s.value}
+                    </Typography>
+                    <Chip size="small" color={s.color} label={s.delta} />
+                  </Stack>
+                  <LinearProgress variant="determinate" value={s.progress} aria-label={`${s.label} target`} />
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ my: 2 }}>
+          <TextField size="small" label="Search orders" defaultValue="Globex" sx={{ flex: 1 }} />
+          <Button variant="outlined">Export</Button>
+          <Button variant="contained">New order</Button>
+        </Stack>
+        <Card>
+          <Table size="small" aria-label={`${label} recent orders`}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Order</TableCell>
+                <TableCell>Customer</TableCell>
+                <TableCell align="right">Total</TableCell>
+                <TableCell>Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {ORDERS.map((o) => (
+                <TableRow key={o.id}>
+                  <TableCell>{o.id}</TableCell>
+                  <TableCell>{o.customer}</TableCell>
+                  <TableCell align="right">{o.total}</TableCell>
+                  <TableCell>
+                    <Chip size="small" color={o.color} label={o.status} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Card>
+      </Box>
+    </Box>
   );
 }
 
+export const BEFORE_AFTER_CODE = `import { ThemeProvider } from '@mui/material/styles';
+- import { createTheme } from '@mui/material/styles';
+- const theme = createTheme();
++ import { lightTheme as theme } from '@sorbet-ui/theme';
+
+export default function Root() {
+  return (
+    <ThemeProvider theme={theme}>
+      <Dashboard /> {/* your existing MUI code, unchanged */}
+    </ThemeProvider>
+  );
+}`;
+
 export default function BeforeAfter() {
+  const mode = useTheme().palette.mode;
   const [pos, setPos] = React.useState(50);
   const ref = React.useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.6 });
+  const inView = useInView(ref, { once: true, amount: 0.5 });
   const reduce = useReducedMotion();
   const touched = React.useRef(false);
 
   // One-time sweep when scrolled into view, so it reads as draggable.
   React.useEffect(() => {
     if (!inView || reduce) return;
-    const ctl = animate(50, [50, 82, 18, 38], {
-      duration: 2.2,
+    const ctl = animate(50, [50, 80, 20, 50], {
+      duration: 2.4,
       ease: 'easeInOut',
       onUpdate: (v) => {
         if (!touched.current) setPos(Math.round(v));
@@ -77,31 +157,37 @@ export default function BeforeAfter() {
 
   return (
     <Box>
+      <Stack direction="row" justifyContent="space-between" sx={{ mb: 1.5, px: 0.5 }}>
+        <Chip label="Default MUI theme" variant="outlined" />
+        <Chip label="Sorbet theme" color="primary" />
+      </Stack>
       <Box
         ref={ref}
+        data-testid="before-after"
         sx={{
           position: 'relative',
           borderRadius: 4,
           overflow: 'hidden',
           border: 1,
           borderColor: 'divider',
-          bgcolor: 'background.paper',
-          minHeight: { xs: 460, sm: 440 },
+          height: { xs: 760, sm: 600 },
         }}
       >
-        {/* Sorbet (right/back layer) */}
-        <Box sx={{ position: 'absolute', inset: 0, zIndex: 0, isolation: 'isolate' }}>
-          <Form sorbet />
+        {/* Each layer isolates its stacking context: MUI's floating labels use z-index 1,
+            which would otherwise paint the back layer's labels over the front one. */}
+        {/* Sorbet theme (back layer, visible right of the handle) */}
+        <Box aria-hidden={pos > 96} sx={{ position: 'absolute', inset: 0, zIndex: 0, isolation: 'isolate', overflow: 'hidden' }}>
+          <ThemeProvider theme={sorbet[mode]}>
+            <Dashboard label="Sorbet theme" />
+          </ThemeProvider>
         </Box>
-        {/* Stock MUI (front layer, clipped to the handle position). Always light, like an unthemed app. */}
+        {/* Default MUI theme (front layer, clipped to the handle) */}
         <Box
           aria-hidden={pos < 4}
-          sx={{ position: 'absolute', inset: 0, zIndex: 1, isolation: 'isolate', clipPath: `inset(0 ${100 - pos}% 0 0)`, transition: 'clip-path .05s linear' }}
+          sx={{ position: 'absolute', inset: 0, zIndex: 1, isolation: 'isolate', overflow: 'hidden', clipPath: `inset(0 ${100 - pos}% 0 0)` }}
         >
-          <ThemeProvider theme={muiDefault}>
-            <Box sx={{ position: 'absolute', inset: 0, bgcolor: '#fff', color: 'rgba(0,0,0,.87)' }}>
-              <Form sorbet={false} />
-            </Box>
+          <ThemeProvider theme={muiDefault[mode]}>
+            <Dashboard label="Default MUI" />
           </ThemeProvider>
         </Box>
         {/* Divider + handle */}
@@ -134,7 +220,7 @@ export default function BeforeAfter() {
           min={0}
           max={100}
           value={pos}
-          aria-label="Compare default Material UI with Sorbet UI"
+          aria-label="Compare the default Material UI theme with the Sorbet theme"
           aria-valuetext={`${pos}% default Material UI`}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             touched.current = true;
@@ -159,7 +245,7 @@ export default function BeforeAfter() {
         />
       </Box>
       <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5, textAlign: 'center' }}>
-        Same form, same props. Drag the handle, or focus it and use the arrow keys.
+        Identical @mui/material code on both sides. Only the theme changes. Drag the handle or use the arrow keys.
       </Typography>
     </Box>
   );

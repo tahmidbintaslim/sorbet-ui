@@ -1,5 +1,6 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 import { DARK_INK, radiusScale, sorbetPalette } from '@sorbet-ui/tokens';
+import { sorbetComponents } from './components';
 
 const themeOptions: ThemeOptions = {
   palette: {
@@ -35,7 +36,11 @@ const themeOptions: ThemeOptions = {
   },
   typography: {
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif',
+    button: { textTransform: 'none', fontWeight: 600 },
   },
+  // Restyle stock @mui/material components, so an existing MUI app changes look
+  // by wrapping it in this theme, with no other code changes.
+  components: sorbetComponents,
 };
 
 export const lightTheme = createTheme(themeOptions);

@@ -13,7 +13,7 @@ import { CountUp, EASE, Reveal } from './motion';
 import HeroCanvas from './landing/HeroCanvas';
 import HeroDashboard from './landing/HeroDashboard';
 import WordRotator from './landing/WordRotator';
-import BeforeAfter from './landing/BeforeAfter';
+import BeforeAfter, { BEFORE_AFTER_CODE } from './landing/BeforeAfter';
 import LivePlayground from './landing/LivePlayground';
 import Bento from './landing/Bento';
 import { ComponentMarquee, FAQ, Pricing } from './landing/Sections';
@@ -33,11 +33,15 @@ const INSTALL = 'npm i @sorbet-ui/react @sorbet-ui/theme';
 const QUICK = `import { ThemeProvider, CssBaseline } from '@mui/material';
 import { lightTheme } from '@sorbet-ui/theme';
 import { Button } from '@sorbet-ui/react';
+import YourExistingApp from './App';
 
-export default function App() {
+export default function Root() {
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />
+      {/* Step 2: your current MUI screens, restyled */}
+      <YourExistingApp />
+      {/* Step 3, optional: Sorbet variants */}
       <Button variant="soft" color="primary">Hello</Button>
     </ThemeProvider>
   );
@@ -88,7 +92,7 @@ export function Hero() {
             <motion.div {...item(0)}>
               <Box
                 component="a"
-                href="#playground"
+                href="#compare"
                 sx={(t) => ({
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -109,21 +113,21 @@ export function Hero() {
                 })}
               >
                 <Box component="span" sx={(t) => ({ px: 1, py: 0.25, borderRadius: 999, bgcolor: alpha(colorPalette.primary[500], 0.15), color: accent(t, 'primary') })}>
-                  v0.1.0
+                  MUI v7 · v9
                 </Box>
-                Try the live playground
+                See it on a real dashboard
                 <ArrowForward className="arrow" sx={{ fontSize: 14, transition: 'transform .2s' }} />
               </Box>
             </motion.div>
             <motion.div {...item(1)}>
               <Typography
                 component="h1"
-                aria-label="Material UI, but softer."
-                sx={{ fontWeight: 800, fontSize: { xs: 46, sm: 60, md: 72 }, lineHeight: 1.02, letterSpacing: '-0.045em', mt: 3 }}
+                aria-label="Already on Material UI? Make it look modern."
+                sx={{ fontWeight: 800, fontSize: { xs: 42, sm: 56, md: 66 }, lineHeight: 1.04, letterSpacing: '-0.045em', mt: 3 }}
               >
-                <span aria-hidden>Material UI,</span>
+                <span aria-hidden>Already on Material UI?</span>
                 <br />
-                <span aria-hidden>but </span>
+                <span aria-hidden>Make it </span>
                 <Box
                   component="span"
                   sx={{
@@ -133,14 +137,14 @@ export function Hero() {
                     color: 'transparent',
                   }}
                 >
-                  <WordRotator words={['softer.', 'friendlier.', 'yours.']} />
+                  <WordRotator words={['look modern.', 'feel calmer.', 'yours.']} />
                 </Box>
               </Typography>
             </motion.div>
             <motion.div {...item(2)}>
               <Typography color="text.secondary" sx={{ mt: 3, fontSize: { xs: 18, md: 20 }, maxWidth: 540 }}>
-                A design layer for apps already on MUI v7: tokens, light and dark themes, and 26 components with soft, dash and ghost
-                variants. Keep the MUI API. Lose the default look.
+                Sorbet UI is a theme and component layer for MUI. Wrap your app in one ThemeProvider and your existing Buttons, Tables
+                and forms restyle, with no rewrite. Then copy ready-made blocks when you need more.
               </Typography>
             </motion.div>
             <motion.div {...item(3)}>
@@ -155,9 +159,9 @@ export function Hero() {
             </motion.div>
             <motion.div {...item(4)}>
               <Stack direction="row" spacing={3} sx={{ mt: 4, color: 'text.secondary', fontSize: 14 }} flexWrap="wrap" useFlexGap>
+                <span>MUI v7 &amp; v9</span>
+                <span>WCAG AA in light and dark</span>
                 <span>MIT licensed</span>
-                <span>React 19 · MUI v7</span>
-                <span>TypeScript</span>
                 {!!stars && <span>★ {formatStars(stars)} on GitHub</span>}
               </Stack>
             </motion.div>
@@ -188,11 +192,86 @@ export function Marquee() {
 
 export function Compare() {
   return (
-    <Section>
-      <SectionTitle eyebrow="No rewrite" title="Same MUI. A softer look." lead="The left side is stock Material UI. The right side is the same form with Sorbet UI. Nothing else changed." />
+    <Section id="compare">
+      <SectionTitle
+        eyebrow="No rewrite"
+        title="Your MUI code. Unchanged."
+        lead="Both sides run the exact same @mui/material dashboard. The left uses MUI's default theme; the right wraps it in Sorbet's theme. That is the whole migration."
+      />
       <Reveal>
         <BeforeAfter />
       </Reveal>
+      <Reveal>
+        <Box sx={{ mt: 4, maxWidth: 720, mx: 'auto' }}>
+          <CodeBlock code={BEFORE_AFTER_CODE} title="Root.tsx" label="The only change: swap the theme" />
+        </Box>
+      </Reveal>
+    </Section>
+  );
+}
+
+const AUDIENCE = [
+  { title: 'Teams with an existing MUI app', body: 'Dashboards, admin panels and internal tools that work but look like 2016. Keep DataGrid, Pickers and your code.' },
+  { title: 'Solo builders shipping on MUI', body: 'Start from blocks and templates that already look finished, in light and dark.' },
+  { title: 'AI-assisted coding', body: 'Claude Code, Cursor and other agents read component props from the Storybook MCP server and AGENTS.md instead of guessing.' },
+];
+
+const COMPARE_ROWS: { label: string; values: [string, string, string] }[] = [
+  { label: 'Keeps your MUI code', values: ['Yes, one theme swap', 'Yes', 'No, a rewrite to Tailwind'] },
+  { label: 'Modern look out of the box', values: ['Yes', 'Material Design', 'Yes'] },
+  { label: 'MUI X DataGrid and Pickers', values: ['Yes', 'Yes', 'Not built in'] },
+  { label: 'Copy-paste blocks', values: ['54 blocks, 6 templates', 'Paid templates', 'Yes'] },
+  { label: 'Contrast checked in CI, light and dark', values: ['Yes', 'Partly', 'Up to you'] },
+];
+
+export function WhoFor() {
+  return (
+    <Section id="why">
+      <SectionTitle eyebrow="Who it is for" title="Built for apps that cannot leave Material UI" />
+      <Grid container spacing={3}>
+        {AUDIENCE.map((a) => (
+          <Grid key={a.title} size={{ xs: 12, md: 4 }}>
+            <Reveal>
+              <Box sx={{ height: '100%', p: 3, border: 1, borderColor: 'divider', borderRadius: 4, bgcolor: 'background.paper' }}>
+                <Typography component="h3" sx={{ fontWeight: 700, fontSize: 18 }}>
+                  {a.title}
+                </Typography>
+                <Typography color="text.secondary" sx={{ mt: 1 }}>
+                  {a.body}
+                </Typography>
+              </Box>
+            </Reveal>
+          </Grid>
+        ))}
+      </Grid>
+      <Reveal>
+        <Box tabIndex={0} role="region" aria-label="Sorbet UI compared with alternatives" sx={{ mt: 6, overflowX: 'auto', border: 1, borderColor: 'divider', borderRadius: 4 }}>
+          <Box component="table" sx={{ width: '100%', minWidth: 640, borderCollapse: 'collapse', '& th, & td': { p: 2, textAlign: 'left', borderBottom: 1, borderColor: 'divider' }, '& tr:last-of-type td': { borderBottom: 0 } }}>
+            <caption style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>Sorbet UI compared with default MUI and shadcn/ui</caption>
+            <thead>
+              <tr>
+                <Box component="th" scope="col" sx={{ color: 'text.secondary', fontWeight: 600 }} />
+                <Box component="th" scope="col" sx={(t) => ({ fontWeight: 700, color: accent(t, 'primary') })}>Sorbet UI</Box>
+                <Box component="th" scope="col" sx={{ fontWeight: 700 }}>Default MUI</Box>
+                <Box component="th" scope="col" sx={{ fontWeight: 700 }}>shadcn/ui</Box>
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARE_ROWS.map((r) => (
+                <tr key={r.label}>
+                  <Box component="th" scope="row" sx={{ fontWeight: 600 }}>{r.label}</Box>
+                  {r.values.map((v, i) => (
+                    <Box component="td" key={i} sx={{ color: i === 0 ? 'text.primary' : 'text.secondary', fontWeight: i === 0 ? 600 : 400 }}>{v}</Box>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </Box>
+        </Box>
+      </Reveal>
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+        Starting a new project without MUI? shadcn/ui is a great choice. Sorbet is for when Material UI is already part of your stack.
+      </Typography>
     </Section>
   );
 }
@@ -289,9 +368,9 @@ export function Showcase() {
 }
 
 const STEPS = [
-  { title: 'Install', body: 'Add the components and the theme. npm 7+ and pnpm pull in the MUI peers.' },
-  { title: 'Wrap your app', body: 'Pass lightTheme or darkTheme to the MUI ThemeProvider.' },
-  { title: 'Use components', body: 'Import from @sorbet-ui/react and pick a variant and color.' },
+  { title: 'Install', body: 'Add the theme and components next to your existing MUI packages.' },
+  { title: 'Wrap your app', body: 'Pass lightTheme or darkTheme to the ThemeProvider you already have. Your MUI screens restyle right away.' },
+  { title: 'Go further when you want', body: 'Copy a block, or use Sorbet components for soft, dash and ghost variants. Adopt them one screen at a time.' },
 ];
 
 export function QuickStart() {
@@ -299,7 +378,7 @@ export function QuickStart() {
     <Section>
       <Grid container spacing={{ xs: 4, md: 8 }} alignItems="center">
         <Grid size={{ xs: 12, md: 5 }}>
-          <SectionTitle eyebrow="Quick start" title="Up and running in a minute" />
+          <SectionTitle eyebrow="Quick start" title="Three steps, no rewrite" />
           <Stack component="ol" spacing={3} sx={{ p: 0, m: 0, listStyle: 'none' }}>
             {STEPS.map((s, i) => (
               <Reveal as="li" key={s.title} delay={i * 0.08}>

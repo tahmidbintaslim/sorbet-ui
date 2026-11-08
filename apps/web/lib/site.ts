@@ -1,9 +1,9 @@
 // Site-wide constants and navigation.
 export const SITE = {
   name: 'Sorbet UI',
-  tagline: 'Material UI, but softer',
+  tagline: 'Make Material UI look modern, no rewrite',
   description:
-    'React components on Material UI v7 with one variant, color and size API, plus light and dark themes.',
+    'A theme and component layer for Material UI v7 and v9. Wrap your app in one ThemeProvider and your existing MUI screens restyle, in light and dark.',
   github: 'https://github.com/tahmidbintaslim/sorbet-ui',
   storybook: 'https://sorbet-ui.vercel.app',
   npm: 'https://www.npmjs.com/package/@sorbet-ui/react',
