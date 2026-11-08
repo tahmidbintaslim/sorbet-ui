@@ -26,7 +26,7 @@ When working on UI:
 - Variants: `solid | soft | outlined | ghost | plain` (Button also `dash | link`). Colors: `primary | secondary | success | warning | danger | info | neutral`. Sizes: `xs`–`xl`.
 - Colors come from `@sorbet-ui/tokens`; never hardcode a color that can break contrast. Any new color pair needs a test in `packages/tokens/src/contrast.test.ts`.
 - Every interactive element needs an accessible name; every form control a label.
-- Site blocks: start with `'use client';` and a `// @block {"name","description"}` line, then run `node apps/web/scripts/gen-blocks.mjs`. Content is fictional sample content; never invent real customers or numbers.
+- Site blocks: start with `'use client';` and a `// @block {"name","description"}` line, then run `node apps/web/scripts/gen-blocks.mjs`. The site build also publishes each block as a shadcn registry item at `/r/<kebab-name>.json` (`scripts/gen-registry.mjs`); blocks must stay self-contained (npm imports only). Content is fictional sample content; never invent real customers or numbers.
 - Respect `prefers-reduced-motion` for any animation.
 
 ## Checks before a PR
