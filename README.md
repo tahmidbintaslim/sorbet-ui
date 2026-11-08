@@ -1,6 +1,6 @@
 # Sorbet UI
 
-React components built on Material UI v7, with one `variant`, `color` and `size` API across 26 components, plus design tokens and light and dark themes.
+React components built on Material UI v7 or v9, with one `variant`, `color` and `size` API across 26 components, plus design tokens and light and dark themes.
 
 [![CI](https://github.com/tahmidbintaslim/sorbet-ui/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/tahmidbintaslim/sorbet-ui/actions/workflows/test.yml)
 [![Storybook](https://img.shields.io/badge/Storybook-live-FF4785?logo=storybook&logoColor=white)](https://sorbet-ui.vercel.app)
@@ -36,7 +36,7 @@ React components built on Material UI v7, with one `variant`, `color` and `size`
 
 ## What it is
 
-Sorbet UI wraps Material UI (MUI) v7 components with Emotion `styled()` and gives them a shared set of props:
+Sorbet UI wraps Material UI (MUI) v7 or v9 components with Emotion `styled()` and gives them a shared set of props:
 
 | Prop      | Values                                                                         |
 | --------- | ------------------------------------------------------------------------------ |
@@ -95,7 +95,7 @@ npm install @sorbet-ui/react @sorbet-ui/theme \
   @emotion/react @emotion/styled dayjs
 ```
 
-Material UI, MUI X Date Pickers, Emotion and dayjs are peer dependencies, so your app keeps a single copy of each. `@sorbet-ui/react` needs React 19, Material UI 7 and MUI X Date Pickers 8. `@sorbet-ui/theme` works with React 18 or 19.
+Material UI, MUI X Date Pickers, Emotion and dayjs are peer dependencies, so your app keeps a single copy of each. `@sorbet-ui/react` needs React 19 and either Material UI 7 with MUI X Date Pickers 8, or Material UI 9 with MUI X Date Pickers 9 (CI tests both). `@sorbet-ui/theme` works with React 18 or 19.
 
 ## Usage
 
@@ -199,7 +199,7 @@ All components take the 5 sizes above. The 7 colors apply everywhere except in t
 
 | Area          | Tools                                                                                         |
 | ------------- | --------------------------------------------------------------------------------------------- |
-| Components    | React 19, Material UI 7, MUI X Date Pickers 8, Emotion, dayjs                                 |
+| Components    | React 19, Material UI 7 or 9, MUI X Date Pickers 8 or 9, Emotion, dayjs                       |
 | Language      | TypeScript 5.9                                                                                |
 | Build         | tsup (ESM, CommonJS and `.d.ts`), Turborepo 2, pnpm 10 workspaces                             |
 | Docs and demo | Storybook 10 (React + Vite) with the a11y, docs, themes and Vitest addons                     |
@@ -217,7 +217,7 @@ flowchart LR
   core["@sorbet-ui/core<br/>types, variant presets, a11y helpers"]
   theme["@sorbet-ui/theme<br/>lightTheme, darkTheme"]
   react["@sorbet-ui/react<br/>26 components"]
-  mui[("Material UI 7, MUI X 8, Emotion<br/>peer dependencies")]
+  mui[("Material UI 7 or 9, MUI X 8 or 9, Emotion<br/>peer dependencies")]
   docs["apps/docs<br/>Storybook, deployed on Vercel"]
   web["apps/web<br/>Next.js docs site, blocks, templates, demo"]
 

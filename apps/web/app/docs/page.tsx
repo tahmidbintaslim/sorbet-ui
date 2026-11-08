@@ -52,7 +52,7 @@ export default function GettingStarted() {
         Getting started
       </Typography>
       <Typography color="text.secondary">
-        Sorbet UI wraps Material UI v7. Install the packages and peer dependencies, then wrap your
+        Sorbet UI wraps Material UI v7 or v9. Install the packages and peer dependencies, then wrap your
         app in a Sorbet theme.
       </Typography>
 
