@@ -14,7 +14,7 @@ export default function NavbarWithMenu() {
   return (
     <Box component="header" sx={{ py: 2, borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
       <Container maxWidth="lg">
-        <Stack direction="row" alignItems="center" spacing={4} useFlexGap>
+        <Stack direction="row" sx={{ alignItems: 'center' }} spacing={4} useFlexGap>
           <Link href="#" underline="none" color="text.primary" sx={{ fontWeight: 800, fontSize: 20, letterSpacing: '-0.03em' }}>
             Acme
           </Link>
@@ -31,7 +31,7 @@ export default function NavbarWithMenu() {
               </Link>
             ))}
           </Stack>
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ ml: 'auto' }}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', ml: 'auto' }}>
             <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 1 }}>
               <Button variant="plain" color="neutral" size="sm" href="#">
                 Sign in

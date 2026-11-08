@@ -17,7 +17,7 @@ export default function HeroCode() {
         <Alert color="info" sx={{ maxWidth: 520, mb: 4 }}>
           The v3 SDK is out. Read the migration guide.
         </Alert>
-        <Grid container spacing={6} alignItems="center">
+        <Grid container spacing={6} sx={{ alignItems: 'center' }}>
           <Grid size={{ xs: 12, md: 6 }}>
             <Typography component="h2" sx={{ fontWeight: 800, fontSize: { xs: 38, md: 54 }, letterSpacing: '-0.04em', lineHeight: 1.05 }}>
               Event tracking in five lines
@@ -25,7 +25,7 @@ export default function HeroCode() {
             <Typography color="text.secondary" sx={{ fontSize: 18, mt: 2.5 }}>
               Typed SDKs for every runtime. Send an event, see it in the dashboard a second later.
             </Typography>
-            <Stack direction="row" spacing={1} sx={{ mt: 3 }} flexWrap="wrap" useFlexGap>
+            <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', mt: 3 }} useFlexGap>
               {['Node', 'Edge', 'Python', 'Go'].map((r) => (
                 <Chip key={r} label={r} variant="outlined" color="neutral" />
               ))}

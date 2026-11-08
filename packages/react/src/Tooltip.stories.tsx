@@ -210,7 +210,7 @@ export const Colors: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         7 Color Options
       </Typography>
-      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }} useFlexGap>
         <Tooltip variant="solid" color="primary" title="Primary Tooltip">
           <Button variant="soft" color="primary">
             Primary
@@ -261,7 +261,7 @@ export const Sizes: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         5 Size Options
       </Typography>
-      <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap' }} useFlexGap>
         <Tooltip variant="solid" size="xs" title="Extra Small Tooltip" describeChild>
           <Button size="xs">XS</Button>
         </Tooltip>
@@ -320,7 +320,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Variants
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Tooltip variant="solid" title="Solid">
             <Button variant="soft">Solid</Button>
           </Tooltip>
@@ -343,7 +343,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Colors × Soft Variant
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Tooltip variant="soft" color="primary" title="Primary">
             <Button variant="ghost" color="primary">
               Primary
@@ -376,7 +376,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           States
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <Tooltip title="Normal Tooltip">
             <Button variant="soft">Normal</Button>
           </Tooltip>

@@ -9,7 +9,7 @@ export default function NavbarSimple() {
   return (
     <Box component="header" sx={{ py: 2, borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
       <Container maxWidth="lg">
-        <Stack direction="row" alignItems="center" spacing={{ xs: 2, md: 4 }} useFlexGap flexWrap="wrap" rowGap={1.5}>
+        <Stack direction="row" spacing={{ xs: 2, md: 4 }} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', rowGap: 1.5 }}>
           <Link href="#" underline="none" color="text.primary" sx={{ fontWeight: 800, fontSize: 20, letterSpacing: '-0.03em' }}>
             Acme
           </Link>
@@ -19,9 +19,7 @@ export default function NavbarSimple() {
             direction="row"
             spacing={{ xs: 2, sm: 3 }}
             useFlexGap
-            flexWrap="wrap"
-            rowGap={1}
-            sx={{ order: { xs: 3, md: 0 }, width: { xs: '100%', md: 'auto' }, flex: { md: 1 } }}
+            sx={{ flexWrap: 'wrap', rowGap: 1, order: { xs: 3, md: 0 }, width: { xs: '100%', md: 'auto' }, flex: { md: 1 } }}
           >
             {LINKS.map((l) => (
               <Link key={l} href="#" color="text.secondary" underline="none" sx={{ fontWeight: 500, fontSize: 15, '&:hover': { color: 'text.primary' } }}>

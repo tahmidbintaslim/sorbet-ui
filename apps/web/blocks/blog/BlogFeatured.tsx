@@ -28,7 +28,7 @@ export default function BlogFeatured() {
                 }}
               />
               <Box sx={{ p: { xs: 3, md: 4 } }}>
-                <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" alignItems="center">
+                <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
                   <Chip size="sm" variant="soft" color="primary" label="Featured" />
                   <Typography variant="body2" color="text.secondary">
                     Product · 8 min read
@@ -43,7 +43,7 @@ export default function BlogFeatured() {
                   Roadmaps, tasks and reviews now live side by side. Here is what changed, why we rebuilt the core, and how to try the new
                   workspace today.
                 </Typography>
-                <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mt: 3 }}>
+                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mt: 3 }}>
                   <Avatar size="sm" variant="soft" color="secondary">
                     TO
                   </Avatar>

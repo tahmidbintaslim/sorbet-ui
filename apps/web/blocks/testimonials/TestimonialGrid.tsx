@@ -39,7 +39,7 @@ export default function TestimonialGrid() {
                 <Typography component="blockquote" sx={{ m: 0, flex: 1, fontSize: 17 }}>
                   &ldquo;{q.quote}&rdquo;
                 </Typography>
-                <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mt: 3 }}>
+                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mt: 3 }}>
                   <Avatar variant="soft" color={q.color} aria-hidden>
                     {initials(q.name)}
                   </Avatar>

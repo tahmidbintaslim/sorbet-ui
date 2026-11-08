@@ -82,7 +82,7 @@ export const Plain: Story = {
 
 export const AllVariants: Story = {
   render: () => (
-    <Stack direction="row" spacing={2} alignItems="center">
+    <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
       <Avatar variant="solid">JD</Avatar>
       <Avatar variant="soft">AB</Avatar>
       <Avatar variant="outlined">CR</Avatar>
@@ -98,7 +98,7 @@ export const Sizes: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         5 Size Options
       </Typography>
-      <Stack direction="row" spacing={2} alignItems="center">
+      <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
         <Avatar variant="solid" size="xs">
           XS
         </Avatar>
@@ -138,7 +138,7 @@ export const Colors: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         7 Color Options
       </Typography>
-      <Stack direction="row" spacing={2} alignItems="center">
+      <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
         <Avatar variant="solid" color="primary">
           PR
         </Avatar>
@@ -164,7 +164,7 @@ export const Colors: Story = {
       <Typography variant="caption" color="text.secondary">
         Colors work with all variants
       </Typography>
-      <Stack direction="row" spacing={2} alignItems="center">
+      <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
         <Avatar variant="soft" color="primary">
           PR
         </Avatar>
@@ -198,7 +198,7 @@ export const Loading: Story = {
       <Typography variant="subtitle2" color="text.secondary">
         Loading States
       </Typography>
-      <Stack direction="row" spacing={2} alignItems="center">
+      <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
         <Avatar variant="solid" loading>
           JD
         </Avatar>
@@ -233,7 +233,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Variants
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }} alignItems="center">
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 1 }}>
           <Avatar variant="solid">SO</Avatar>
           <Avatar variant="soft">SF</Avatar>
           <Avatar variant="outlined">OL</Avatar>
@@ -246,7 +246,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Colors
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }} alignItems="center">
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mt: 1 }}>
           <Avatar color="primary">PR</Avatar>
           <Avatar color="secondary">SE</Avatar>
           <Avatar color="success">SU</Avatar>
@@ -261,7 +261,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Sizes
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }} alignItems="center">
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 1 }}>
           <Avatar size="xs">XS</Avatar>
           <Avatar size="sm">SM</Avatar>
           <Avatar size="md">MD</Avatar>
@@ -274,7 +274,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           States
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }} alignItems="center">
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 1 }}>
           <Avatar>OK</Avatar>
           <Avatar loading>LD</Avatar>
         </Stack>

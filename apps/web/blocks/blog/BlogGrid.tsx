@@ -43,9 +43,7 @@ export default function BlogGrid() {
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
           spacing={2}
-          justifyContent="space-between"
-          alignItems={{ xs: 'flex-start', sm: 'flex-end' }}
-          sx={{ mb: { xs: 4, md: 6 } }}
+          sx={{ justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'flex-end' }, mb: { xs: 4, md: 6 } }}
         >
           <Box>
             <Typography component="h2" sx={{ fontWeight: 800, fontSize: { xs: 30, md: 40 }, letterSpacing: '-0.03em' }}>
@@ -78,7 +76,7 @@ export default function BlogGrid() {
                 <Typography color="text.secondary" sx={{ mt: 1.5, flex: 1 }}>
                   {p.excerpt}
                 </Typography>
-                <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mt: 3 }}>
+                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mt: 3 }}>
                   <Avatar size="sm" variant="soft" color={p.color}>
                     {p.initials}
                   </Avatar>

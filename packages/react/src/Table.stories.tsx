@@ -528,7 +528,7 @@ export const FullDemo: Story = {
           </Typography>
         </Box>
 
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
           <Chip
             label={`${selected.length} selected`}
             color={selected.length > 0 ? 'primary' : 'default'}

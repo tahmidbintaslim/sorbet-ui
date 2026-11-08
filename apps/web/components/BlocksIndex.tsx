@@ -57,7 +57,7 @@ export default function BlocksIndex() {
                     href={`/blocks/${c.id}`}
                     sx={{ display: 'block', height: '100%', p: 2.5, borderRadius: 3, border: 1, borderColor: 'divider', bgcolor: 'background.paper', color: 'text.primary', textDecoration: 'none', transition: 'border-color .2s, transform .2s', '&:hover': { borderColor: 'primary.main', transform: 'translateY(-2px)' } }}
                   >
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                       <Typography component="h3" sx={{ fontWeight: 700 }}>
                         {c.title}
                       </Typography>

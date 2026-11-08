@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Box, Container, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import LockIcon from '@mui/icons-material/LockOutlined';
 import { Alert, Button, Card } from '@sorbet-ui/react';
 
@@ -45,10 +45,10 @@ export default function CartSummary() {
                   {items.map((item, i) => (
                     <Box component="li" key={item.id}>
                       {i > 0 && <Divider sx={{ my: 2 }} />}
-                      <Stack direction="row" spacing={2} alignItems="flex-start">
+                      <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
                         <Box aria-hidden sx={{ width: 72, height: 72, borderRadius: 2, flexShrink: 0, background: item.gradient }} />
                         <Box sx={{ flex: 1, minWidth: 0 }}>
-                          <Stack direction="row" justifyContent="space-between" spacing={1}>
+                          <Stack direction="row" sx={{ justifyContent: 'space-between' }} spacing={1}>
                             <Box sx={{ minWidth: 0 }}>
                               <Typography component="h3" sx={{ fontWeight: 700 }}>
                                 {item.name}
@@ -59,13 +59,12 @@ export default function CartSummary() {
                             </Box>
                             <Typography sx={{ fontWeight: 700, whiteSpace: 'nowrap' }}>{money(item.price * item.qty)}</Typography>
                           </Stack>
-                          <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 1.5 }}>
+                          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mt: 1.5 }}>
                             <Stack
                               direction="row"
-                              alignItems="center"
                               role="group"
                               aria-label={`Quantity for ${item.name}`}
-                              sx={{ border: 1, borderColor: 'divider', borderRadius: 2 }}
+                              sx={{ alignItems: 'center', border: 1, borderColor: 'divider', borderRadius: 2 }}
                             >
                               <IconButton size="small" aria-label={`Decrease quantity of ${item.name}`} onClick={() => setQty(item.id, item.qty - 1)}>
                                 <RemoveIcon fontSize="small" />
@@ -100,7 +99,7 @@ export default function CartSummary() {
                   ['Shipping', shipping === 0 ? 'Free' : money(shipping)],
                   [`Tax (${TAX_RATE * 100}%)`, money(tax)],
                 ].map(([k, v]) => (
-                  <Stack key={k} direction="row" justifyContent="space-between" sx={{ py: 0.75 }}>
+                  <Stack key={k} direction="row" sx={{ justifyContent: 'space-between', py: 0.75 }}>
                     <Typography component="dt" color="text.secondary">
                       {k}
                     </Typography>
@@ -109,7 +108,7 @@ export default function CartSummary() {
                     </Typography>
                   </Stack>
                 ))}
-                <Stack direction="row" justifyContent="space-between" sx={{ mt: 1.5, pt: 1.5, borderTop: 1, borderColor: 'divider' }}>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', mt: 1.5, pt: 1.5, borderTop: 1, borderColor: 'divider' }}>
                   <Typography component="dt" sx={{ fontWeight: 700 }}>
                     Total
                   </Typography>

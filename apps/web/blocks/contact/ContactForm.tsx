@@ -61,7 +61,7 @@ export default function ContactForm() {
           <Grid size={{ xs: 12, md: 7 }}>
             <Card variant="outlined" sx={{ p: { xs: 3, md: 4 } }}>
               {sent ? (
-                <Stack spacing={2} alignItems="flex-start">
+                <Stack spacing={2} sx={{ alignItems: 'flex-start' }}>
                   <Alert color="success" sx={{ width: '100%' }}>
                     Thanks for reaching out! We will get back to you shortly.
                   </Alert>

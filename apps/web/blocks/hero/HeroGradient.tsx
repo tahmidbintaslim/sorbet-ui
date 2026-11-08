@@ -36,7 +36,7 @@ export default function HeroGradient() {
           <Typography sx={{ fontSize: { xs: 17, md: 20 }, mt: 2.5, maxWidth: 600, mx: 'auto', color: '#fff' }}>
             Acme turns scattered feedback into a clear roadmap, then tracks every release until it lands.
           </Typography>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} justifyContent="center" sx={{ mt: 4 }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ justifyContent: 'center', mt: 4 }}>
             <Button
               size="lg"
               endIcon={<ArrowForward />}
@@ -52,7 +52,7 @@ export default function HeroGradient() {
               See how it works
             </Button>
           </Stack>
-          <Stack direction="row" useFlexGap flexWrap="wrap" spacing={1} justifyContent="center" sx={{ mt: 5 }}>
+          <Stack direction="row" useFlexGap spacing={1} sx={{ flexWrap: 'wrap', justifyContent: 'center', mt: 5 }}>
             {STATS.map((s) => (
               <Chip
                 key={s}

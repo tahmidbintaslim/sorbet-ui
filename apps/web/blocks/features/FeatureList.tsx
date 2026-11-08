@@ -21,7 +21,7 @@ export default function FeatureList() {
   return (
     <Box component="section" sx={{ py: { xs: 8, md: 12 } }}>
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 6, md: 8 }} alignItems="center">
+        <Grid container spacing={{ xs: 6, md: 8 }} sx={{ alignItems: 'center' }}>
           <Grid size={{ xs: 12, md: 6 }}>
             <Chip label="Why Acme" variant="soft" color="success" />
             <Typography component="h2" sx={{ fontWeight: 800, fontSize: { xs: 32, md: 42 }, letterSpacing: '-0.03em', mt: 2 }}>
@@ -43,13 +43,13 @@ export default function FeatureList() {
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <Card variant="outlined" sx={{ p: { xs: 3, md: 4 } }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+              <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }} spacing={2}>
                 <Typography sx={{ fontWeight: 700 }}>Launch checklist</Typography>
                 <Chip size="sm" variant="soft" color="primary" label="3 of 4 done" />
               </Stack>
               <Stack spacing={2} sx={{ mt: 3 }}>
                 {TEAM.map((m) => (
-                  <Stack key={m.name} direction="row" spacing={1.5} alignItems="center">
+                  <Stack key={m.name} direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                     <Avatar variant="soft" color={m.color}>
                       {m.initials}
                     </Avatar>

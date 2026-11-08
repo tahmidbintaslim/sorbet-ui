@@ -82,8 +82,7 @@ export default function DashboardShell() {
               <Stack
                 direction="row"
                 spacing={2}
-                alignItems="center"
-                sx={{ px: { xs: 2, md: 3 }, py: 1.5, borderBottom: 1, borderColor: 'divider' }}
+                sx={{ alignItems: 'center', px: { xs: 2, md: 3 }, py: 1.5, borderBottom: 1, borderColor: 'divider' }}
               >
                 <TextField
                   label="Search"
@@ -126,7 +125,7 @@ export default function DashboardShell() {
                   </Typography>
                   {goals.map((g) => (
                     <Box key={g.label} sx={{ mt: 2 }}>
-                      <Stack direction="row" justifyContent="space-between">
+                      <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                         <Typography variant="body2">{g.label}</Typography>
                         <Typography variant="body2" sx={{ fontWeight: 700 }}>
                           {g.value}%

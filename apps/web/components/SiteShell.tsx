@@ -82,8 +82,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
             href="/"
             direction="row"
             spacing={1}
-            alignItems="center"
-            sx={{ color: 'text.primary', textDecoration: 'none', py: 1.5 }}
+            sx={{ alignItems: 'center', color: 'text.primary', textDecoration: 'none', py: 1.5 }}
           >
             <Logo />
             <Typography component="span" sx={{ fontWeight: 800, fontSize: 18, letterSpacing: '-0.02em' }}>
@@ -149,7 +148,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
             </Link>
           </Box>
 
-          <Stack direction="row" spacing={0.5} alignItems="center" sx={{ ml: 'auto' }}>
+          <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', ml: 'auto' }}>
             <Chip
               component="a"
               href={SITE.npm}
@@ -183,7 +182,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
         <Container maxWidth="lg">
           <Grid container spacing={4}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Stack direction="row" spacing={1} alignItems="center">
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                 <Logo size={24} />
                 <Typography sx={{ fontWeight: 800 }}>{SITE.name}</Typography>
               </Stack>
@@ -215,9 +214,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
             spacing={2}
-            justifyContent="space-between"
-            alignItems={{ sm: 'center' }}
-            sx={{ mt: 5, pt: 3, borderTop: 1, borderColor: 'divider' }}
+            sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' }, mt: 5, pt: 3, borderTop: 1, borderColor: 'divider' }}
           >
             <Typography variant="body2" color="text.secondary">
               MIT licensed. Built on Material UI v7.

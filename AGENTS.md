@@ -1,6 +1,6 @@
 # Agent guide for Sorbet UI
 
-Sorbet UI is a pnpm + Turborepo monorepo: React components on Material UI v7 with one `variant` / `color` / `size` API and light and dark themes.
+Sorbet UI is a pnpm + Turborepo monorepo: React components on Material UI v7 or v9 with one `variant` / `color` / `size` API and light and dark themes.
 
 | Path | What |
 | --- | --- |

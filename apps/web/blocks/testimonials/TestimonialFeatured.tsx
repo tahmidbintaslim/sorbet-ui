@@ -30,7 +30,7 @@ export default function TestimonialFeatured() {
                 Acme gave us one place to see the whole roadmap. Our releases are smaller, more frequent and far less
                 stressful.
               </Typography>
-              <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 4 }}>
+              <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 4 }}>
                 <Avatar size="lg" variant="solid" color="primary" aria-hidden>
                   SR
                 </Avatar>
@@ -52,7 +52,7 @@ export default function TestimonialFeatured() {
                   <Typography component="blockquote" sx={{ m: 0 }}>
                     &ldquo;{q.quote}&rdquo;
                   </Typography>
-                  <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mt: 2.5 }}>
+                  <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mt: 2.5 }}>
                     <Avatar size="sm" variant="soft" color={q.color} aria-hidden>
                       {q.initials}
                     </Avatar>

@@ -313,7 +313,7 @@ export const FullDemo: Story = {
         <Typography variant="overline" color="text.secondary">
           Colors (Outlined)
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
           <TextField color="primary" placeholder="Primary" size="sm" sx={{ width: 120 }} />
           <TextField color="secondary" placeholder="Secondary" size="sm" sx={{ width: 120 }} />
           <TextField color="success" placeholder="Success" size="sm" sx={{ width: 120 }} />

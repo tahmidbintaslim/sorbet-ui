@@ -53,7 +53,7 @@ export default function NotFound() {
             Showing help articles for “{searched}”.
           </Alert>
         )}
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center" alignItems="center" sx={{ mt: 4 }}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'center', alignItems: 'center', mt: 4 }}>
           <Button href="#" size="lg" startIcon={<HomeIcon />}>
             Back to home
           </Button>

@@ -98,7 +98,7 @@ const PLANS = [
 /** Two tiers with a frosted-glass card and gradient border. Pro is not for sale yet. */
 export function Pricing() {
   return (
-    <Grid container spacing={3} justifyContent="center">
+    <Grid container spacing={3} sx={{ justifyContent: 'center' }}>
       {PLANS.map((p) => (
         <Grid key={p.name} size={{ xs: 12, md: 5 }}>
           <Box
@@ -116,7 +116,7 @@ export function Pricing() {
               boxShadow: p.featured ? '0 30px 70px -40px rgba(14,165,233,.6)' : 'none',
             })}
           >
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography component="h3" sx={{ fontWeight: 700, fontSize: 18 }}>
                 {p.name}
               </Typography>
@@ -130,7 +130,7 @@ export function Pricing() {
             </Typography>
             <Stack component="ul" spacing={1.25} sx={{ listStyle: 'none', p: 0, my: 3 }}>
               {p.items.map((it) => (
-                <Stack component="li" key={it} direction="row" spacing={1} alignItems="center">
+                <Stack component="li" key={it} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                   <Check fontSize="small" sx={{ color: 'success.main' }} />
                   <Typography variant="body2">{it}</Typography>
                 </Stack>

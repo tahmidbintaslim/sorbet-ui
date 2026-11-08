@@ -10,9 +10,7 @@ export default function CtaBanner() {
         <Stack
           direction={{ xs: 'column', md: 'row' }}
           spacing={3}
-          alignItems={{ md: 'center' }}
-          justifyContent="space-between"
-          sx={{ p: { xs: 4, md: 6 }, borderRadius: 5, background: 'linear-gradient(135deg, #0369a1, #7e22ce)', color: '#fff' }}
+          sx={{ alignItems: { md: 'center' }, justifyContent: 'space-between', p: { xs: 4, md: 6 }, borderRadius: 5, background: 'linear-gradient(135deg, #0369a1, #7e22ce)', color: '#fff' }}
         >
           <Box>
             <Typography component="h2" sx={{ fontWeight: 800, fontSize: { xs: 28, md: 36 }, letterSpacing: '-0.03em' }}>

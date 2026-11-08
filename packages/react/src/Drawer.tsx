@@ -185,10 +185,31 @@ export const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(
       disableAnimation = false,
       children,
       anchor = 'left',
+      slotProps,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledby,
       ...rest
     },
     ref
   ) => {
+    // The drawer is always MUI's temporary (modal) drawer. MUI v9 gives its paper
+    // role="dialog" and aria-modal; v7 does not. Sorbet sets them in both and puts
+    // the drawer's name on that dialog, where assistive tech looks for it.
+    const dialogProps = {
+      role: 'dialog',
+      'aria-modal': true,
+      ...(ariaLabel !== undefined && { 'aria-label': ariaLabel }),
+      ...(ariaLabelledby !== undefined && { 'aria-labelledby': ariaLabelledby }),
+    };
+    const externalPaper = slotProps?.paper;
+    const paperSlotProps =
+      typeof externalPaper === 'function'
+        ? (ownerState: Parameters<typeof externalPaper>[0]) => ({
+            ...dialogProps,
+            ...externalPaper(ownerState),
+          })
+        : { ...dialogProps, ...externalPaper };
+
     return (
       <StyledDrawer
         ref={ref}
@@ -199,6 +220,7 @@ export const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(
         $disableAnimation={disableAnimation}
         anchor={anchor}
         {...rest}
+        slotProps={{ ...slotProps, paper: paperSlotProps as never }}
       >
         {loading && (
           <LoadingOverlay className="drawer-loading-overlay">

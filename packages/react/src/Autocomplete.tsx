@@ -457,11 +457,17 @@ function AutocompleteInner<
     multiple,
     freeSolo,
     renderInput: customRenderInput,
-    renderTags,
+    renderValue,
     renderOption,
     getOptionLabel: getOptionLabelProp,
-    ...rest
+    slots,
+    ...restProps
   } = props;
+  // MUI v9 removed `PaperComponent`; `slots.paper` exists in v7 and v9. A v7
+  // consumer may still pass `PaperComponent`, so it is read untyped and honored.
+  const { PaperComponent: legacyPaper, ...rest } = restProps as typeof restProps & {
+    PaperComponent?: React.ElementType;
+  };
 
   const getOptionLabel = (option: T): string => {
     if (getOptionLabelProp) {
@@ -489,9 +495,11 @@ function AutocompleteInner<
     />
   );
 
-  const defaultRenderTags = (value: T[], getTagProps: any) =>
+  // `renderValue` replaces `renderTags` (removed in MUI v9) and exists in v7.3 too.
+  // With `multiple`, MUI calls it with the selected values and `getItemProps`.
+  const defaultRenderValue = (value: T[], getItemProps: any) =>
     value.map((option: T, index: number) => {
-      const { key, ...tagProps } = getTagProps({ index });
+      const { key, ...tagProps } = getItemProps({ index });
       return (
         <AutocompleteChip
           key={key}
@@ -544,9 +552,9 @@ function AutocompleteInner<
       disabled={disabled}
       getOptionLabel={getOptionLabel}
       renderInput={customRenderInput || defaultRenderInput}
-      renderTags={renderTags || (multiple ? defaultRenderTags : undefined)}
+      renderValue={renderValue || (multiple ? (defaultRenderValue as never) : undefined)}
       renderOption={renderOption || defaultRenderOption}
-      PaperComponent={StyledPaper}
+      slots={{ paper: legacyPaper ?? StyledPaper, ...slots }}
       $variant={variant}
       $color={color}
       $size={size}

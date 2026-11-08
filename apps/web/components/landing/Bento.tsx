@@ -75,7 +75,7 @@ function CommandMenu() {
   React.useEffect(() => setActive(0), [q]);
   return (
     <Box sx={{ width: '100%', maxWidth: 360, borderRadius: 3, border: 1, borderColor: 'divider', bgcolor: 'background.default', boxShadow: '0 16px 40px -20px rgba(15,23,42,.35)', overflow: 'hidden' }}>
-      <Stack direction="row" alignItems="center" spacing={1} sx={{ px: 1.5, py: 1, borderBottom: 1, borderColor: 'divider' }}>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', px: 1.5, py: 1, borderBottom: 1, borderColor: 'divider' }}>
         <Search fontSize="small" sx={{ color: 'text.secondary' }} />
         <InputBase
           value={q}
@@ -95,7 +95,7 @@ function CommandMenu() {
           inputProps={{ 'aria-label': 'Search components', role: 'combobox', 'aria-expanded': true, 'aria-controls': 'cmdk-list' }}
           sx={{ flex: 1, fontSize: 14 }}
         />
-        <Chip size="xs" variant="soft" color="neutral" label={<Stack direction="row" alignItems="center"><KeyboardCommandKey sx={{ fontSize: 12 }} />K</Stack>} />
+        <Chip size="xs" variant="soft" color="neutral" label={<Stack direction="row" sx={{ alignItems: 'center' }}><KeyboardCommandKey sx={{ fontSize: 12 }} />K</Stack>} />
       </Stack>
       <List id="cmdk-list" role="listbox" dense disablePadding sx={{ p: 0.5, minHeight: 180 }}>
         <AnimatePresence initial={false}>
@@ -110,7 +110,7 @@ function CommandMenu() {
                 onMouseEnter={() => setActive(i)}
                 sx={{ borderRadius: 2 }}
               >
-                <ListItemText primary={c.name} primaryTypographyProps={{ fontSize: 14, fontWeight: 600 }} />
+                <ListItemText primary={c.name} slotProps={{ primary: { sx: { fontSize: 14, fontWeight: 600 } } }} />
               </ListItemButton>
             </motion.div>
           ))}
@@ -141,7 +141,7 @@ function ToastStack() {
       return [{ id: Date.now(), ...m }, ...t].slice(0, 3);
     });
   return (
-    <Stack spacing={1.5} alignItems="center" sx={{ width: '100%' }}>
+    <Stack spacing={1.5} sx={{ alignItems: 'center', width: '100%' }}>
       <Box sx={{ position: 'relative', width: '100%', maxWidth: 320, height: 150 }} aria-live="polite">
         <AnimatePresence initial={false}>
           {toasts.map((t, i) => (
@@ -172,11 +172,11 @@ function ThemeSplit() {
   const [pos, setPos] = React.useState(50);
   const card = (
     <Stack spacing={1.5} sx={{ p: 2.5, bgcolor: 'background.paper', color: 'text.primary', height: '100%' }}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography sx={{ fontWeight: 700 }}>Notifications</Typography>
         <Chip size="xs" label="3 new" variant="soft" color="secondary" />
       </Stack>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <Switch label="Email" defaultChecked size="sm" />
         <Switch label="Push" size="sm" />
       </Stack>
@@ -218,7 +218,7 @@ function ThemeSplit() {
 function StarsCard() {
   const stars = useGitHubStars();
   return (
-    <Stack spacing={1.5} alignItems="center" textAlign="center">
+    <Stack spacing={1.5} sx={{ alignItems: 'center', textAlign: 'center' }}>
       <motion.div whileHover={{ rotate: 18, scale: 1.1 }} transition={{ type: 'spring', stiffness: 300 }}>
         <StarRounded sx={{ fontSize: 56, color: colorPalette.warning[400] }} />
       </motion.div>

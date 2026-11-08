@@ -1,6 +1,6 @@
 # @sorbet-ui/react
 
-React components on Material UI v7 with one `variant`, `color` and `size` API, plus light and dark themes.
+React components on Material UI v7 or v9 with one `variant`, `color` and `size` API, plus light and dark themes.
 
 - 26 components: Alert, Autocomplete, Avatar, Badge, Breadcrumbs, Button, Card, Checkbox, Chip, DatePicker, Dialog, Drawer, Pagination, Popover, Progress, Radio, Rating, Select, Slider, Snackbar, Switch, Table, Tabs, TextField, ToggleButtonGroup, Tooltip
 - Variants: `solid`, `soft`, `outlined`, `ghost`, `plain` (Button also `dash`, `link`)

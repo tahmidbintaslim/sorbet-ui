@@ -3,7 +3,7 @@ export const SITE = {
   name: 'Sorbet UI',
   tagline: 'Material UI, but softer',
   description:
-    'React components on Material UI v7 with one variant, color and size API, plus light and dark themes.',
+    'React components on Material UI v7 or v9 with one variant, color and size API, plus light and dark themes.',
   github: 'https://github.com/tahmidbintaslim/sorbet-ui',
   storybook: 'https://sorbet-ui.vercel.app',
   npm: 'https://www.npmjs.com/package/@sorbet-ui/react',

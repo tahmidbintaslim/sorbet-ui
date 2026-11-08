@@ -192,7 +192,7 @@ export const Colors: Story = {
         <Typography variant="subtitle2" color="text.secondary">
           7 Color Options
         </Typography>
-        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }} useFlexGap>
           {colors.map((color) => (
             <Box key={color}>
               <Button onClick={() => setOpenColor(color)} variant="soft" color={color}>
@@ -237,7 +237,7 @@ export const Sizes: Story = {
         <Typography variant="subtitle2" color="text.secondary">
           5 Size Options
         </Typography>
-        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }} useFlexGap>
           {sizes.map((size) => (
             <Box key={size}>
               <Button onClick={() => setOpenSize(size)} variant="soft" size={size}>
@@ -327,7 +327,7 @@ export const FullDemo: Story = {
           <Typography variant="overline" color="text.secondary">
             Configure & Open
           </Typography>
-          <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
             <Button
               variant={variant === 'solid' ? 'solid' : 'ghost'}
               onClick={() => setVariant('solid')}
@@ -347,7 +347,7 @@ export const FullDemo: Story = {
               Outlined
             </Button>
           </Stack>
-          <Stack direction="row" spacing={2} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', mt: 1 }} useFlexGap>
             <Button
               color={color === 'primary' ? 'primary' : 'neutral'}
               variant="soft"

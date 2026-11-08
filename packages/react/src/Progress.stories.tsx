@@ -261,7 +261,7 @@ export const CircularVariants: Story = {
     const variants: ProgressVariant[] = ['solid', 'soft', 'outlined', 'ghost', 'plain'];
 
     return (
-      <Stack direction="row" spacing={3} alignItems="center">
+      <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
         {variants.map((variant) => (
           <Box key={variant} sx={{ textAlign: 'center' }}>
             <Progress type="circular" variant={variant} value={65} />
@@ -292,7 +292,7 @@ export const CircularColors: Story = {
     ];
 
     return (
-      <Stack direction="row" spacing={3} alignItems="center" flexWrap="wrap">
+      <Stack direction="row" spacing={3} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
         {colors.map((color) => (
           <Box key={color} sx={{ textAlign: 'center' }}>
             <Progress type="circular" color={color} value={70} />
@@ -315,7 +315,7 @@ export const CircularSizes: Story = {
     const sizes: ProgressSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
 
     return (
-      <Stack direction="row" spacing={4} alignItems="center">
+      <Stack direction="row" spacing={4} sx={{ alignItems: 'center' }}>
         {sizes.map((size) => (
           <Box key={size} sx={{ textAlign: 'center' }}>
             <Progress type="circular" size={size} value={50} />
@@ -333,7 +333,7 @@ export const CircularWithLabel: Story = {
   name: 'Circular - With Label',
   render: () => {
     return (
-      <Stack direction="row" spacing={4} alignItems="center">
+      <Stack direction="row" spacing={4} sx={{ alignItems: 'center' }}>
         <Box sx={{ textAlign: 'center' }}>
           <Progress type="circular" value={75} showLabel size="lg" />
           <Typography variant="caption" sx={{ mt: 1, display: 'block' }}>
@@ -363,7 +363,7 @@ export const CircularIndeterminate: Story = {
     const variants: ProgressVariant[] = ['solid', 'soft', 'outlined', 'ghost', 'plain'];
 
     return (
-      <Stack direction="row" spacing={3} alignItems="center">
+      <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
         {variants.map((variant) => (
           <Box key={variant} sx={{ textAlign: 'center' }}>
             <Progress type="circular" variant={variant} indeterminate />
@@ -411,7 +411,7 @@ export const VariantShowcase: Story = {
         </Typography>
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 3 }}>
           {variants.map((variant) => (
-            <Stack key={variant} spacing={2} alignItems="center">
+            <Stack key={variant} spacing={2} sx={{ alignItems: 'center' }}>
               <Typography variant="caption" sx={{ textTransform: 'capitalize' }}>
                 {variant}
               </Typography>
@@ -478,7 +478,7 @@ export const InteractiveDemo: Story = {
           <Progress value={progress} showLabel color={progress === 100 ? 'success' : 'primary'} />
         </Box>
 
-        <Stack direction="row" spacing={4} alignItems="center">
+        <Stack direction="row" spacing={4} sx={{ alignItems: 'center' }}>
           <Box sx={{ textAlign: 'center' }}>
             <Progress
               type="circular"
@@ -535,7 +535,7 @@ export const DarkMode: Story = {
           <Typography variant="h6" sx={{ color: 'white', mt: 4 }}>
             With Labels
           </Typography>
-          <Stack direction="row" spacing={4} alignItems="center">
+          <Stack direction="row" spacing={4} sx={{ alignItems: 'center' }}>
             <Box sx={{ width: 300 }}>
               <Progress value={75} showLabel variant="solid" />
             </Box>
@@ -600,7 +600,7 @@ export const RealWorldExamples: Story = {
           <Typography variant="subtitle1" sx={{ mb: 3 }}>
             Dashboard Stats
           </Typography>
-          <Stack direction="row" spacing={6} justifyContent="center">
+          <Stack direction="row" spacing={6} sx={{ justifyContent: 'center' }}>
             {[
               { label: 'CPU', value: 67, color: 'info' as const },
               { label: 'Memory', value: 82, color: 'warning' as const },
@@ -629,7 +629,7 @@ export const RealWorldExamples: Story = {
               </Typography>
               <Progress indeterminate variant="soft" color="primary" />
             </Box>
-            <Stack direction="row" spacing={4} alignItems="center">
+            <Stack direction="row" spacing={4} sx={{ alignItems: 'center' }}>
               <Progress type="circular" indeterminate size="sm" />
               <Typography variant="body2">Loading data...</Typography>
             </Stack>
@@ -651,7 +651,7 @@ export const RealWorldExamples: Story = {
               sx={{ flexGrow: 1 }}
             />
           </Box>
-          <Stack direction="row" justifyContent="space-between" sx={{ mt: 1 }}>
+          <Stack direction="row" sx={{ justifyContent: 'space-between', mt: 1 }}>
             <Typography variant="caption" color="success.main">
               ✓ Ordered
             </Typography>
@@ -695,7 +695,7 @@ export const CustomStyling: Story = {
           <Typography variant="subtitle2" sx={{ mb: 1 }}>
             Custom Circular Size
           </Typography>
-          <Stack direction="row" spacing={3} alignItems="center">
+          <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
             <Progress type="circular" value={75} circleSize={100} thickness={8} showLabel />
             <Progress type="circular" value={50} circleSize={60} thickness={2} />
           </Stack>
