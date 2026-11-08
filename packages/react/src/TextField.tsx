@@ -328,7 +328,7 @@ export const TextField = React.forwardRef<HTMLDivElement, TextFieldProps>(
     // Sorbet's adornments win over the consumer's; otherwise theirs are kept.
     const externalInput = slotProps?.input;
     const withAdornments = (props: Record<string, unknown> | undefined) => {
-      const merged = { ...legacyInputProps, ...props };
+      const merged: Record<string, unknown> = { ...legacyInputProps, ...props };
       return {
         ...merged,
         startAdornment: startAdornment || merged.startAdornment,
