@@ -320,6 +320,46 @@ test('landing: hero and sections are visible with reduced motion', async ({ brow
   await ctx.close();
 });
 
+test('landing: hero headline is in the static HTML and the marquee stands still for reduced motion', async ({ browser }) => {
+  // The headline must not depend on JavaScript: check the server HTML itself.
+  const ctx = await browser.newContext({ reducedMotion: 'reduce' });
+  await stubGitHub(ctx);
+  const page = await ctx.newPage();
+  const html = await (await page.request.get('/')).text();
+  expect(html).toMatch(/<h1[^>]*id="hero-title"/);
+  for (const word of ['Already on Material UI?', 'Make', 'look', 'modern.']) expect(html).toContain(word);
+
+  await page.goto('/');
+  const h1 = page.getByRole('heading', { level: 1 });
+  await expect(h1).toHaveText('Already on Material UI? Make it look modern.');
+  await expect(h1).toBeVisible();
+  // Reduced motion: no marquee animation, chips wrap, duplicates and the pause button are gone.
+  const track = page.getByTestId('marquee-track');
+  await expect(track).toBeVisible();
+  expect(await track.evaluate((el) => getComputedStyle(el).animationName)).toBe('none');
+  await expect(page.getByRole('region', { name: 'Components' }).getByRole('link', { name: 'Button', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: /component carousel/ })).toBeHidden();
+  await ctx.close();
+});
+
+test('landing: the marquee pauses on hover and with its pause button', async ({ page }) => {
+  await page.goto('/');
+  const track = page.getByTestId('marquee-track');
+  const state = () => track.evaluate((el) => getComputedStyle(el).animationPlayState);
+  await track.scrollIntoViewIfNeeded();
+  await expect.poll(state).toBe('running');
+  await track.hover();
+  await expect.poll(state).toBe('paused');
+  await page.mouse.move(0, 0);
+  await expect.poll(state).toBe('running');
+  await page.getByRole('button', { name: 'Pause component carousel' }).click();
+  await page.mouse.move(0, 0);
+  await expect.poll(state).toBe('paused');
+  await page.getByRole('button', { name: 'Play component carousel' }).click();
+  await page.mouse.move(0, 0);
+  await expect.poll(state).toBe('running');
+});
+
 test('blocks: search is kept in the URL and restored on reload', async ({ page }) => {
   await page.goto('/blocks');
   await page.getByRole('textbox', { name: 'Search blocks' }).fill('pricing');
