@@ -3,7 +3,7 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import Check from '@mui/icons-material/Check';
 import Remove from '@mui/icons-material/Remove';
-import { Button, Chip, Table, type TableColumn } from '@sorbet-ui/react';
+import { Button, Card, Chip, Table, type TableColumn } from '@sorbet-ui/react';
 
 type Value = boolean | string;
 type Row = { id: string; feature: string; starter: Value; team: Value; business: Value };
@@ -24,6 +24,12 @@ function renderValue(value: unknown) {
   if (value === false) return <Remove sx={{ color: 'text.disabled' }} titleAccess="Not included" />;
   return <Typography variant="body2">{String(value)}</Typography>;
 }
+
+const PLANS = [
+  { key: 'starter', name: 'Starter' },
+  { key: 'team', name: 'Team' },
+  { key: 'business', name: 'Business' },
+] as const;
 
 const COLUMNS: TableColumn<Row>[] = [
   {
@@ -58,7 +64,34 @@ export default function PricingCompare() {
           </Box>
           <Button variant="outlined">Talk to sales</Button>
         </Stack>
-        <Box tabIndex={0} role="region" aria-label="Plan comparison table" sx={{ overflowX: 'auto' }}>
+        {/* Phones: one list per plan, so no column is hidden off-screen. */}
+        <Stack spacing={2} sx={{ display: { xs: 'flex', sm: 'none' } }}>
+          {PLANS.map((plan) => (
+            <Card key={plan.key} variant="outlined" sx={{ p: 2.5 }}>
+              <Typography component="h3" sx={{ fontWeight: 700, fontSize: 18 }}>
+                {plan.name}
+              </Typography>
+              <Box component="dl" sx={{ m: 0, mt: 1 }}>
+                {ROWS.map((row) => (
+                  <Stack
+                    key={row.id}
+                    direction="row"
+                    spacing={2}
+                    sx={{ justifyContent: 'space-between', alignItems: 'center', py: 1, borderTop: 1, borderColor: 'divider' }}
+                  >
+                    <Typography component="dt" variant="body2" sx={{ fontWeight: 600 }}>
+                      {row.feature}
+                    </Typography>
+                    <Box component="dd" sx={{ m: 0, display: 'flex' }}>
+                      {renderValue(row[plan.key])}
+                    </Box>
+                  </Stack>
+                ))}
+              </Box>
+            </Card>
+          ))}
+        </Stack>
+        <Box tabIndex={0} role="region" aria-label="Plan comparison table" sx={{ overflowX: 'auto', display: { xs: 'none', sm: 'block' } }}>
           <Box sx={{ minWidth: 600 }}>
             <Table data={ROWS} columns={COLUMNS} striped getRowId={(r) => r.id} caption="Plan comparison" />
           </Box>
