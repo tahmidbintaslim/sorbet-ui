@@ -48,6 +48,8 @@ const ORDERS = [
   { id: '#1040', customer: 'Initech', total: '$2,310', status: 'Refunded', color: 'default' as const },
 ];
 
+const HIDE_XS = { display: { xs: 'none', sm: 'table-cell' } } as const;
+
 /** Plain Material UI. Nothing here imports Sorbet. */
 function Dashboard({ label }: { label: string }) {
   const theme = useTheme();
@@ -97,7 +99,8 @@ function Dashboard({ label }: { label: string }) {
             <TableHead>
               <TableRow>
                 <TableCell>Order</TableCell>
-                <TableCell>Customer</TableCell>
+                {/* Phones drop the Customer column (in both layers, same JSX) so Total and Status fit. */}
+                <TableCell sx={HIDE_XS}>Customer</TableCell>
                 <TableCell align="right">Total</TableCell>
                 <TableCell>Status</TableCell>
               </TableRow>
@@ -106,7 +109,7 @@ function Dashboard({ label }: { label: string }) {
               {ORDERS.map((o) => (
                 <TableRow key={o.id}>
                   <TableCell>{o.id}</TableCell>
-                  <TableCell>{o.customer}</TableCell>
+                  <TableCell sx={HIDE_XS}>{o.customer}</TableCell>
                   <TableCell align="right">{o.total}</TableCell>
                   <TableCell>
                     <Chip size="small" color={o.color} label={o.status} />

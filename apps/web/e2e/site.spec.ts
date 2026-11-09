@@ -100,13 +100,69 @@ test('respects OS dark preference', async ({ browser }) => {
   await ctx.close();
 });
 
+// Below md the header nav and the docs sidebar live in drawers; open them when needed.
+async function openIfCollapsed(page: Page, nav: 'Main' | 'Docs') {
+  if (await page.getByRole('navigation', { name: nav }).isVisible()) return;
+  await (nav === 'Main' ? page.getByRole('banner').getByRole('button', { name: 'Open menu' }) : page.getByRole('button', { name: /Browse docs/ })).click();
+}
+
 test('navigation: header and docs sidebar', async ({ page }) => {
   await page.goto('/');
+  await openIfCollapsed(page, 'Main');
   await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Components' }).click();
   await expect(page).toHaveURL(/\/docs\/components$/);
+  await openIfCollapsed(page, 'Docs');
   await page.getByRole('navigation', { name: 'Docs' }).getByRole('link', { name: 'Button', exact: true }).click();
   await expect(page).toHaveURL(/\/docs\/components\/button$/);
+  await openIfCollapsed(page, 'Docs');
   await expect(page.getByRole('navigation', { name: 'Docs' }).locator('[aria-current="page"]')).toHaveText('Button');
+});
+
+test.describe('phone navigation', () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test('hamburger opens the menu, navigates and closes', async ({ page }) => {
+    await page.goto('/');
+    const header = page.getByRole('banner');
+    expect((await header.boundingBox())!.height).toBeLessThanOrEqual(72); // one row
+    const open = header.getByRole('button', { name: 'Open menu' });
+    const box = (await open.boundingBox())!;
+    expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
+    await expect(open).toHaveAttribute('aria-expanded', 'false');
+    await open.tap();
+    const menu = page.getByRole('dialog', { name: 'Site menu' });
+    await expect(menu).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Storybook' })).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'GitHub' })).toBeVisible();
+    await menu.getByRole('link', { name: 'Blocks' }).tap();
+    await expect(page).toHaveURL(/\/blocks$/);
+    await expect(menu).toBeHidden();
+    await expect(open).toHaveAttribute('aria-expanded', 'false');
+    // Escape closes it and focus returns to the button.
+    await open.tap();
+    await expect(menu).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(menu).toBeHidden();
+    await expect(open).toBeFocused();
+  });
+
+  test('docs drawer opens, navigates to Table and the H1 is in view', async ({ page }) => {
+    await page.goto('/docs');
+    // Content first: the H1 is in the first viewport, not below the sidebar.
+    await expect(page.getByRole('heading', { level: 1 })).toBeInViewport();
+    await page.getByRole('button', { name: /Browse docs/ }).tap();
+    const drawer = page.getByRole('dialog', { name: 'Docs pages' });
+    await expect(drawer).toBeVisible();
+    await expect(drawer.locator('[aria-current="page"]')).toHaveText('Getting started');
+    await drawer.getByRole('link', { name: 'Table', exact: true }).tap();
+    await expect(page).toHaveURL(/\/docs\/components\/table$/);
+    await expect(drawer).toBeHidden();
+    await expect(page.getByRole('heading', { level: 1, name: 'Table' })).toBeInViewport();
+    // Reopened, the drawer highlights the current page and scrolls it into view.
+    await page.getByRole('button', { name: /Browse docs/ }).tap();
+    await expect(drawer.locator('[aria-current="page"]')).toHaveText('Table');
+    await expect(drawer.locator('[aria-current="page"]')).toBeInViewport();
+  });
 });
 
 test('playground: changing variant, color and size updates the source', async ({ page }) => {

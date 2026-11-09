@@ -44,9 +44,9 @@ export default function TemplateCards() {
               </Typography>
               <Stack direction="row" spacing={0.75} sx={{ flexWrap: 'wrap', mt: 1.5 }} useFlexGap>
                 {t.tags.map((tag) => (
-                  <Chip key={tag} size="xs" variant="outlined" color="neutral" label={tag} />
+                  <Chip key={tag} size="sm" variant="outlined" color="neutral" label={tag} />
                 ))}
-                <Chip size="xs" variant="outlined" color="neutral" label={`${t.blocks.length} blocks`} />
+                <Chip size="sm" variant="outlined" color="neutral" label={`${t.blocks.length} blocks`} />
               </Stack>
             </Box>
           </Box>

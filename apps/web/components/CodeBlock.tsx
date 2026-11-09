@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import Check from '@mui/icons-material/Check';
+import { touchTarget } from '@/lib/touch';
 
 const MONO = 'var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
 
@@ -63,7 +64,7 @@ function CopyButton({ text, onDark }: { text: string; onDark?: boolean }) {
         size="small"
         onClick={copy}
         aria-label="Copy code"
-        sx={onDark ? { color: '#cbd5e1', '&:hover': { bgcolor: 'rgba(255,255,255,.08)' } } : undefined}
+        sx={[touchTarget, onDark ? { color: '#cbd5e1', '&:hover': { bgcolor: 'rgba(255,255,255,.08)' } } : {}]}
       >
         {copied ? <Check fontSize="small" /> : <ContentCopy fontSize="small" />}
       </IconButton>

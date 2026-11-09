@@ -31,9 +31,33 @@ const orders: Order[] = [
 ];
 
 const columns: TableColumn<Order>[] = [
-  { id: 'id', header: 'Order', accessor: 'id' },
+  {
+    id: 'id',
+    header: 'Order',
+    accessor: 'id',
+    cell: (value, row) => (
+      <>
+        <Box component="span" sx={{ whiteSpace: 'nowrap' }}>
+          {value as string}
+        </Box>
+        {/* Phones hide the Customer column, so show the name under the order id. */}
+        <Typography variant="body2" color="text.secondary" sx={{ display: { sm: 'none' } }}>
+          {row.customer}
+        </Typography>
+      </>
+    ),
+  },
   { id: 'customer', header: 'Customer', accessor: 'customer' },
-  { id: 'date', header: 'Date', accessor: 'date' },
+  {
+    id: 'date',
+    header: 'Date',
+    accessor: 'date',
+    cell: (value) => (
+      <Box component="span" sx={{ whiteSpace: 'nowrap' }}>
+        {value as string}
+      </Box>
+    ),
+  },
   {
     id: 'status',
     header: 'Status',
@@ -83,7 +107,21 @@ export default function DashboardTable() {
               sx={{ width: { xs: '100%', sm: 260 } }}
             />
           </Stack>
-          <Box tabIndex={0} role="region" aria-label="Orders table" sx={{ mt: 2.5, overflowX: 'auto' }}>
+          <Box
+            tabIndex={0}
+            role="region"
+            aria-label="Orders table"
+            sx={{
+              mt: 2.5,
+              overflowX: 'auto',
+              '& .MuiChip-root': { flexShrink: 0 },
+              // Phones: drop Customer (shown under the id) and Date so Status and Total fit.
+              '@media (max-width: 599.95px)': {
+                '& th, & td': { px: 1 },
+                '& th:nth-of-type(2), & td:nth-of-type(2), & th:nth-of-type(3), & td:nth-of-type(3)': { display: 'none' },
+              },
+            }}
+          >
             <Table<Order>
               data={rows}
               columns={columns}
@@ -100,6 +138,7 @@ export default function DashboardTable() {
               onChange={(_e, n) => setPage(n)}
               size="sm"
               aria-label="Orders pagination"
+              sx={{ '@media (pointer: coarse)': { '& .MuiPaginationItem-root.MuiPaginationItem-root': { minWidth: 44, height: 44 } } }}
             />
           </Stack>
         </Card>

@@ -5,6 +5,7 @@ import * as React from 'react';
 import { Box, Grid, Slider as MuiSlider, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Button, Switch } from '@sorbet-ui/react';
+import { TOUCH, touchTarget } from '@/lib/touch';
 import { colorPalette } from '@sorbet-ui/tokens';
 import CodeBlock from '../CodeBlock';
 import { COLORS, SIZES, type Color, type Size } from '@/lib/site';
@@ -79,7 +80,7 @@ export default function LivePlayground() {
           value={file}
           onChange={(_, f) => f && setFile(f)}
           aria-label="Source file"
-          sx={{ mb: -1 }}
+          sx={{ mb: -1, '& .MuiToggleButton-root': touchTarget }}
         >
           <ToggleButton value="tsx">ShipIt.tsx</ToggleButton>
           <ToggleButton value="theme">App.tsx</ToggleButton>
@@ -109,14 +110,14 @@ export default function LivePlayground() {
             <AnimatePresence>{bursts.map((id) => <Burst key={id} id={id} />)}</AnimatePresence>
           </Box>
           <Stack spacing={2} sx={{ p: 2.5, borderTop: 1, borderColor: 'divider' }}>
-            <ToggleButtonGroup size="small" exclusive value={variant} onChange={(_, v) => v && setVariant(v)} aria-label="Variant" sx={{ flexWrap: 'wrap' }}>
+            <ToggleButtonGroup size="small" exclusive value={variant} onChange={(_, v) => v && setVariant(v)} aria-label="Variant" sx={{ flexWrap: 'wrap', '& .MuiToggleButton-root': touchTarget }}>
               {VARIANTS.map((v) => (
                 <ToggleButton key={v} value={v}>
                   {v}
                 </ToggleButton>
               ))}
             </ToggleButtonGroup>
-            <Stack direction="row" spacing={1} role="radiogroup" aria-label="Color" sx={{ flexWrap: 'wrap' }} useFlexGap>
+            <Stack direction="row" spacing={1} role="radiogroup" aria-label="Color" sx={{ flexWrap: 'wrap', [TOUCH]: { gap: 0.5 } }} useFlexGap>
               {COLORS.map((c) => (
                 <Box
                   key={c}
@@ -138,6 +139,8 @@ export default function LivePlayground() {
                     transition: 'transform .15s',
                     '&:hover': { transform: 'scale(1.12)' },
                     '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 2 },
+                    // Touch: same 28px dot inside a 44px hit area (the ring marks the selection).
+                    [TOUCH]: { width: 44, height: 44, p: '6px', backgroundClip: 'content-box', boxShadow: 'none' },
                   }}
                 />
               ))}
