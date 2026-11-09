@@ -61,6 +61,20 @@ for (const route of ROUTES) {
   });
 }
 
+test('dark-mode visitors get the dark background before hydration', async ({ browser }) => {
+  const ctx = await browser.newContext({ colorScheme: 'dark' });
+  const page = await ctx.newPage();
+  // Capture the body colour as soon as the HTML is parsed, before React hydrates.
+  await page.addInitScript(() => {
+    document.addEventListener('DOMContentLoaded', () => {
+      (window as unknown as { firstBg: string }).firstBg = getComputedStyle(document.body).backgroundColor;
+    });
+  });
+  await page.goto('/docs');
+  expect(await page.evaluate(() => (window as unknown as { firstBg: string }).firstBg)).toBe('rgb(15, 23, 42)');
+  await ctx.close();
+});
+
 test('unknown route gives the 404 page', async ({ page }) => {
   const res = await page.goto('/docs/components/nope');
   expect(res?.status()).toBe(404);
