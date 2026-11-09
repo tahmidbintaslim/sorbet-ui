@@ -60,6 +60,14 @@ export {
 } from './Rating';
 export { MenuItem, Select, type SelectProps } from './Select';
 export {
+  Skeleton,
+  type SkeletonColor,
+  type SkeletonProps,
+  type SkeletonShape,
+  type SkeletonSize,
+  type SkeletonVariant,
+} from './Skeleton';
+export {
   Slider,
   type SliderColor,
   type SliderProps,
