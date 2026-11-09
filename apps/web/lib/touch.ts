@@ -6,7 +6,7 @@ export const TOUCH = '@media (max-width: 899.95px), (pointer: coarse)';
 /** min 44x44 on touch layouts. */
 export const touchTarget = { [TOUCH]: { minHeight: 44, minWidth: 44 } } as const;
 
-/** min 44px tall on touch layouts, laid out so the label stays centered. */
+/** min 44x44 on touch layouts for text links, laid out so the label stays centered. */
 export const touchRow = {
-  [TOUCH]: { minHeight: 44, display: 'flex', alignItems: 'center' },
+  [TOUCH]: { minHeight: 44, minWidth: 44, display: 'flex', alignItems: 'center' },
 } as const;

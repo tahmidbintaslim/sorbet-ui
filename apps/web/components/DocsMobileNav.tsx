@@ -31,7 +31,7 @@ export default function DocsMobileNav() {
         sx={(t) => ({
           display: { md: 'none' },
           position: 'sticky',
-          top: 64,
+          top: 65, // header height incl. its border
           zIndex: t.zIndex.appBar - 1,
           mx: { xs: -2, sm: -3 },
           px: { xs: 2, sm: 3 },

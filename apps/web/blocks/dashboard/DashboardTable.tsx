@@ -138,7 +138,7 @@ export default function DashboardTable() {
               onChange={(_e, n) => setPage(n)}
               size="sm"
               aria-label="Orders pagination"
-              sx={{ '@media (pointer: coarse)': { '& .MuiPaginationItem-root': { minWidth: 44, height: 44 } } }}
+              sx={{ '@media (pointer: coarse)': { '& .MuiPaginationItem-root.MuiPaginationItem-root': { minWidth: 44, height: 44 } } }}
             />
           </Stack>
         </Card>

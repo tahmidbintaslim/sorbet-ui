@@ -1,6 +1,7 @@
 'use client';
 import * as React from 'react';
 import { Box, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
+import { TOUCH } from '@/lib/touch';
 import CodeBlock from './CodeBlock';
 import { getDemo } from './demos';
 import { getEntry } from '@/lib/catalog';
@@ -21,7 +22,7 @@ export default function Playground({ slug }: { slug: string }) {
     options: readonly T[],
     set: (v: T) => void,
   ) => (
-    <FormControl size="small" sx={{ minWidth: 130 }}>
+    <FormControl size="small" sx={{ minWidth: 130, [TOUCH]: { '& .MuiSelect-select': { py: '10.5px' }, '& .MuiInputLabel-root:not(.MuiInputLabel-shrink)': { transform: 'translate(14px, 11px) scale(1)' } } }}>
       <InputLabel id={`pg-${label}`}>{label}</InputLabel>
       <Select
         labelId={`pg-${label}`}
