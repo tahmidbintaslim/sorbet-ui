@@ -204,3 +204,100 @@ describe.each(semanticColors)('secondary text on the %s soft tint (light)', (nam
     expect(contrast(sorbetPalette.neutral[600], colorPalette[name].alpha12, WHITE)).toBeGreaterThanOrEqual(AA_TEXT);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Accordion, Menu and Stepper (packages/react). These components put colored text
+// on translucent tints, sometimes stacked (a hovered item on a tinted menu), so the
+// helper below composites each layer in order over the surface.
+// ---------------------------------------------------------------------------
+
+/** Contrast of text over translucent layers stacked bottom-first on a surface. */
+function contrastOnLayers(foreground: string, layers: string[], surface: string): number {
+  let backdrop = parseColor(surface).rgb;
+  for (const layer of layers) backdrop = flatten(layer, backdrop);
+  const fg = flatten(foreground, backdrop);
+  const [hi, lo] = [luminance(fg), luminance(backdrop)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+const DARK_SURFACES = { page: DARK_PAGE, paper: DARK_PAPER } as const;
+
+describe.each(semanticColors)('%s accordion, menu and stepper pairs (light)', (name) => {
+  const scale = colorPalette[name];
+  const neutral = colorPalette.neutral;
+
+  // Outlined and ghost Accordion summaries and outlined Menu items: the hover and
+  // expanded/selected tint under `dark` text.
+  it('dark on the alpha8 tint', () => {
+    expect(contrast(scale.dark, scale.alpha8)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+
+  // Soft Menu: a hovered or selected item adds a second alpha12 layer on the tinted paper.
+  it('dark and body text on an alpha12 item over the alpha12 paper', () => {
+    expect(contrastOnLayers(scale.dark, [scale.alpha12, scale.alpha12], WHITE)).toBeGreaterThanOrEqual(AA_TEXT);
+    expect(
+      contrastOnLayers(textColors.light.primary, [scale.alpha12, scale.alpha12], WHITE)
+    ).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+
+  // Soft Accordion details: body text on the tinted panel.
+  it('body text on the alpha12 tint', () => {
+    expect(contrast(textColors.light.primary, scale.alpha12)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+
+  // Ghost Menu: a selected item that is also hovered sits on neutral 100.
+  it('dark on the neutral 100 hover', () => {
+    expect(contrast(scale.dark, neutral[100])).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+});
+
+describe.each(semanticColors)('%s accordion, menu and stepper pairs (dark)', (name) => {
+  const scale = darkModeColorPalette[name];
+  const neutral = colorPalette.neutral;
+
+  describe.each(Object.entries(DARK_SURFACES))('on the %s', (_surface, surface) => {
+    // Outlined and ghost Accordion summaries and outlined Menu items.
+    it('light on the alpha12 tint', () => {
+      expect(contrast(scale.light, scale.alpha12, surface)).toBeGreaterThanOrEqual(AA_TEXT);
+    });
+
+    // Soft Accordion, soft Menu and soft Stepper indicators sit on cards as well as the page.
+    it('light, body and secondary text on the alpha20 tint', () => {
+      expect(contrast(scale.light, scale.alpha20, surface)).toBeGreaterThanOrEqual(AA_TEXT);
+      expect(contrast(textColors.dark.primary, scale.alpha20, surface)).toBeGreaterThanOrEqual(AA_TEXT);
+      expect(contrast(textColors.dark.secondary, scale.alpha20, surface)).toBeGreaterThanOrEqual(AA_TEXT);
+    });
+
+    // Soft Menu: a hovered or selected item adds a second alpha20 layer.
+    it('light and body text on an alpha20 item over the alpha20 paper', () => {
+      expect(contrastOnLayers(scale.light, [scale.alpha20, scale.alpha20], surface)).toBeGreaterThanOrEqual(
+        AA_TEXT
+      );
+      expect(
+        contrastOnLayers(textColors.dark.primary, [scale.alpha20, scale.alpha20], surface)
+      ).toBeGreaterThanOrEqual(AA_TEXT);
+    });
+
+    // Outlined, ghost and plain Accordion summaries use `light` as text on the surface.
+    it('light on the surface', () => {
+      expect(contrast(scale.light, surface, surface)).toBeGreaterThanOrEqual(AA_TEXT);
+    });
+  });
+
+  // Ghost Menu: a selected item that is also hovered sits on neutral 700.
+  it('light on the neutral 700 hover', () => {
+    expect(contrast(scale.light, neutral[700])).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+});
+
+// Neutral fills for inactive Stepper indicators and disabled Accordion summaries.
+describe('neutral indicator fills', () => {
+  const n = colorPalette.neutral;
+  it.each([
+    ['neutral 700 on neutral 200 (solid, light)', n[700], n[200]],
+    ['neutral 600 on neutral 100 (soft and disabled, light)', n[600], n[100]],
+    ['neutral 200 on neutral 700 (solid, soft and disabled, dark)', n[200], n[700]],
+  ])('%s reaches 4.5:1', (_label, fg, bg) => {
+    expect(contrast(fg, bg)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+});
