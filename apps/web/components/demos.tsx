@@ -5,6 +5,9 @@
 import * as React from 'react';
 import { Box, List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Alert,
   Autocomplete,
   Avatar,
@@ -19,6 +22,7 @@ import {
   DialogContent,
   DialogTitle,
   Drawer,
+  Menu,
   MenuItem,
   Pagination,
   Popover,
@@ -26,8 +30,10 @@ import {
   Radio,
   Rating,
   Select,
+  Skeleton,
   Slider,
   Snackbar,
+  Stepper,
   Switch,
   Table,
   Tabs,
@@ -35,6 +41,7 @@ import {
   Tooltip,
   dayjs,
 } from '@sorbet-ui/react';
+import { srOnly } from '@sorbet-ui/core';
 import type { Color, Size, Variant } from '@/lib/site';
 
 export interface DemoProps {
@@ -195,6 +202,50 @@ function PopoverDemo(p: DemoProps) {
   );
 }
 
+function MenuDemo(p: DemoProps) {
+  const [anchor, setAnchor] = React.useState<HTMLElement | null>(null);
+  const id = React.useId();
+  const open = Boolean(anchor);
+  const close = () => setAnchor(null);
+  return (
+    <>
+      <Button
+        id={`${id}-button`}
+        color={p.color}
+        aria-haspopup="true"
+        aria-controls={open ? `${id}-menu` : undefined}
+        aria-expanded={open ? 'true' : undefined}
+        onClick={(e) => setAnchor(e.currentTarget)}
+      >
+        Project actions
+      </Button>
+      <Menu
+        {...p}
+        id={`${id}-menu`}
+        aria-labelledby={`${id}-button`}
+        anchorEl={anchor}
+        open={open}
+        onClose={close}
+      >
+        <MenuItem onClick={close}>Rename</MenuItem>
+        <MenuItem onClick={close} selected>
+          Duplicate
+        </MenuItem>
+        <MenuItem onClick={close}>Archive</MenuItem>
+      </Menu>
+    </>
+  );
+}
+
+function StepperDemo(p: DemoProps) {
+  const steps = [{ label: 'Account' }, { label: 'Workspace' }, { label: 'Invite', optional: true }, { label: 'Done' }];
+  return (
+    <Box sx={{ width: '100%', maxWidth: 560, overflowX: 'auto' }}>
+      <Stepper {...p} aria-label="Setup progress" activeStep={1} alternativeLabel steps={steps} />
+    </Box>
+  );
+}
+
 function SnackbarDemo(p: DemoProps) {
   const [open, setOpen] = React.useState(false);
   return (
@@ -328,6 +379,49 @@ export const DEMOS: Demo[] = [
       `<Tabs ${attrs(p)} defaultValue="a" tabs={[\n  { id: 'a', label: 'Profile', content: <Profile /> },\n  { id: 'b', label: 'Billing', content: <Billing /> },\n]} />`,
   },
   {
+    slug: 'accordion',
+    render: (p) => (
+      <Box sx={{ width: '100%', maxWidth: 460 }}>
+        <Accordion {...p} defaultExpanded>
+          <AccordionSummary>Can I cancel any time?</AccordionSummary>
+          <AccordionDetails>Yes. Your plan stays active until the end of the billing period.</AccordionDetails>
+        </Accordion>
+        <Accordion {...p}>
+          <AccordionSummary>Do you offer refunds?</AccordionSummary>
+          <AccordionDetails>Within 14 days of purchase, no questions asked.</AccordionDetails>
+        </Accordion>
+      </Box>
+    ),
+    code: (p) =>
+      `<Accordion ${attrs(p)} defaultExpanded>\n  <AccordionSummary>Can I cancel any time?</AccordionSummary>\n  <AccordionDetails>Yes. Your plan stays active…</AccordionDetails>\n</Accordion>`,
+  },
+  {
+    slug: 'stepper',
+    render: (p) => <StepperDemo {...p} />,
+    code: (p) =>
+      `<Stepper ${attrs(p)}\n  aria-label="Setup progress"\n  activeStep={1}\n  alternativeLabel\n  steps={[\n    { label: 'Account' },\n    { label: 'Workspace' },\n    { label: 'Invite', optional: true },\n    { label: 'Done' },\n  ]}\n/>`,
+  },
+  {
+    slug: 'skeleton',
+    render: (p) => (
+      <Box aria-busy="true" sx={{ width: 280 }}>
+        <Box component="span" sx={srOnly}>
+          Loading profile
+        </Box>
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 1.5 }}>
+          <Skeleton {...p} shape="circular" />
+          <Box sx={{ flex: 1 }}>
+            <Skeleton {...p} width="70%" />
+            <Skeleton {...p} width="40%" />
+          </Box>
+        </Stack>
+        <Skeleton {...p} shape="rounded" />
+      </Box>
+    ),
+    code: (p) =>
+      `<Box aria-busy="true">\n  <span className="sr-only">Loading profile</span>\n  <Skeleton ${attrs(p)} shape="circular" />\n  <Skeleton ${attrs(p)} width="70%" />\n  <Skeleton ${attrs(p)} shape="rounded" />\n</Box>`,
+  },
+  {
     slug: 'table',
     render: (p) => (
       <Box sx={{ width: '100%', maxWidth: 520, overflowX: 'auto' }}>
@@ -390,6 +484,12 @@ export const DEMOS: Demo[] = [
     render: (p) => <DrawerDemo {...p} />,
     code: (p) =>
       `<Drawer ${attrs(p)} anchor="right" open={open} onClose={close}>\n  <Box sx={{ width: 280, p: 2 }}>…</Box>\n</Drawer>`,
+  },
+  {
+    slug: 'menu',
+    render: (p) => <MenuDemo {...p} />,
+    code: (p) =>
+      `<Button id="actions-button" aria-haspopup="true" aria-expanded={open} onClick={openMenu}>\n  Project actions\n</Button>\n<Menu ${attrs(p)}\n  aria-labelledby="actions-button"\n  anchorEl={anchor}\n  open={open}\n  onClose={close}\n>\n  <MenuItem onClick={close}>Rename</MenuItem>\n  <MenuItem onClick={close}>Duplicate</MenuItem>\n  <MenuItem onClick={close}>Archive</MenuItem>\n</Menu>`,
   },
   {
     slug: 'popover',
