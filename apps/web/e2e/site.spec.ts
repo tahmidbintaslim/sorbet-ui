@@ -220,6 +220,18 @@ test('snackbar demo shows its message', async ({ page }) => {
   await expect(page.locator('.MuiSnackbar-root').getByText('Changes saved')).toBeVisible();
 });
 
+test('copy button shows a visible error when the clipboard is unavailable', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: () => Promise.reject(new Error('denied')) },
+    });
+  });
+  await page.goto('/docs/components/button');
+  await page.getByRole('button', { name: 'Copy code' }).first().click();
+  await expect(page.getByText('Copy failed. Select the code and copy it manually.').first()).toBeVisible();
+});
+
 test('copy button copies the source', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto('/docs/components/button');
@@ -373,7 +385,8 @@ test('demo: create an order, filter it, and see the toast', async ({ page }) => 
   const app = page.getByTestId('demo-app');
   const nav = app.getByRole('navigation', { name: 'Demo app' }).first();
   if (!(await nav.isVisible())) await app.getByRole('button', { name: 'Open menu' }).click();
-  await page.getByRole('navigation', { name: 'Demo app' }).filter({ visible: true }).getByRole('button', { name: /Orders/ }).click();
+  await page.getByRole('navigation', { name: 'Demo app' }).filter({ visible: true }).getByRole('link', { name: /Orders/ }).click();
+  await expect(page).toHaveURL(/\/demo#orders$/);
   await app.getByRole('button', { name: 'New order' }).click();
   const dialog = page.getByRole('dialog', { name: 'New order' });
   await dialog.getByRole('textbox', { name: 'Customer name' }).fill('Test Buyer');
@@ -390,4 +403,136 @@ test('templates: gallery links to a template whose source lists its blocks', asy
   await expect(page.getByRole('heading', { level: 1, name: 'SaaS landing' })).toBeVisible();
   await page.getByRole('button', { name: 'Get the code' }).click();
   await expect(page.locator('pre[aria-label="SaaS landing page source"]')).toContainText('<PricingTiers />');
+});
+
+// ---------------------------------------------------------------- Demo app
+
+test('demo: an order opens from the keyboard and focus returns to its row', async ({ page }) => {
+  await page.goto('/demo#orders');
+  const app = page.getByTestId('demo-app');
+  await expect(app.getByRole('heading', { level: 2, name: 'Orders' })).toBeVisible();
+  const table = app.getByRole('table', { name: 'Orders' });
+  const firstRow = table.getByRole('row').nth(1);
+  const id = (await firstRow.getByRole('cell').first().innerText()).trim();
+  // Tab into the table: the scroll region first, then the first row.
+  await app.getByRole('region', { name: 'Orders' }).focus();
+  await page.keyboard.press('Tab');
+  await expect(firstRow).toBeFocused();
+  await page.keyboard.press('Enter');
+  const dialog = page.getByRole('dialog', { name: `Order ${id}` });
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(firstRow).toBeFocused();
+  // Space works too.
+  await page.keyboard.press(' ');
+  await expect(page.getByRole('dialog', { name: `Order ${id}` })).toBeVisible();
+});
+
+test('demo: the new-order dialog starts empty after Cancel and Escape', async ({ page }) => {
+  await page.goto('/demo#orders');
+  const app = page.getByTestId('demo-app');
+  const dialog = page.getByRole('dialog', { name: 'New order' });
+  const name = dialog.getByRole('textbox', { name: 'Customer name' });
+  const amount = dialog.getByRole('spinbutton', { name: 'Amount (USD)' });
+
+  await app.getByRole('button', { name: 'New order' }).click();
+  await name.fill('Stale Name');
+  await amount.fill('42');
+  await dialog.getByRole('button', { name: 'Cancel' }).click();
+  await expect(dialog).toBeHidden();
+
+  await app.getByRole('button', { name: 'New order' }).click();
+  await expect(name).toHaveValue('');
+  await expect(amount).toHaveValue('');
+  await name.fill('Also Stale');
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+
+  await app.getByRole('button', { name: 'New order' }).click();
+  await expect(name).toHaveValue('');
+  // Enter submits the form.
+  await name.fill('Enter Buyer');
+  await amount.fill('75');
+  await amount.press('Enter');
+  await expect(dialog).toBeHidden();
+  await expect(page.getByText(/Order #\d+ created/)).toBeVisible();
+  await expect(app.getByRole('cell', { name: 'Enter Buyer' })).toBeVisible();
+});
+
+test('demo: settings keep edits across tabs and views; Save and Cancel work', async ({ page }) => {
+  await page.goto('/demo#settings');
+  const app = page.getByTestId('demo-app');
+  const sections = app.getByRole('tablist', { name: 'Settings sections' });
+  const email = app.getByRole('textbox', { name: 'Email' });
+
+  await email.fill('sam@acme.example');
+  await sections.getByRole('tab', { name: 'Notifications' }).click();
+  const product = app.getByRole('switch', { name: 'Product updates' });
+  await expect(product).not.toBeChecked();
+  await product.check();
+  await sections.getByRole('tab', { name: 'Profile' }).click();
+  await expect(email).toHaveValue('sam@acme.example');
+
+  // Leave the view and come back (same document, like clicking a nav link).
+  await page.evaluate(() => {
+    window.location.hash = 'orders';
+  });
+  await expect(app.getByRole('heading', { level: 2, name: 'Orders' })).toBeVisible();
+  await page.goBack();
+  await expect(app.getByRole('heading', { level: 2, name: 'Settings' })).toBeVisible();
+  await expect(email).toHaveValue('sam@acme.example');
+  await sections.getByRole('tab', { name: 'Notifications' }).click();
+  await expect(product).toBeChecked();
+
+  await app.getByRole('button', { name: 'Save changes' }).click();
+  await expect(app.getByText('All changes saved')).toBeVisible();
+  await product.uncheck();
+  await app.getByRole('button', { name: 'Cancel' }).click();
+  await expect(product).toBeChecked();
+  await sections.getByRole('tab', { name: 'Profile' }).click();
+  await expect(email).toHaveValue('sam@acme.example');
+});
+
+test('demo: the view is in the URL hash and back/forward work', async ({ page }) => {
+  await page.goto('/demo#customers');
+  const app = page.getByTestId('demo-app');
+  await expect(app.getByRole('heading', { level: 2, name: 'Customers' })).toBeVisible();
+  await page.evaluate(() => {
+    window.location.hash = 'orders';
+  });
+  await expect(app.getByRole('heading', { level: 2, name: 'Orders' })).toBeVisible();
+  await page.goBack();
+  await expect(app.getByRole('heading', { level: 2, name: 'Customers' })).toBeVisible();
+  await page.goForward();
+  await expect(app.getByRole('heading', { level: 2, name: 'Orders' })).toBeVisible();
+});
+
+test('docs: getting started says 0.1.0 is not on npm yet and shows the source install', async ({ page }) => {
+  await page.goto('/docs');
+  const notice = page.getByTestId('prerelease-notice');
+  await expect(notice).toBeVisible();
+  await expect(notice).toContainText('not published to npm yet');
+  await expect(page.locator('pre[aria-label="Build Sorbet UI from source"]')).toContainText('pnpm build:packages');
+  // Framework tabs are keyboard operable.
+  const vite = page.getByRole('tab', { name: 'Vite' });
+  await vite.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('tab', { name: 'Next.js' })).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('tab', { name: 'Next.js' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('pre[aria-label="Next.js root layout"]')).toContainText('AppRouterCacheProvider');
+  await expect(page.locator('pre[aria-label="Install command for Next.js"]')).toContainText('@mui/material-nextjs');
+});
+
+test('demo: choosing a view in the mobile menu moves focus to its heading', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.goto('/demo');
+  const app = page.getByTestId('demo-app');
+  await app.getByRole('button', { name: 'Open menu' }).click();
+  const menu = page.getByRole('dialog', { name: 'Menu' });
+  await menu.getByRole('link', { name: /Customers/ }).click();
+  await expect(menu).toBeHidden();
+  await expect(page).toHaveURL(/\/demo#customers$/);
+  await expect(app.getByRole('heading', { level: 2, name: 'Customers' })).toBeFocused();
 });
