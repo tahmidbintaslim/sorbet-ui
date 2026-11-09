@@ -83,9 +83,18 @@ function StatusChip({ status }: { status: OrderStatus }) {
 }
 
 // ---------------------------------------------------------------- Overview
-function Overview({ orders, onOpenOrder }: { orders: Order[]; onOpenOrder: (o: Order) => void }) {
+function Overview({
+  orders,
+  onOpenOrder,
+  range,
+  onRangeChange,
+}: {
+  orders: Order[];
+  onOpenOrder: (o: Order) => void;
+  range: RangeId;
+  onRangeChange: (r: RangeId) => void;
+}) {
   const reduce = useReducedMotion();
-  const [range, setRange] = React.useState<RangeId>('month');
   const r = RANGES[range];
   const kpis = [
     { label: 'Revenue', value: r.revenue, fmt: money, delta: r.deltas.revenue, unit: '%' },
@@ -106,7 +115,7 @@ function Overview({ orders, onOpenOrder }: { orders: Order[]; onOpenOrder: (o: O
           size="sm"
           variant="soft"
           value={range}
-          onChange={(id) => setRange(id as RangeId)}
+          onChange={(id) => onRangeChange(id as RangeId)}
           renderPanels={false}
           aria-label="Date range"
           tabs={(Object.keys(RANGES) as RangeId[]).map((id) => ({ id, label: RANGES[id].label }))}
@@ -183,22 +192,20 @@ function Overview({ orders, onOpenOrder }: { orders: Order[]; onOpenOrder: (o: O
         </Grid>
       </Grid>
       <Panel title="Recent orders">
-        <Box tabIndex={0} role="region" aria-label="Recent orders table" sx={{ overflowX: 'auto' }}>
-          <Table
-            size="sm"
-            data={orders.slice(0, 5)}
-            getRowId={(o) => o.id}
-            hoverable
-            onRowClick={(o) => onOpenOrder(o)}
-            caption="Five most recent orders"
-            columns={[
-              { id: 'id', header: 'Order', accessor: 'id' },
-              { id: 'customer', header: 'Customer', accessor: 'customer' },
-              { id: 'status', header: 'Status', accessor: 'status', cell: (v) => <StatusChip status={v as OrderStatus} /> },
-              { id: 'amount', header: 'Amount', accessor: 'amount', align: 'right', cell: (v) => money(v as number) },
-            ]}
-          />
-        </Box>
+        <Table
+          size="sm"
+          data={orders.slice(0, 5)}
+          getRowId={(o) => o.id}
+          hoverable
+          onRowClick={(o) => onOpenOrder(o)}
+          caption="Five most recent orders"
+          columns={[
+            { id: 'id', header: 'Order', accessor: 'id' },
+            { id: 'customer', header: 'Customer', accessor: 'customer' },
+            { id: 'status', header: 'Status', accessor: 'status', cell: (v) => <StatusChip status={v as OrderStatus} /> },
+            { id: 'amount', header: 'Amount', accessor: 'amount', align: 'right', cell: (v) => money(v as number) },
+          ]}
+        />
       </Panel>
     </Stack>
   );
@@ -206,15 +213,35 @@ function Overview({ orders, onOpenOrder }: { orders: Order[]; onOpenOrder: (o: O
 
 // ---------------------------------------------------------------- Orders
 const PAGE = 8;
-function Orders({ orders, onOpenOrder, onNew }: { orders: Order[]; onOpenOrder: (o: Order) => void; onNew: () => void }) {
-  const [q, setQ] = React.useState('');
-  const [status, setStatus] = React.useState<OrderStatus | 'All'>('All');
-  const [page, setPage] = React.useState(1);
+export type OrderStatusFilter = OrderStatus | 'All';
+function Orders({
+  orders,
+  onOpenOrder,
+  onNew,
+  query,
+  onQueryChange,
+  status,
+  onStatusChange,
+  page,
+  onPageChange,
+}: {
+  orders: Order[];
+  onOpenOrder: (o: Order) => void;
+  onNew: () => void;
+  query: string;
+  onQueryChange: (q: string) => void;
+  status: OrderStatusFilter;
+  onStatusChange: (s: OrderStatusFilter) => void;
+  page: number;
+  onPageChange: (p: number) => void;
+}) {
+  const needle = query.trim().toLowerCase();
   const rows = orders.filter(
-    (o) => (status === 'All' || o.status === status) && `${o.id} ${o.customer} ${o.email}`.toLowerCase().includes(q.toLowerCase()),
+    (o) => (status === 'All' || o.status === status) && `${o.id} ${o.customer} ${o.email}`.toLowerCase().includes(needle),
   );
   const pages = Math.max(1, Math.ceil(rows.length / PAGE));
-  React.useEffect(() => setPage(1), [q, status]);
+  // Never show a page past the end (e.g. after a refund removes rows from a filter).
+  const current = Math.min(Math.max(1, page), pages);
   return (
     <Stack spacing={3}>
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' } }} spacing={2}>
@@ -232,8 +259,8 @@ function Orders({ orders, onOpenOrder, onNew }: { orders: Order[]; onOpenOrder: 
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ alignItems: { md: 'center' }, mb: 2 }}>
           <MuiTextField
             size="small"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
+            value={query}
+            onChange={(e) => onQueryChange(e.target.value)}
             placeholder="Search orders"
             slotProps={{
               htmlInput: { 'aria-label': 'Search orders' },
@@ -243,33 +270,31 @@ function Orders({ orders, onOpenOrder, onNew }: { orders: Order[]; onOpenOrder: 
           />
           <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }} useFlexGap role="group" aria-label="Filter by status">
             {(['All', 'Paid', 'Pending', 'Refunded', 'Failed'] as const).map((s) => (
-              <Button key={s} size="sm" variant={status === s ? 'soft' : 'ghost'} aria-pressed={status === s} onClick={() => setStatus(s)}>
+              <Button key={s} size="sm" variant={status === s ? 'soft' : 'ghost'} aria-pressed={status === s} onClick={() => onStatusChange(s)}>
                 {s}
               </Button>
             ))}
           </Stack>
         </Stack>
-        <Box tabIndex={0} role="region" aria-label="Orders table" sx={{ overflowX: 'auto' }}>
-          <Table
-            data={rows.slice((page - 1) * PAGE, page * PAGE)}
-            getRowId={(o) => o.id}
-            hoverable
-            onRowClick={(o) => onOpenOrder(o)}
-            caption="Orders"
-            emptyContent={<Typography color="text.secondary" sx={{ p: 3 }}>No orders match.</Typography>}
-            columns={[
-              { id: 'id', header: 'Order', accessor: 'id' },
-              { id: 'customer', header: 'Customer', accessor: 'customer' },
-              { id: 'date', header: 'Date', accessor: 'date' },
-              { id: 'items', header: 'Items', accessor: 'items', align: 'right' },
-              { id: 'status', header: 'Status', accessor: 'status', cell: (v) => <StatusChip status={v as OrderStatus} /> },
-              { id: 'amount', header: 'Amount', accessor: 'amount', align: 'right', cell: (v) => money(v as number) },
-            ]}
-          />
-        </Box>
+        <Table
+          data={rows.slice((current - 1) * PAGE, current * PAGE)}
+          getRowId={(o) => o.id}
+          hoverable
+          onRowClick={(o) => onOpenOrder(o)}
+          caption="Orders"
+          emptyContent={<Typography color="text.secondary" sx={{ p: 3 }}>No orders match.</Typography>}
+          columns={[
+            { id: 'id', header: 'Order', accessor: 'id' },
+            { id: 'customer', header: 'Customer', accessor: 'customer' },
+            { id: 'date', header: 'Date', accessor: 'date' },
+            { id: 'items', header: 'Items', accessor: 'items', align: 'right' },
+            { id: 'status', header: 'Status', accessor: 'status', cell: (v) => <StatusChip status={v as OrderStatus} /> },
+            { id: 'amount', header: 'Amount', accessor: 'amount', align: 'right', cell: (v) => money(v as number) },
+          ]}
+        />
         {pages > 1 && (
           <Stack sx={{ alignItems: 'center', mt: 2 }}>
-            <Pagination count={pages} page={page} onChange={(_, p) => setPage(p)} size="sm" />
+            <Pagination count={pages} page={current} onChange={(_, p) => onPageChange(p)} size="sm" aria-label="Orders pages" />
           </Stack>
         )}
       </Card>
@@ -470,7 +495,16 @@ export default function DemoApp() {
   const [customer, setCustomer] = React.useState<Customer | null>(null);
   // The element that opened the order dialog (a table row), refocused on close.
   const orderReturnFocus = React.useRef<HTMLElement | null>(null);
-  const [toast, setToast] = React.useState<string | null>(null);
+  // Each toast gets a new id: the Snackbar is keyed by it, so a new message
+  // restarts the auto-hide timer even while a previous toast is still showing.
+  const [toast, setToastState] = React.useState<{ id: number; message: string; open: boolean } | null>(null);
+  const toastId = React.useRef(0);
+  const setToast = (message: string) => setToastState({ id: ++toastId.current, message, open: true });
+  // View state lives here so switching views keeps it.
+  const [range, setRange] = React.useState<RangeId>('month');
+  const [orderQuery, setOrderQuery] = React.useState('');
+  const [orderStatus, setOrderStatus] = React.useState<OrderStatusFilter>('All');
+  const [orderPage, setOrderPage] = React.useState(1);
   const [mobileNav, setMobileNav] = React.useState(false);
   const [draft, setDraft] = React.useState({ customer: '', amount: '' });
   // Settings: the working copy, the last saved snapshot, and the open tab.
@@ -587,8 +621,24 @@ export default function DemoApp() {
 
         <Box component="section" aria-label="Demo content" sx={{ p: { xs: 2, md: 4 }, maxWidth: 1280 }}>
           <motion.div key={view} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: EASE }}>
-            {view === 'overview' && <Overview orders={orders} onOpenOrder={showOrder} />}
-            {view === 'orders' && <Orders orders={orders} onOpenOrder={showOrder} onNew={openNewOrder} />}
+            {view === 'overview' && <Overview orders={orders} onOpenOrder={showOrder} range={range} onRangeChange={setRange} />}
+            {view === 'orders' && <Orders
+                orders={orders}
+                onOpenOrder={showOrder}
+                onNew={openNewOrder}
+                query={orderQuery}
+                onQueryChange={(q) => {
+                  setOrderQuery(q);
+                  setOrderPage(1);
+                }}
+                status={orderStatus}
+                onStatusChange={(st) => {
+                  setOrderStatus(st);
+                  setOrderPage(1);
+                }}
+                page={orderPage}
+                onPageChange={setOrderPage}
+              />}
             {view === 'customers' && <Customers onOpen={showCustomer} />}
             {view === 'settings' && (
               <SettingsView
@@ -771,10 +821,15 @@ export default function DemoApp() {
       </Drawer>
 
       <Snackbar
-        open={toast !== null}
+        key={toast?.id ?? 0}
+        open={toast?.open ?? false}
         autoHideDuration={3000}
-        onClose={() => setToast(null)}
-        message={toast ?? ''}
+        onClose={(_, reason) => {
+          // A click elsewhere on the page should not dismiss the confirmation.
+          if (reason === 'clickaway') return;
+          setToastState((t) => (t ? { ...t, open: false } : t));
+        }}
+        message={toast?.message ?? ''}
         color="success"
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
