@@ -68,10 +68,11 @@ function useCopy(text: string) {
 }
 
 const FAILED = 'Copy failed. Select the code and copy it manually.';
+// Visually hidden but announced. Pixel strings: in sx, width: 1 would mean 100%.
 const SR_ONLY = {
   position: 'absolute',
-  width: 1,
-  height: 1,
+  width: '1px',
+  height: '1px',
   p: 0,
   overflow: 'hidden',
   clip: 'rect(0 0 0 0)',

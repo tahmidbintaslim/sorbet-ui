@@ -381,7 +381,11 @@ export default function GettingStarted() {
       <Alert color="warning" variant="soft" sx={{ my: 2 }}>
         Until 0.1.0 is on npm, the CLI cannot install a block&apos;s <code>@sorbet-ui/*</code>{' '}
         dependencies, so these commands fail. For now, install the tarballs as above and copy a
-        block&apos;s source from the Code tab on the <Link href="/blocks">blocks page</Link>.
+        block&apos;s source from the Code tab on the{' '}
+        <Link href="/blocks" color="inherit">
+          blocks page
+        </Link>
+        .
       </Alert>
       <Typography color="text.secondary">
         Once published, every block on the blocks page installs with one command. The CLI copies the
