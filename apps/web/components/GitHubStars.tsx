@@ -8,6 +8,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import GitHub from '@mui/icons-material/GitHub';
 import StarRounded from '@mui/icons-material/StarRounded';
 import { SITE } from '@/lib/site';
+import { TOUCH } from '@/lib/touch';
 
 const KEY = 'sorbet-gh-stars';
 const API = 'https://api.github.com/repos/tahmidbintaslim/sorbet-ui';
@@ -70,7 +71,7 @@ export default function GitHubStars({ size = 'small' }: { size?: 'small' | 'medi
       color="inherit"
       aria-label={stars ? `Star Sorbet UI on GitHub, ${stars} stars` : 'Star Sorbet UI on GitHub'}
       startIcon={<GitHub fontSize="small" />}
-      sx={{ borderColor: 'divider', borderRadius: 2, fontWeight: 600, gap: 0.25 }}
+      sx={{ borderColor: 'divider', borderRadius: 2, fontWeight: 600, gap: 0.25, [TOUCH]: { minHeight: 44 } }}
     >
       Star
       <AnimatePresence>

@@ -2,15 +2,18 @@
 import * as React from 'react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Box, Chip, Container, Grid, IconButton, Link, Stack, Typography } from '@mui/material';
+import { Box, Chip, Container, Divider, Drawer, Grid, IconButton, Link, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import DarkMode from '@mui/icons-material/DarkMode';
 import LightMode from '@mui/icons-material/LightMode';
 import GitHub from '@mui/icons-material/GitHub';
+import MenuIcon from '@mui/icons-material/Menu';
+import Close from '@mui/icons-material/Close';
 import { useColorMode } from './ColorMode';
 import Logo from './Logo';
 import GitHubStars from './GitHubStars';
 import { SITE } from '@/lib/site';
+import { TOUCH, touchRow, touchTarget } from '@/lib/touch';
 
 const NAV = [
   { href: '/docs', label: 'Docs' },
@@ -43,9 +46,40 @@ const FOOTER = [
   },
 ];
 
+const isActive = (href: string, pathname: string) => (href === '/docs' ? pathname === '/docs' : pathname.startsWith(href));
+
+const navLinkSx = {
+  px: 1.25,
+  py: 0.75,
+  borderRadius: 2,
+  fontSize: 15,
+  whiteSpace: 'nowrap',
+  '&:hover': { color: 'text.primary', bgcolor: 'action.hover' },
+} as const;
+
+const drawerLinkSx = {
+  display: 'flex',
+  alignItems: 'center',
+  minHeight: 48,
+  px: 2,
+  borderRadius: 2,
+  fontSize: 16,
+  color: 'text.primary',
+  '&:hover': { bgcolor: 'action.hover' },
+} as const;
+
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   const { mode, toggle } = useColorMode();
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const menuButton = React.useRef<HTMLButtonElement>(null);
+  const closeMenu = () => setMenuOpen(false);
+  // Close the menu whenever the route changes (e.g. browser back while it is open).
+  const [lastPath, setLastPath] = React.useState(pathname);
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
+    setMenuOpen(false);
+  }
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -54,13 +88,14 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
         sx={{
           position: 'absolute',
           left: -9999,
+          ...touchRow,
           '&:focus': { left: 8, top: 8, zIndex: 2000, bgcolor: 'background.paper', p: 1 },
         }}
       >
         Skip to content
       </Link>
 
-      {/* Translucent sticky header; on phones the nav drops to its own scrollable row. */}
+      {/* Translucent sticky header. Below md it is one row: logo, theme toggle and a menu button. */}
       <Box
         component="header"
         sx={(t) => ({
@@ -73,16 +108,13 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
           backdropFilter: 'saturate(180%) blur(12px)',
         })}
       >
-        <Container
-          maxWidth="lg"
-          sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', columnGap: 3, minHeight: 64 }}
-        >
+        <Container maxWidth="lg" sx={{ display: 'flex', alignItems: 'center', columnGap: 3, minHeight: 64 }}>
           <Stack
             component={NextLink}
             href="/"
             direction="row"
             spacing={1}
-            sx={{ alignItems: 'center', color: 'text.primary', textDecoration: 'none', py: 1.5 }}
+            sx={{ alignItems: 'center', color: 'text.primary', textDecoration: 'none', py: 1.5, flexShrink: 0 }}
           >
             <Logo />
             <Typography component="span" sx={{ fontWeight: 800, fontSize: 18, letterSpacing: '-0.02em' }}>
@@ -90,22 +122,9 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
             </Typography>
           </Stack>
 
-          <Box
-            component="nav"
-            aria-label="Main"
-            sx={{
-              order: { xs: 3, md: 0 },
-              width: { xs: '100%', md: 'auto' },
-              flexGrow: { md: 1 },
-              display: 'flex',
-              gap: 0.5,
-              overflowX: 'auto',
-              pb: { xs: 1, md: 0 },
-              mx: { xs: -1, md: 0 },
-            }}
-          >
+          <Box component="nav" aria-label="Main" sx={{ display: { xs: 'none', md: 'flex' }, flexGrow: 1, gap: 0.5 }}>
             {NAV.map((n) => {
-              const active = n.href === '/docs' ? pathname === '/docs' : pathname.startsWith(n.href);
+              const active = isActive(n.href, pathname);
               return (
                 <Link
                   key={n.href}
@@ -113,37 +132,13 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                   href={n.href}
                   underline="none"
                   aria-current={active ? 'page' : undefined}
-                  sx={{
-                    px: 1.25,
-                    py: 0.75,
-                    borderRadius: 2,
-                    fontSize: 15,
-                    whiteSpace: 'nowrap',
-                    fontWeight: active ? 600 : 500,
-                    color: active ? 'text.primary' : 'text.secondary',
-                    bgcolor: active ? 'action.selected' : 'transparent',
-                    '&:hover': { color: 'text.primary', bgcolor: 'action.hover' },
-                  }}
+                  sx={{ ...navLinkSx, ...touchRow, fontWeight: active ? 600 : 500, color: active ? 'text.primary' : 'text.secondary', bgcolor: active ? 'action.selected' : 'transparent' }}
                 >
                   {n.label}
                 </Link>
               );
             })}
-            <Link
-              href={SITE.storybook}
-              underline="none"
-              rel="noopener"
-              sx={{
-                px: 1.25,
-                py: 0.75,
-                borderRadius: 2,
-                fontSize: 15,
-                fontWeight: 500,
-                whiteSpace: 'nowrap',
-                color: 'text.secondary',
-                '&:hover': { color: 'text.primary', bgcolor: 'action.hover' },
-              }}
-            >
+            <Link href={SITE.storybook} underline="none" rel="noopener" sx={{ ...navLinkSx, ...touchRow, fontWeight: 500, color: 'text.secondary' }}>
               Storybook
             </Link>
           </Box>
@@ -156,23 +151,83 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
               label="v0.1.0"
               size="small"
               variant="outlined"
-              sx={{ display: { xs: 'none', sm: 'inline-flex' }, fontWeight: 600, mr: 0.5 }}
+              sx={{ display: { xs: 'none', md: 'inline-flex' }, fontWeight: 600, mr: 0.5 }}
             />
-            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
               <GitHubStars />
             </Box>
-            <IconButton component="a" href={SITE.github} aria-label="Sorbet UI on GitHub" rel="noopener" sx={{ display: { sm: 'none' } }}>
-              <GitHub />
-            </IconButton>
             <IconButton
               onClick={toggle}
               aria-label={mode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+              sx={touchTarget}
             >
               {mode === 'dark' ? <LightMode /> : <DarkMode />}
+            </IconButton>
+            <IconButton
+              ref={menuButton}
+              onClick={() => setMenuOpen(true)}
+              aria-label="Open menu"
+              aria-haspopup="dialog"
+              aria-expanded={menuOpen}
+              aria-controls={menuOpen ? 'site-menu' : undefined}
+              sx={{ display: { md: 'none' }, width: 44, height: 44, mr: -1 }}
+            >
+              <MenuIcon />
             </IconButton>
           </Stack>
         </Container>
       </Box>
+
+      <Drawer
+        anchor="right"
+        open={menuOpen}
+        onClose={closeMenu}
+        slotProps={{ paper: { id: 'site-menu', role: 'dialog', 'aria-modal': true, 'aria-label': 'Site menu', sx: { width: 'min(320px, 85vw)' } } }}
+      >
+        <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2, minHeight: 64, borderBottom: 1, borderColor: 'divider' }}>
+          <Typography component="span" sx={{ fontWeight: 800, fontSize: 18 }}>
+            {SITE.name}
+          </Typography>
+          <IconButton onClick={closeMenu} aria-label="Close menu" sx={{ width: 44, height: 44, mr: -1 }}>
+            <Close />
+          </IconButton>
+        </Stack>
+        <Box component="nav" aria-label="Main" sx={{ p: 1 }}>
+          <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0 }}>
+            {NAV.map((n) => {
+              const active = isActive(n.href, pathname);
+              return (
+                <li key={n.href}>
+                  <Link
+                    component={NextLink}
+                    href={n.href}
+                    underline="none"
+                    onClick={closeMenu}
+                    aria-current={active ? 'page' : undefined}
+                    sx={{ ...drawerLinkSx, fontWeight: active ? 700 : 500, bgcolor: active ? 'action.selected' : 'transparent' }}
+                  >
+                    {n.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </Box>
+          <Divider sx={{ my: 1 }} />
+          <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0 }}>
+            <li>
+              <Link href={SITE.storybook} rel="noopener" underline="none" onClick={closeMenu} sx={drawerLinkSx}>
+                Storybook
+              </Link>
+            </li>
+            <li>
+              <Link href={SITE.github} rel="noopener" underline="none" onClick={closeMenu} sx={{ ...drawerLinkSx, gap: 1 }}>
+                <GitHub fontSize="small" />
+                GitHub
+              </Link>
+            </li>
+          </Box>
+        </Box>
+      </Drawer>
 
       <Box component="main" id="main" sx={{ flexGrow: 1 }}>
         {children}
@@ -195,14 +250,14 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                 <Typography component="h2" variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5 }}>
                   {col.title}
                 </Typography>
-                <Stack spacing={1}>
+                <Stack spacing={1} sx={{ [TOUCH]: { gap: 0, '& > :not(style) ~ :not(style)': { mt: 0 } }, alignItems: 'flex-start' }}>
                   {col.links.map((l) =>
                     l.href.startsWith('/') ? (
-                      <Link key={l.label} component={NextLink} href={l.href} color="text.secondary" underline="hover" variant="body2">
+                      <Link key={l.label} component={NextLink} href={l.href} color="text.secondary" underline="hover" variant="body2" sx={touchRow}>
                         {l.label}
                       </Link>
                     ) : (
-                      <Link key={l.label} href={l.href} rel="noopener" color="text.secondary" underline="hover" variant="body2">
+                      <Link key={l.label} href={l.href} rel="noopener" color="text.secondary" underline="hover" variant="body2" sx={touchRow}>
                         {l.label}
                       </Link>
                     ),
