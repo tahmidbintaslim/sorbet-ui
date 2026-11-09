@@ -29,6 +29,7 @@ import Search from '@mui/icons-material/Search';
 import Add from '@mui/icons-material/Add';
 import Close from '@mui/icons-material/Close';
 import TrendingUp from '@mui/icons-material/TrendingUp';
+import TrendingDown from '@mui/icons-material/TrendingDown';
 import Menu from '@mui/icons-material/Menu';
 import {
   Alert,
@@ -51,7 +52,7 @@ import {
 } from '@sorbet-ui/react';
 import { colorPalette } from '@sorbet-ui/tokens';
 import { CountUp, EASE } from '../motion';
-import { CUSTOMERS, ORDERS, RANGES, STATUS_COLOR, money, type Customer, type Order, type OrderStatus, type RangeId } from './data';
+import { CUSTOMERS, ORDERS, RANGES, STATUS_COLOR, emailFor, formatDate, money, type Customer, type Order, type OrderStatus, type RangeId } from './data';
 
 type View = 'overview' | 'orders' | 'customers' | 'settings';
 const NAV: { id: View; label: string; icon: React.ReactNode }[] = [
@@ -87,10 +88,10 @@ function Overview({ orders, onOpenOrder }: { orders: Order[]; onOpenOrder: (o: O
   const [range, setRange] = React.useState<RangeId>('month');
   const r = RANGES[range];
   const kpis = [
-    { label: 'Revenue', value: r.revenue, fmt: money, delta: '+12.4%' },
-    { label: 'Orders', value: r.orders, fmt: (n: number) => n.toLocaleString('en-US'), delta: '+8.1%' },
-    { label: 'New customers', value: r.customers, fmt: (n: number) => n.toLocaleString('en-US'), delta: '+5.3%' },
-    { label: 'Conversion', value: Math.round(r.conversion * 10), fmt: (n: number) => `${(n / 10).toFixed(1)}%`, delta: '+0.4 pt' },
+    { label: 'Revenue', value: r.revenue, fmt: money, delta: r.deltas.revenue, unit: '%' },
+    { label: 'Orders', value: r.orders, fmt: (n: number) => n.toLocaleString('en-US'), delta: r.deltas.orders, unit: '%' },
+    { label: 'New customers', value: r.customers, fmt: (n: number) => n.toLocaleString('en-US'), delta: r.deltas.customers, unit: '%' },
+    { label: 'Conversion', value: Math.round(r.conversion * 10), fmt: (n: number) => `${(n / 10).toFixed(1)}%`, delta: r.deltas.conversion, unit: ' pt' },
   ];
   return (
     <Stack spacing={3}>
@@ -122,7 +123,14 @@ function Overview({ orders, onOpenOrder }: { orders: Order[]; onOpenOrder: (o: O
                 <Typography component="p" sx={{ fontWeight: 800, fontSize: 28, fontVariantNumeric: 'tabular-nums' }}>
                   <CountUp value={k.value} format={k.fmt} />
                 </Typography>
-                <Chip size="xs" variant="soft" color="success" label={k.delta} icon={<TrendingUp />} />
+                <Chip
+                  size="xs"
+                  variant="soft"
+                  color={k.delta >= 0 ? 'success' : 'danger'}
+                  label={`${k.delta >= 0 ? '+' : '−'}${Math.abs(k.delta).toFixed(1)}${k.unit}`}
+                  aria-label={`${k.delta >= 0 ? 'Up' : 'Down'} ${Math.abs(k.delta).toFixed(1)}${k.unit === '%' ? ' percent' : ' points'} versus the previous ${r.label}`}
+                  icon={k.delta >= 0 ? <TrendingUp /> : <TrendingDown />}
+                />
               </Stack>
             </Card>
           </Grid>
@@ -130,15 +138,21 @@ function Overview({ orders, onOpenOrder }: { orders: Order[]; onOpenOrder: (o: O
       </Grid>
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, lg: 8 }}>
-          <Panel title={`Revenue, last ${r.label}`}>
-            <Box role="img" aria-label={`Revenue over the last ${r.label}, sample data`} sx={{ display: 'flex', alignItems: 'flex-end', gap: 1, height: 200 }}>
+          <Panel title={`Revenue, last ${r.label} (${r.unit === 'day' ? 'daily' : 'weekly'})`}>
+            <Box
+              role="img"
+              aria-label={`${r.unit === 'day' ? 'Daily' : 'Weekly'} revenue over the last ${r.label}, ${r.bars.length} bars, sample data`}
+              data-testid="revenue-chart"
+              data-bars={r.bars.length}
+              sx={{ display: 'flex', alignItems: 'flex-end', gap: r.bars.length > 14 ? '3px' : 1, height: 200 }}
+            >
               {r.bars.map((b, i) => (
                 <motion.div
                   key={`${range}-${i}`}
                   initial={reduce ? false : { height: 0 }}
                   animate={{ height: `${b}%` }}
                   transition={{ duration: reduce ? 0 : 0.5, ease: EASE, delay: reduce ? 0 : i * 0.025 }}
-                  style={{ flex: 1, borderRadius: 8, background: `linear-gradient(180deg, ${colorPalette.primary[400]}, ${colorPalette.secondary[400]})` }}
+                  style={{ flex: 1, minWidth: 0, borderRadius: r.bars.length > 14 ? 3 : 8, background: `linear-gradient(180deg, ${colorPalette.primary[400]}, ${colorPalette.secondary[400]})` }}
                 />
               ))}
             </Box>
@@ -414,13 +428,14 @@ export default function DemoApp() {
   const createOrder = () => {
     const amount = Number(draft.amount);
     if (!draft.customer.trim() || !(amount > 0)) return;
+    const customer = draft.customer.trim();
     const next: Order = {
-      id: `#${4822 + orders.length - ORDERS.length}`,
-      customer: draft.customer.trim(),
-      email: 'new.customer@example.com',
+      id: `#${Math.max(...orders.map((o) => Number(o.id.slice(1)))) + 1}`,
+      customer,
+      email: emailFor(customer),
       amount: Math.round(amount),
       status: 'Pending',
-      date: 'Today',
+      date: formatDate(new Date()),
       items: 1,
     };
     setOrders((o) => [next, ...o]);
