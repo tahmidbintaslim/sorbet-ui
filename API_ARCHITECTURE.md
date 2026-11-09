@@ -12,9 +12,8 @@ Sorbet UI is a pnpm workspace run with Turborepo. The npm packages use the `@sor
 | `@sorbet-ui/theme`  | `packages/theme`  | `lightTheme` and `darkTheme` (MUI `createTheme`) and MUI module augmentation for the Sorbet UI variant names             |
 | `@sorbet-ui/tokens` | `packages/tokens` | Color scales, sizing, typography and animation tokens, plus the contrast test                                         |
 | `@sorbet-ui/core`   | `packages/core`   | Shared `SorbetVariant` / `SorbetColor` / `SorbetSize` types, variant presets, accessibility helpers and headless state helpers |
-| `@sorbet-ui/icons`  | `packages/icons`  | Empty placeholder, private                                                                                            |
 | `docs` (private)  | `apps/docs`       | Storybook 10, deployed to Vercel                                                                                      |
-| `web` (private)   | `apps/web`        | Vite landing page demo, not deployed                                                                                  |
+| `web` (private)   | `apps/web`        | Next.js website (docs, blocks, templates, demo, shadcn registry), deployed to Vercel                                                                                  |
 
 Dependencies between them:
 

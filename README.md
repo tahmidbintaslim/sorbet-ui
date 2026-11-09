@@ -81,7 +81,6 @@ The npm packages use the `@sorbet-ui` scope. The npm org `sorbet-ui` exists; pub
 | `@sorbet-ui/theme`  | `lightTheme` and `darkTheme` (MUI `createTheme`) built from the tokens                                         |
 | `@sorbet-ui/tokens` | Colors (7 scales with alpha steps), spacing, radius, shadows, z-index, breakpoints, typography and animations  |
 | `@sorbet-ui/core`   | Shared types, variant presets, accessibility helpers and headless state helpers (Progress and Rating use them) |
-| `@sorbet-ui/icons`  | Empty placeholder. Private, not published                                                                      |
 
 Each published package ships ESM and CommonJS builds with TypeScript types, and `@sorbet-ui/react` starts with a `"use client"` directive.
 
@@ -307,7 +306,6 @@ sorbet-ui/
 ## Known gaps and next steps
 
 - Not published to npm yet. The first release needs the `NPM_TOKEN` secret (the `sorbet-ui` npm org exists).
-- `@sorbet-ui/icons` is empty.
 - No screen reader testing yet (see [Accessibility](#accessibility)).
 
 ## Contributing
