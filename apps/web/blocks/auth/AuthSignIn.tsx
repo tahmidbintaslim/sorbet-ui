@@ -7,6 +7,8 @@ import { Alert, Button, Card, Checkbox, TextField } from '@sorbet-ui/react';
 
 export default function AuthSignIn() {
   const [signedIn, setSignedIn] = React.useState(false);
+  // Demo-only links: say what they would do instead of pointing at '#'.
+  const [note, setNote] = React.useState('');
   return (
     <Box component="section" sx={{ py: { xs: 6, md: 10 } }}>
       <Container maxWidth="sm">
@@ -19,7 +21,7 @@ export default function AuthSignIn() {
           </Typography>
           {signedIn && (
             <Alert color="success" sx={{ mt: 3 }}>
-              Signed in. Redirecting to your workspace.
+              Demo only: nothing was sent.
             </Alert>
           )}
           <Box
@@ -42,7 +44,14 @@ export default function AuthSignIn() {
             </Stack>
             <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mt: 1.5, flexWrap: 'wrap', gap: 1 }}>
               <Checkbox label="Remember me" size="sm" />
-              <Link href="#" variant="body2" underline="hover" sx={{ fontWeight: 600 }}>
+              <Link
+                component="button"
+                type="button"
+                variant="body2"
+                underline="hover"
+                sx={{ fontWeight: 600 }}
+                onClick={() => setNote('Demo only: in your app, link this to your password reset page.')}
+              >
                 Forgot password?
               </Link>
             </Stack>
@@ -51,14 +60,30 @@ export default function AuthSignIn() {
             </Button>
           </Box>
           <Divider sx={{ my: 3, color: 'text.secondary', fontSize: 14 }}>or</Divider>
-          <Button variant="outlined" color="neutral" size="lg" fullWidth startIcon={<GitHubIcon />}>
+          <Button
+            variant="outlined"
+            color="neutral"
+            size="lg"
+            fullWidth
+            startIcon={<GitHubIcon />}
+            onClick={() => setNote('Demo only: in your app, start your GitHub sign-in here.')}
+          >
             Continue with GitHub
           </Button>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
             New to Acme?{' '}
-            <Link href="#" underline="hover" sx={{ fontWeight: 600 }}>
+            <Link
+              component="button"
+              type="button"
+              underline="hover"
+              sx={{ fontWeight: 600, verticalAlign: 'baseline' }}
+              onClick={() => setNote('Demo only: in your app, link this to your sign-up page.')}
+            >
               Create an account
             </Link>
+          </Typography>
+          <Typography variant="body2" color="text.secondary" role="status" sx={{ mt: 2, textAlign: 'center', minHeight: '1.5em' }}>
+            {note}
           </Typography>
         </Card>
       </Container>

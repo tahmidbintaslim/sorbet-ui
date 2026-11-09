@@ -80,6 +80,38 @@ describe('Table', () => {
     expect(handleRowClick).toHaveBeenCalledWith(testData[0], 0);
   });
 
+  it('makes clickable rows focusable and activates them with Enter and Space', async () => {
+    const handleRowClick = vi.fn();
+    const user = userEvent.setup();
+
+    render(<Table data={testData} columns={testColumns} onRowClick={handleRowClick} />);
+
+    const rows = screen.getAllByRole('row');
+    // The header row is not clickable; data rows keep their row role and join the tab order.
+    expect(rows[0]).not.toHaveAttribute('tabindex');
+    expect(rows[1]).toHaveAttribute('tabindex', '0');
+
+    // Tab past the scrollable region to the first row.
+    await user.tab();
+    await user.tab();
+    expect(rows[1]).toHaveFocus();
+
+    await user.keyboard('{Enter}');
+    expect(handleRowClick).toHaveBeenLastCalledWith(testData[0], 0);
+
+    await user.tab();
+    expect(rows[2]).toHaveFocus();
+    await user.keyboard(' ');
+    expect(handleRowClick).toHaveBeenLastCalledWith(testData[1], 1);
+    expect(handleRowClick).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not make rows focusable without onRowClick', () => {
+    render(<Table data={testData} columns={testColumns} />);
+    const rows = screen.getAllByRole('row');
+    expect(rows[1]).not.toHaveAttribute('tabindex');
+  });
+
   it('handles row selection', async () => {
     const handleSelectionChange = vi.fn();
     const user = userEvent.setup();
