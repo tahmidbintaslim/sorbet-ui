@@ -320,6 +320,23 @@ test('landing: hero and sections are visible with reduced motion', async ({ brow
   await ctx.close();
 });
 
+test('blocks: search is kept in the URL and restored on reload', async ({ page }) => {
+  await page.goto('/blocks');
+  await page.getByRole('textbox', { name: 'Search blocks' }).fill('pricing');
+  await expect(page).toHaveURL(/\?q=pricing$/);
+  await page.reload();
+  await expect(page.getByRole('textbox', { name: 'Search blocks' })).toHaveValue('pricing');
+  await expect(page.getByTestId('block-search-results')).toBeVisible();
+});
+
+test('docs: playground picks are restored from the URL', async ({ page }) => {
+  await page.goto('/docs/components/button?variant=soft&color=danger&size=lg');
+  const code = page.locator('pre[aria-label="Button source"]');
+  await expect(code).toContainText('variant="soft"');
+  await expect(code).toContainText('color="danger"');
+  await expect(code).toContainText('size="lg"');
+});
+
 test('landing: template screens link to their pages', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('link', { name: 'Acme Admin demo' }).click();

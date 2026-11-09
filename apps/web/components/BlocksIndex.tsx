@@ -1,14 +1,15 @@
 'use client';
 // Category grid with a search box that filters blocks by name, description or category.
-import * as React from 'react';
 import NextLink from 'next/link';
 import { Box, Grid, InputAdornment, Stack, TextField as MuiTextField, Typography } from '@mui/material';
 import Search from '@mui/icons-material/Search';
 import { Chip } from '@sorbet-ui/react';
 import { BLOCKS, CATEGORIES, blocksIn } from '@/lib/blocks';
+import { useUrlParam } from '@/lib/use-url-param';
 
 export default function BlocksIndex() {
-  const [q, setQ] = React.useState('');
+  // ?q= keeps a search shareable and restores it on back/reload.
+  const [q, setQ] = useUrlParam<string>('q', '');
   const query = q.trim().toLowerCase();
   const hits = query
     ? BLOCKS.filter((b) => `${b.name} ${b.description} ${b.category}`.toLowerCase().includes(query))

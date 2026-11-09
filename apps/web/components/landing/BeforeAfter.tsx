@@ -50,8 +50,9 @@ const ORDERS = [
 
 const HIDE_XS = { display: { xs: 'none', sm: 'table-cell' } } as const;
 
-/** Plain Material UI. Nothing here imports Sorbet. */
-function Dashboard({ label }: { label: string }) {
+/** Plain Material UI. Nothing here imports Sorbet. Memoized: the slider moves every frame,
+ * and the two dashboards behind it never need to re-render for that. */
+const Dashboard = React.memo(function Dashboard({ label }: { label: string }) {
   const theme = useTheme();
   return (
     <Box sx={{ bgcolor: 'background.default', color: 'text.primary', minHeight: '100%' }}>
@@ -122,7 +123,7 @@ function Dashboard({ label }: { label: string }) {
       </Box>
     </Box>
   );
-}
+});
 
 export const BEFORE_AFTER_CODE = `import { ThemeProvider } from '@mui/material/styles';
 - import { createTheme } from '@mui/material/styles';
@@ -190,7 +191,8 @@ export default function BeforeAfter() {
         <Box
           aria-hidden
           data-ba-layer="default"
-          sx={{ position: 'absolute', inset: 0, zIndex: 1, isolation: 'isolate', overflow: 'hidden', clipPath: `inset(0 ${100 - pos}% 0 0)` }}
+          sx={{ position: 'absolute', inset: 0, zIndex: 1, isolation: 'isolate', overflow: 'hidden' }}
+          style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
         >
           <ThemeProvider theme={muiDefault[mode]}>
             <Dashboard label="Default MUI" />
@@ -199,7 +201,8 @@ export default function BeforeAfter() {
         {/* Divider + handle */}
         <Box
           aria-hidden
-          sx={{ position: 'absolute', zIndex: 2, top: 0, bottom: 0, left: `${pos}%`, width: 2, ml: '-1px', bgcolor: 'primary.main', pointerEvents: 'none' }}
+          sx={{ position: 'absolute', zIndex: 2, top: 0, bottom: 0, width: 2, ml: '-1px', bgcolor: 'primary.main', pointerEvents: 'none' }}
+          style={{ left: `${pos}%` }}
         >
           <Box
             sx={{

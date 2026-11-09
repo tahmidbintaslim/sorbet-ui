@@ -201,7 +201,22 @@ export default function CodeBlock({ code, label, title }: { code: string; label?
           <CopyButton text={code} onDark />
         </Box>
       ) : (
-        <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
+        // Long lines scroll under the button: a code-coloured backing with a soft left edge
+        // keeps the button readable and stops it sitting on top of the text.
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            zIndex: 1,
+            pt: 1,
+            pr: 1,
+            pl: 3,
+            pb: 0.5,
+            background: `linear-gradient(to right, transparent, ${CODE_BG} 20px)`,
+            borderBottomLeftRadius: 8,
+          }}
+        >
           <CopyButton text={code} onDark />
         </Box>
       )}
