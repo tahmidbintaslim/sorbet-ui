@@ -217,7 +217,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
             sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' }, mt: 5, pt: 3, borderTop: 1, borderColor: 'divider' }}
           >
             <Typography variant="body2" color="text.secondary">
-              MIT licensed. Built on Material UI v7.
+              MIT licensed. Built on Material UI v7 and v9.
             </Typography>
             <Box>
               <GitHubStars />

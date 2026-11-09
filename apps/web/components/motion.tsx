@@ -1,6 +1,8 @@
 'use client';
-// Shared motion primitives for the site. Everything respects
-// prefers-reduced-motion: with it on, content renders in its final state.
+// Shared motion primitives for the site. Props never branch on reduced motion:
+// the server render can't know the setting, so a branch would leave the server's
+// hidden starting style in place. <MotionConfig reducedMotion="user"> (ColorMode)
+// drops the movement for those users and keeps only a short fade.
 import * as React from 'react';
 import { motion, useReducedMotion, type Variants } from 'motion/react';
 
@@ -20,9 +22,7 @@ export function Reveal({
   as?: 'div' | 'section' | 'li';
   className?: string;
 }) {
-  const reduce = useReducedMotion();
   const Comp = motion[as];
-  if (reduce) return <Comp className={className}>{children}</Comp>;
   return (
     <Comp
       className={className}
@@ -44,12 +44,11 @@ const child: Variants = {
 
 /** Container whose <StaggerItem> children reveal one after another. */
 export function Stagger({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
-  const reduce = useReducedMotion();
   return (
     <motion.div
       style={style}
       variants={parent}
-      initial={reduce ? false : 'hidden'}
+      initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: '-60px' }}
     >

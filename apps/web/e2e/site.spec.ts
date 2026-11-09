@@ -220,6 +220,23 @@ test('landing: both sides of the before/after render the same MUI markup', async
   expect(shapes[0]).toBe(shapes[1]);
 });
 
+test('landing: hero and sections are visible with reduced motion', async ({ browser }) => {
+  const ctx = await browser.newContext({ reducedMotion: 'reduce' });
+  const page = await ctx.newPage();
+  await page.goto('/');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Get started' }).first()).toBeVisible();
+  // After scrolling through, nothing may stay at the hidden starting opacity.
+  for (let y = 0; y < (await page.evaluate(() => document.body.scrollHeight)); y += 500) {
+    await page.evaluate((top) => window.scrollTo(0, top), y);
+    await page.waitForTimeout(100);
+  }
+  await page.waitForTimeout(1000);
+  const hidden = await page.evaluate(() => [...document.querySelectorAll('main [style*="opacity"]')].filter((el) => getComputedStyle(el).opacity === '0').length);
+  expect(hidden).toBe(0);
+  await ctx.close();
+});
+
 test('landing: template screens link to their pages', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('link', { name: 'Acme Admin demo' }).click();

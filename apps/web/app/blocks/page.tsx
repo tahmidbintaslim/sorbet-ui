@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import { Container, Typography } from '@mui/material';
 import BlocksIndex from '@/components/BlocksIndex';
 import { BLOCKS, categoriesWithBlocks } from '@/lib/blocks';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: 'Blocks',
   description: 'Copy-paste page sections built with Sorbet UI: heroes, pricing, dashboards, auth and more.',
-};
+  path: '/blocks',
+});
 
 export default function BlocksPage() {
   return (

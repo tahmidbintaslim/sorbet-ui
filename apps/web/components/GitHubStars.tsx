@@ -12,32 +12,44 @@ import { SITE } from '@/lib/site';
 const KEY = 'sorbet-gh-stars';
 const API = 'https://api.github.com/repos/tahmidbintaslim/sorbet-ui';
 
-export function useGitHubStars(): number | null {
-  const [stars, setStars] = React.useState<number | null>(null);
-  React.useEffect(() => {
-    try {
-      const cached = window.sessionStorage.getItem(KEY);
-      if (cached) {
-        setStars(Number(cached));
-        return;
-      }
-    } catch {
-      /* storage unavailable */
-    }
-    const ctrl = new AbortController();
-    fetch(API, { signal: ctrl.signal, headers: { Accept: 'application/vnd.github+json' } })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d: { stargazers_count?: number } | null) => {
-        if (typeof d?.stargazers_count !== 'number') return;
-        setStars(d.stargazers_count);
+// Shared across header and footer so a first visit makes one request, not two.
+let pending: Promise<number | null> | null = null;
+
+function loadStars(): Promise<number | null> {
+  try {
+    const cached = window.sessionStorage.getItem(KEY);
+    if (cached) return Promise.resolve(Number(cached));
+  } catch {
+    /* storage unavailable */
+  }
+  pending ??= fetch(API, { headers: { Accept: 'application/vnd.github+json' } })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d: { stargazers_count?: number } | null) => {
+      const n = typeof d?.stargazers_count === 'number' ? d.stargazers_count : null;
+      if (n !== null) {
         try {
-          window.sessionStorage.setItem(KEY, String(d.stargazers_count));
+          window.sessionStorage.setItem(KEY, String(n));
         } catch {
           /* ignore */
         }
-      })
-      .catch(() => {});
-    return () => ctrl.abort();
+      }
+      return n;
+    })
+    .catch(() => {
+      pending = null; // allow a retry on the next mount
+      return null;
+    });
+  return pending;
+}
+
+export function useGitHubStars(): number | null {
+  const [stars, setStars] = React.useState<number | null>(null);
+  React.useEffect(() => {
+    let live = true;
+    loadStars().then((n) => live && setStars(n));
+    return () => {
+      live = false;
+    };
   }, []);
   return stars;
 }

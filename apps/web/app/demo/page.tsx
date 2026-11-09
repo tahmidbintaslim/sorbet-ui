@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import DemoApp from '@/components/demo/DemoApp';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: 'Demo',
   description: 'Acme Admin: a working dashboard built with Sorbet UI. Sample data.',
-};
+  path: '/demo',
+});
 
 export default function DemoPage() {
   return (

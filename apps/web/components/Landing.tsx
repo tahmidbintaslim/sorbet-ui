@@ -4,9 +4,9 @@
 // before/after proof, the playground, and one call to action.
 import * as React from 'react';
 import NextLink from 'next/link';
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { type Theme } from '@mui/material/styles';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import LinkButton from './LinkButton';
 import CodeBlock, { CommandLine } from './CodeBlock';
@@ -65,7 +65,7 @@ const SHOTS = [
 const COLUMNS = [[0, 4], [6, 1], [2, 5], [3]];
 const OFFSETS = [0, 96, 40, 140];
 
-function Shot({ file, href, label }: (typeof SHOTS)[number]) {
+function Shot({ file, href, label, eager }: (typeof SHOTS)[number] & { eager?: boolean }) {
   const img = (mode: 'light' | 'dark') => (
     <Box
       component="img"
@@ -73,7 +73,7 @@ function Shot({ file, href, label }: (typeof SHOTS)[number]) {
       alt=""
       width={1280}
       height={1500}
-      loading="lazy"
+      loading={eager ? 'eager' : 'lazy'}
       decoding="async"
       sx={{
         width: '100%',
@@ -110,26 +110,25 @@ function Shot({ file, href, label }: (typeof SHOTS)[number]) {
 }
 
 export function Hero() {
-  const reduce = useReducedMotion();
-  const item = (i: number) =>
-    reduce ? {} : { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, ease: EASE, delay: 0.08 * i } };
+  // Same props on server and client; MotionConfig handles reduced motion.
+  const item = (i: number) => ({ initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, ease: EASE, delay: 0.08 * i } });
 
   return (
     <Box component="section" aria-labelledby="hero-title" sx={{ overflow: 'hidden' }}>
       <Container maxWidth="md" sx={{ pt: { xs: 8, md: 14 }, textAlign: 'center' }}>
-        <motion.div {...item(0)}>
+        <div>
           <Typography id="hero-title" component="h1" sx={{ ...display, fontSize: { xs: 40, sm: 52, md: 64 } }}>
             Already on Material UI?{' '}
             <Box component="span" sx={{ color: accent }}>
               Make it look modern.
             </Box>
           </Typography>
-        </motion.div>
-        <motion.div {...item(1)}>
+        </div>
+        <div>
           <Typography color="text.secondary" sx={{ mt: 3, fontSize: { xs: 18, md: 20 }, maxWidth: 520, mx: 'auto', textWrap: 'pretty' }}>
             Swap one theme and your existing MUI app restyles. No rewrite.
           </Typography>
-        </motion.div>
+        </div>
         <motion.div {...item(2)}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ justifyContent: 'center', alignItems: { sm: 'center' }, mt: 5 }}>
             <LinkButton href="/docs" variant="contained" size="large" disableElevation endIcon={<ArrowForward />} sx={{ borderRadius: 2.5, px: 3, flexShrink: 0 }}>
@@ -157,8 +156,8 @@ export function Hero() {
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }, gap: { xs: 2, md: 3 }, maxWidth: 1440, mx: 'auto' }}>
             {COLUMNS.map((col, c) => (
               <Stack key={c} spacing={{ xs: 2, md: 3 }} sx={{ pt: `${OFFSETS[c]}px`, display: { xs: c > 1 ? 'none' : 'flex', md: 'flex' } }}>
-                {col.map((i) => (
-                  <Shot key={i} {...SHOTS[i]} />
+                {col.map((i, row) => (
+                  <Shot key={i} {...SHOTS[i]} eager={row === 0} />
                 ))}
               </Stack>
             ))}
@@ -246,9 +245,9 @@ export function CallToAction() {
             <LinkButton href="/docs" variant="contained" size="large" disableElevation sx={{ borderRadius: 2.5, px: 3 }}>
               Get started
             </LinkButton>
-            <LinkButton href={SITE.github} variant="outlined" size="large" sx={{ borderRadius: 2.5, px: 3 }}>
+            <Button href={SITE.github} variant="outlined" size="large" sx={{ borderRadius: 2.5, px: 3 }}>
               View on GitHub
-            </LinkButton>
+            </Button>
           </Stack>
         </Box>
       </Reveal>
