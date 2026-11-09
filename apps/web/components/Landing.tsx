@@ -138,6 +138,13 @@ export function Hero() {
               <CommandLine command={INSTALL} mt={0} />
             </Box>
           </Stack>
+          {/* 0.1.0 is not on npm yet; say so next to the command instead of letting it fail. */}
+          <Typography color="text.secondary" sx={{ mt: 2, fontSize: 14 }}>
+            Pre-release: not on npm yet.{' '}
+            <Box component={NextLink} href="/docs#build" sx={{ color: accent, fontWeight: 600 }}>
+              Install from source
+            </Box>
+          </Typography>
         </motion.div>
       </Container>
 
