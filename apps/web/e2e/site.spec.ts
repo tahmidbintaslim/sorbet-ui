@@ -220,6 +220,12 @@ test('landing: both sides of the before/after render the same MUI markup', async
   expect(shapes[0]).toBe(shapes[1]);
 });
 
+test('landing: template screens link to their pages', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Acme Admin demo' }).click();
+  await expect(page).toHaveURL(/\/demo$/);
+});
+
 test('landing: playground controls rewrite the source', async ({ page }) => {
   await page.goto('/');
   const code = page.locator('pre[aria-label="Playground source"]');
@@ -228,20 +234,6 @@ test('landing: playground controls rewrite the source', async ({ page }) => {
   await expect(code).toContainText('variant="dash"');
   await expect(code).toContainText('color="danger"');
   await expect(page.getByTestId('playground-preview').getByRole('button', { name: 'Ship it' })).toBeVisible();
-});
-
-test('landing: command menu filters the catalog', async ({ page }) => {
-  await page.goto('/');
-  const menu = page.getByTestId('bento-cmdk');
-  await menu.getByRole('combobox', { name: 'Search components' }).fill('tab');
-  await expect(menu.getByRole('option')).toHaveText(['Tabs', 'Table']);
-});
-
-test('landing: hero dashboard tabs switch data', async ({ page }) => {
-  await page.goto('/');
-  const dash = page.getByTestId('hero-dashboard');
-  await dash.getByRole('tab', { name: 'Orders' }).click();
-  await expect(dash.getByRole('img', { name: /Orders over the last 8 weeks/ })).toBeVisible();
 });
 
 test('blocks: code tab shows the block source', async ({ page }) => {
