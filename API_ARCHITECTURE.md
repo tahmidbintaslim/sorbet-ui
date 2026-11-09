@@ -8,7 +8,7 @@ Sorbet UI is a pnpm workspace run with Turborepo. The npm packages use the `@sor
 
 | Package           | Source            | What it holds                                                                                                         |
 | ----------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `@sorbet-ui/react`  | `packages/react`  | The 26 components, their unit tests and their Storybook stories                                                       |
+| `@sorbet-ui/react`  | `packages/react`  | The 30 components, their unit tests and their Storybook stories                                                       |
 | `@sorbet-ui/theme`  | `packages/theme`  | `lightTheme` and `darkTheme` (MUI `createTheme`) and MUI module augmentation for the Sorbet UI variant names             |
 | `@sorbet-ui/tokens` | `packages/tokens` | Color scales, sizing, typography and animation tokens, plus the contrast test                                         |
 | `@sorbet-ui/core`   | `packages/core`   | Shared `SorbetVariant` / `SorbetColor` / `SorbetSize` types, variant presets, accessibility helpers and headless state helpers |

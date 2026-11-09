@@ -10,14 +10,14 @@ Nothing has been published to npm yet. This is the first planned release. Before
 
 ### Added
 
-- `@sorbet-ui/react`: 26 components built on Material UI v7 or v9 (MUI X Date Pickers v8 or v9): Alert, Autocomplete, Avatar, Badge, Breadcrumbs, Button, Card, Checkbox, Chip, DatePicker, Dialog, Drawer, Pagination, Popover, Progress, Radio, Rating, Select, Slider, Snackbar, Switch, Table, Tabs, TextField, ToggleButtonGroup and Tooltip.
+- `@sorbet-ui/react`: 30 components built on Material UI v7 or v9 (MUI X Date Pickers v8 or v9): Accordion, Alert, Autocomplete, Avatar, Badge, Breadcrumbs, Button, Card, Checkbox, Chip, DatePicker, Dialog, Drawer, Menu, Pagination, Popover, Progress, Radio, Rating, Select, Skeleton, Slider, Snackbar, Stepper, Switch, Table, Tabs, TextField, ToggleButtonGroup and Tooltip.
 - A shared `variant` / `color` / `size` API: 5 variants (solid, soft, outlined, ghost, plain) on every component, plus dash and link on Button; 5 sizes; 7 colors on every component.
 - `@sorbet-ui/theme`: `lightTheme` and `darkTheme` for the MUI `ThemeProvider`. They restyle stock `@mui/material` components too (buttons, inputs, cards, chips, tabs, tables, dialogs, menus, tooltips, app bars), so an existing MUI app changes look with no code changes. The palette comes from the AA-tested token scales; `sorbetComponents` exports the overrides on their own.
 - `@sorbet-ui/tokens`: color scales, spacing, radius, shadows, z-index, breakpoints, typography and animation tokens.
 - `textColorsForMode` in `@sorbet-ui/tokens`: returns `textColors.light` or `textColors.dark` for the current mode.
 - `@sorbet-ui/core`: shared types, variant presets, accessibility helpers and headless state helpers.
-- Storybook with 372 stories, deployed at https://sorbet-ui.vercel.app.
-- 676 unit tests (including WCAG AA checks for every token, theme palette and variant preset pair) and 374 Storybook tests, each run through axe.
+- Storybook with 425 stories, deployed at https://sorbet-ui.vercel.app.
+- 817 unit tests (including WCAG AA checks for every token, theme palette and variant preset pair) and 427 Storybook tests, each run through axe.
 
 ### Changed
 

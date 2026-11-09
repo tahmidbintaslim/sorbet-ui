@@ -23,10 +23,10 @@ A drop-in modern skin for MUI, not a new component library. Teams keep MUI's API
 - npm org `sorbet-ui` exists; first publish (0.1.0) waits on the owner's explicit go-ahead.
 
 ## Capabilities and Constraints
-- 26 components: Alert, Autocomplete, Avatar, Badge, Breadcrumbs, Button, Card, Checkbox, Chip, DatePicker, Dialog, Drawer, Pagination, Popover, Progress, Radio, Rating, Select, Slider, Snackbar, Switch, Table, Tabs, TextField, ToggleButtonGroup, Tooltip — each with stories and tests.
+- 30 components: Accordion, Alert, Autocomplete, Avatar, Badge, Breadcrumbs, Button, Card, Checkbox, Chip, DatePicker, Dialog, Drawer, Menu, Pagination, Popover, Progress, Radio, Rating, Select, Skeleton, Slider, Snackbar, Stepper, Switch, Table, Tabs, TextField, ToggleButtonGroup, Tooltip — each with stories and tests.
 - 54 copy-paste blocks across 16 categories, 6 free page templates, and a working admin demo on the website.
 - Must stay API-compatible with MUI props where it wraps them.
-- Undecided: v1 gap components (e.g. Accordion, Menu, Stepper, Skeleton, app shell).
+- Undecided: further v1 gap components (e.g. app shell). Accordion, Menu, Stepper and Skeleton were added on the owner's approval.
 
 ## Brand Commitments
 - Name: Sorbet UI (renamed from Sun UI). Tagline in use: "Material UI, but softer."
