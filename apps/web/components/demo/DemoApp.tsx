@@ -5,6 +5,7 @@
 import * as React from 'react';
 import {
   Box,
+  CardActionArea,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -20,7 +21,7 @@ import {
   TextField as MuiTextField,
   Typography,
 } from '@mui/material';
-import { motion, useReducedMotion } from 'motion/react';
+import { MotionConfig, motion, useReducedMotion } from 'motion/react';
 import SpaceDashboard from '@mui/icons-material/SpaceDashboard';
 import ReceiptLong from '@mui/icons-material/ReceiptLong';
 import People from '@mui/icons-material/People';
@@ -64,6 +65,28 @@ const NAV: { id: View; label: string; icon: React.ReactNode }[] = [
 
 const initials = (n: string) => n.split(' ').map((p) => p[0]).join('');
 
+// The current view lives in the URL hash (#orders), so back/forward, reloads and
+// shared links work. The server and the first client render use 'overview';
+// useSyncExternalStore then switches to the hash without a hydration mismatch.
+const isView = (v: string): v is View => NAV.some((n) => n.id === v);
+const viewFromHash = (): View => {
+  const h = window.location.hash.slice(1);
+  return isView(h) ? h : 'overview';
+};
+const subscribeToHash = (onChange: () => void) => {
+  window.addEventListener('hashchange', onChange);
+  return () => window.removeEventListener('hashchange', onChange);
+};
+
+/** Each view's h2. Focusable from script so focus can move to it after navigating. */
+function ViewHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <Typography component="h2" id="demo-view-heading" tabIndex={-1} sx={{ fontWeight: 800, fontSize: 26, scrollMarginTop: 96 }}>
+      {children}
+    </Typography>
+  );
+}
+
 function Panel({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
   return (
     <Card variant="outlined" sx={{ p: { xs: 2, sm: 3 }, height: '100%' }}>
@@ -106,9 +129,7 @@ function Overview({
     <Stack spacing={3}>
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' } }} spacing={2}>
         <Box>
-          <Typography component="h2" sx={{ fontWeight: 800, fontSize: 26 }}>
-            Good morning, Sam
-          </Typography>
+          <ViewHeading>Good morning, Sam</ViewHeading>
           <Typography color="text.secondary">Here is how Acme is doing. Sample data.</Typography>
         </Box>
         <Tabs
@@ -246,9 +267,7 @@ function Orders({
     <Stack spacing={3}>
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' } }} spacing={2}>
         <Box>
-          <Typography component="h2" sx={{ fontWeight: 800, fontSize: 26 }}>
-            Orders
-          </Typography>
+          <ViewHeading>Orders</ViewHeading>
           <Typography color="text.secondary">{rows.length} orders</Typography>
         </Box>
         <Button startIcon={<Add />} onClick={onNew}>
@@ -310,9 +329,7 @@ function Customers({ onOpen }: { onOpen: (c: Customer) => void }) {
     <Stack spacing={3}>
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' } }} spacing={2}>
         <Box>
-          <Typography component="h2" sx={{ fontWeight: 800, fontSize: 26 }}>
-            Customers
-          </Typography>
+          <ViewHeading>Customers</ViewHeading>
           <Typography color="text.secondary">{list.length} customers</Typography>
         </Box>
         <Select value={plan} onChange={(e) => setPlan(e.target.value as typeof plan)} inputProps={{ 'aria-label': 'Plan' }} size="sm" sx={{ minWidth: 160 }}>
@@ -328,9 +345,31 @@ function Customers({ onOpen }: { onOpen: (c: Customer) => void }) {
           <Grid key={c.id} size={{ xs: 12, sm: 6, lg: 3 }}>
             <Card
               variant="outlined"
-              sx={{ p: 2.5, height: '100%', cursor: 'pointer', transition: 'border-color .2s, transform .2s', '&:hover': { borderColor: 'primary.main', transform: 'translateY(-2px)' } }}
+              sx={{
+                p: 0,
+                height: '100%',
+                overflow: 'hidden',
+                transition: 'border-color .2s',
+                '&:hover, &:focus-within': { borderColor: 'primary.main' },
+                // Only lift the card when the user has not asked for reduced motion.
+                '@media (prefers-reduced-motion: no-preference)': {
+                  transition: 'border-color .2s, transform .2s',
+                  '&:hover': { transform: 'translateY(-2px)' },
+                },
+              }}
             >
-              <Box component="button" onClick={() => onOpen(c)} aria-label={`Open ${c.name}`} sx={{ all: 'unset', display: 'block', width: '100%', '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 4, borderRadius: 1 } }}>
+              {/* The whole card is the button, padding included. */}
+              <CardActionArea
+                onClick={() => onOpen(c)}
+                aria-label={`Open ${c.name}`}
+                sx={{
+                  p: 2.5,
+                  height: '100%',
+                  display: 'block',
+                  textAlign: 'left',
+                  '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: -2 },
+                }}
+              >
                 <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                   <Avatar status={c.status}>{initials(c.name)}</Avatar>
                   <Box sx={{ minWidth: 0 }}>
@@ -348,7 +387,7 @@ function Customers({ onOpen }: { onOpen: (c: Customer) => void }) {
                     {money(c.spent)}
                   </Typography>
                 </Stack>
-              </Box>
+              </CardActionArea>
             </Card>
           </Grid>
         ))}
@@ -398,9 +437,7 @@ function SettingsView({
 }) {
   return (
     <Stack spacing={3}>
-      <Typography component="h2" sx={{ fontWeight: 800, fontSize: 26 }}>
-        Settings
-      </Typography>
+      <ViewHeading>Settings</ViewHeading>
       <Card variant="outlined" sx={{ p: { xs: 2, sm: 3 } }}>
         <Tabs
           variant="soft"
@@ -484,7 +521,22 @@ function SettingsView({
 
 // ---------------------------------------------------------------- Shell
 export default function DemoApp() {
-  const [view, setView] = React.useState<View>('overview');
+  const reduce = useReducedMotion();
+  const view = React.useSyncExternalStore<View>(subscribeToHash, viewFromHash, () => 'overview');
+  // Set when navigating from the mobile drawer: focus the new view's heading once it has closed.
+  const focusHeadingOnClose = React.useRef(false);
+  const rootRef = React.useRef<HTMLDivElement>(null);
+
+  // Fill the viewport below the site header without hard-coding its height:
+  // measure where the demo starts and size it with 100dvh minus that offset.
+  React.useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const update = () => el.style.setProperty('--demo-top', `${Math.max(0, el.getBoundingClientRect().top + window.scrollY)}px`);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
   const [orders, setOrders] = React.useState<Order[]>(ORDERS);
   // Dialog / drawer content stays mounted while they animate closed: `open` flips
   // first, and the shown item is cleared only once the exit transition ends.
@@ -513,9 +565,13 @@ export default function DemoApp() {
   const [settingsTab, setSettingsTab] = React.useState('profile');
   const settingsDirty = (Object.keys(settings) as (keyof SettingsState)[]).some((k) => settings[k] !== savedSettings[k]);
 
-  const go = (v: View) => {
-    setView(v);
-    setMobileNav(false);
+  // Nav items are #hash links, so the browser updates the URL and history and the
+  // hashchange listener above switches the view. This only closes the mobile menu.
+  const onNavigate = () => {
+    if (mobileNav) {
+      focusHeadingOnClose.current = true;
+      setMobileNav(false);
+    }
   };
 
   const showOrder = (o: Order) => {
@@ -559,9 +615,11 @@ export default function DemoApp() {
         {NAV.map((n) => (
           <ListItemButton
             key={n.id}
+            component="a"
+            href={`#${n.id}`}
             selected={view === n.id}
             aria-current={view === n.id ? 'page' : undefined}
-            onClick={() => go(n.id)}
+            onClick={onNavigate}
             sx={{ borderRadius: 2, mb: 0.5 }}
           >
             <ListItemIcon sx={{ minWidth: 36 }}>{n.icon}</ListItemIcon>
@@ -574,265 +632,281 @@ export default function DemoApp() {
   );
 
   return (
-    <Box data-testid="demo-app" sx={{ display: 'flex', minHeight: 'calc(100vh - 65px)', bgcolor: 'background.default' }}>
-      {/* Sidebar (desktop) */}
-      <Box sx={{ display: { xs: 'none', md: 'block' }, width: 240, flexShrink: 0, borderRight: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', px: 2.5, py: 2.5 }}>
-          <Box sx={{ width: 28, height: 28, borderRadius: 2, background: `linear-gradient(135deg, ${colorPalette.primary[400]}, ${colorPalette.secondary[400]})` }} />
-          <Typography sx={{ fontWeight: 800 }}>Acme Admin</Typography>
-        </Stack>
-        {nav}
-        <Box sx={{ m: 2, p: 2, borderRadius: 3, bgcolor: 'action.hover' }}>
-          <Typography variant="body2" sx={{ fontWeight: 700 }}>
-            This is a demo
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Built with @sorbet-ui/react. Data is fake and resets on reload.
-          </Typography>
-        </Box>
-      </Box>
-
-      {/* Mobile nav */}
-      <Drawer open={mobileNav} onClose={() => setMobileNav(false)} anchor="left" aria-label="Menu">
-        <Box sx={{ width: 260 }}>
-          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
+    <MotionConfig reducedMotion="user">
+      <Box ref={rootRef} data-testid="demo-app" sx={{ display: 'flex', minHeight: 'calc(100dvh - var(--demo-top, 0px))', bgcolor: 'background.default' }}>
+        {/* Sidebar (desktop) */}
+        <Box sx={{ display: { xs: 'none', md: 'block' }, width: 240, flexShrink: 0, borderRight: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', px: 2.5, py: 2.5 }}>
+            <Box sx={{ width: 28, height: 28, borderRadius: 2, background: `linear-gradient(135deg, ${colorPalette.primary[400]}, ${colorPalette.secondary[400]})` }} />
             <Typography sx={{ fontWeight: 800 }}>Acme Admin</Typography>
-            <IconButton aria-label="Close menu" onClick={() => setMobileNav(false)}>
-              <Close />
-            </IconButton>
           </Stack>
           {nav}
+          <Box sx={{ m: 2, p: 2, borderRadius: 3, bgcolor: 'action.hover' }}>
+            <Typography variant="body2" sx={{ fontWeight: 700 }}>
+              This is a demo
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Built with @sorbet-ui/react. Data is fake and resets on reload.
+            </Typography>
+          </Box>
         </Box>
-      </Drawer>
 
-      <Box sx={{ flex: 1, minWidth: 0 }}>
-        {/* Top bar */}
-        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', px: { xs: 2, md: 4 }, py: 1.5, borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
-          <IconButton aria-label="Open menu" aria-expanded={mobileNav} onClick={() => setMobileNav(true)} sx={{ display: { md: 'none' } }}>
-            <Menu />
-          </IconButton>
-          <Typography sx={{ fontWeight: 700, flex: 1 }}>{NAV.find((n) => n.id === view)?.label}</Typography>
-          <Badge badgeContent={3} color="danger">
-            <Avatar size="sm" status="online">
-              SR
-            </Avatar>
-          </Badge>
-        </Stack>
-
-        <Box component="section" aria-label="Demo content" sx={{ p: { xs: 2, md: 4 }, maxWidth: 1280 }}>
-          <motion.div key={view} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: EASE }}>
-            {view === 'overview' && <Overview orders={orders} onOpenOrder={showOrder} range={range} onRangeChange={setRange} />}
-            {view === 'orders' && <Orders
-                orders={orders}
-                onOpenOrder={showOrder}
-                onNew={openNewOrder}
-                query={orderQuery}
-                onQueryChange={(q) => {
-                  setOrderQuery(q);
-                  setOrderPage(1);
-                }}
-                status={orderStatus}
-                onStatusChange={(st) => {
-                  setOrderStatus(st);
-                  setOrderPage(1);
-                }}
-                page={orderPage}
-                onPageChange={setOrderPage}
-              />}
-            {view === 'customers' && <Customers onOpen={showCustomer} />}
-            {view === 'settings' && (
-              <SettingsView
-                value={settings}
-                onChange={(patch) => setSettings((s) => ({ ...s, ...patch }))}
-                tab={settingsTab}
-                onTabChange={setSettingsTab}
-                dirty={settingsDirty}
-                onSave={() => {
-                  setSavedSettings(settings);
-                  setToast('Settings saved');
-                }}
-                onCancel={() => {
-                  setSettings(savedSettings);
-                  setToast('Changes discarded');
-                }}
-              />
-            )}
-          </motion.div>
-        </Box>
-      </Box>
-
-      {/* Order details */}
-      <Dialog
-        open={orderOpen}
-        onClose={closeOrder}
-        maxWidth="xs"
-        fullWidth
-        aria-labelledby="order-title"
-        slotProps={{
-          transition: {
-            onExited: () => {
-              setOpenOrder(null);
-              // MUI restores focus too, but the row may have re-rendered (e.g. after a refund).
-              const el = orderReturnFocus.current;
-              if (el?.isConnected) el.focus();
-              orderReturnFocus.current = null;
+        {/* Mobile nav */}
+        <Drawer
+          open={mobileNav}
+          onClose={() => setMobileNav(false)}
+          anchor="left"
+          aria-label="Menu"
+          slotProps={{
+            transition: {
+              onExited: () => {
+                if (!focusHeadingOnClose.current) return;
+                focusHeadingOnClose.current = false;
+                document.getElementById('demo-view-heading')?.focus();
+              },
             },
-          },
-        }}
-      >
-        {openOrder && (
-          <>
-            <DialogTitle id="order-title">Order {openOrder.id}</DialogTitle>
-            <DialogContent>
-              <Stack spacing={1.5}>
-                <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                  <Typography color="text.secondary">Customer</Typography>
-                  <Typography sx={{ fontWeight: 600 }}>{openOrder.customer}</Typography>
-                </Stack>
-                <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                  <Typography color="text.secondary">Date</Typography>
-                  <Typography>{openOrder.date}</Typography>
-                </Stack>
-                <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography color="text.secondary">Status</Typography>
-                  <StatusChip status={openOrder.status} />
-                </Stack>
-                <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                  <Typography color="text.secondary">Total</Typography>
-                  <Typography sx={{ fontWeight: 800 }}>{money(openOrder.amount)}</Typography>
-                </Stack>
-              </Stack>
-            </DialogContent>
-            <DialogActions>
-              {openOrder.status === 'Paid' && (
-                <Button
-                  variant="ghost"
-                  color="danger"
-                  onClick={() => {
-                    setOrders((o) => o.map((x) => (x.id === openOrder.id ? { ...x, status: 'Refunded' } : x)));
-                    setToast(`Order ${openOrder.id} refunded`);
-                    closeOrder();
-                  }}
-                >
-                  Refund
-                </Button>
-              )}
-              <Button onClick={closeOrder}>Done</Button>
-            </DialogActions>
-          </>
-        )}
-      </Dialog>
-
-      {/* New order */}
-      <Dialog open={newOpen} onClose={() => setNewOpen(false)} maxWidth="xs" fullWidth aria-labelledby="new-order-title">
-        <DialogTitle id="new-order-title">New order</DialogTitle>
-        {/* A real form, so Enter in either field submits. */}
-        <Box
-          component="form"
-          noValidate
-          sx={{ display: 'contents' }}
-          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            createOrder();
           }}
         >
-        <DialogContent>
-          <Stack spacing={2} sx={{ pt: 1 }}>
-            <TextField label="Customer name" value={draft.customer} onChange={(e) => setDraft((d) => ({ ...d, customer: e.target.value }))} fullWidth autoFocus />
-            <TextField
-              label="Amount (USD)"
-              type="number"
-              value={draft.amount}
-              onChange={(e) => setDraft((d) => ({ ...d, amount: e.target.value }))}
-              fullWidth
-              error={draft.amount !== '' && !(Number(draft.amount) > 0)}
-              helperText={draft.amount !== '' && !(Number(draft.amount) > 0) ? 'Enter an amount above 0' : ' '}
-            />
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="ghost" onClick={() => setNewOpen(false)}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={!draft.customer.trim() || !(Number(draft.amount) > 0)}>
-            Create order
-          </Button>
-        </DialogActions>
-        </Box>
-      </Dialog>
-
-      {/* Customer drawer */}
-      <Drawer
-        open={customerOpen}
-        onClose={closeCustomer}
-        anchor="right"
-        aria-label={customer?.name ?? 'Customer'}
-        slotProps={{ transition: { onExited: () => setCustomer(null) } }}
-      >
-        {customer && (
-          <Box sx={{ width: { xs: 300, sm: 360 }, p: 3 }}>
-            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography component="h2" sx={{ fontWeight: 800, fontSize: 20 }}>
-                {customer.name}
-              </Typography>
-              <IconButton aria-label="Close details" onClick={closeCustomer}>
+          <Box sx={{ width: 260 }}>
+            <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
+              <Typography sx={{ fontWeight: 800 }}>Acme Admin</Typography>
+              <IconButton aria-label="Close menu" onClick={() => setMobileNav(false)}>
                 <Close />
               </IconButton>
             </Stack>
-            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mt: 2 }}>
-              <Avatar size="lg" status={customer.status}>
-                {initials(customer.name)}
-              </Avatar>
-              <Box>
-                <Typography color="text.secondary">{customer.email}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Customer since {customer.joined}
-                </Typography>
-              </Box>
-            </Stack>
-            <Divider sx={{ my: 3 }} />
-            <Stack spacing={1.5}>
-              <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                <Typography color="text.secondary">Plan</Typography>
-                <Typography sx={{ fontWeight: 600 }}>{customer.plan}</Typography>
-              </Stack>
-              <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                <Typography color="text.secondary">Lifetime spend</Typography>
-                <Typography sx={{ fontWeight: 600 }}>{money(customer.spent)}</Typography>
-              </Stack>
-              <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                <Typography color="text.secondary">Orders</Typography>
-                <Typography sx={{ fontWeight: 600 }}>{orders.filter((o) => o.customer === customer.name).length}</Typography>
-              </Stack>
-            </Stack>
-            <Button
-              fullWidth
-              variant="soft"
-              sx={{ mt: 3 }}
-              onClick={() => {
-                setToast(`Email drafted to ${customer.name}`);
-                closeCustomer();
-              }}
-            >
-              Send email
-            </Button>
+            {nav}
           </Box>
-        )}
-      </Drawer>
+        </Drawer>
 
-      <Snackbar
-        key={toast?.id ?? 0}
-        open={toast?.open ?? false}
-        autoHideDuration={3000}
-        onClose={(_, reason) => {
-          // A click elsewhere on the page should not dismiss the confirmation.
-          if (reason === 'clickaway') return;
-          setToastState((t) => (t ? { ...t, open: false } : t));
-        }}
-        message={toast?.message ?? ''}
-        color="success"
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      />
-    </Box>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          {/* Top bar */}
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', px: { xs: 2, md: 4 }, py: 1.5, borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
+            <IconButton aria-label="Open menu" aria-expanded={mobileNav} onClick={() => setMobileNav(true)} sx={{ display: { md: 'none' } }}>
+              <Menu />
+            </IconButton>
+            <Typography sx={{ fontWeight: 700, flex: 1 }}>{NAV.find((n) => n.id === view)?.label}</Typography>
+            <Badge badgeContent={3} color="danger">
+              <Avatar size="sm" status="online">
+                SR
+              </Avatar>
+            </Badge>
+          </Stack>
+
+          <Box component="section" aria-label="Demo content" sx={{ p: { xs: 2, md: 4 }, maxWidth: 1280 }}>
+            <motion.div key={view} initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.3, ease: EASE }}>
+              {view === 'overview' && <Overview orders={orders} onOpenOrder={showOrder} range={range} onRangeChange={setRange} />}
+              {view === 'orders' && <Orders
+                  orders={orders}
+                  onOpenOrder={showOrder}
+                  onNew={openNewOrder}
+                  query={orderQuery}
+                  onQueryChange={(q) => {
+                    setOrderQuery(q);
+                    setOrderPage(1);
+                  }}
+                  status={orderStatus}
+                  onStatusChange={(st) => {
+                    setOrderStatus(st);
+                    setOrderPage(1);
+                  }}
+                  page={orderPage}
+                  onPageChange={setOrderPage}
+                />}
+              {view === 'customers' && <Customers onOpen={showCustomer} />}
+              {view === 'settings' && (
+                <SettingsView
+                  value={settings}
+                  onChange={(patch) => setSettings((s) => ({ ...s, ...patch }))}
+                  tab={settingsTab}
+                  onTabChange={setSettingsTab}
+                  dirty={settingsDirty}
+                  onSave={() => {
+                    setSavedSettings(settings);
+                    setToast('Settings saved');
+                  }}
+                  onCancel={() => {
+                    setSettings(savedSettings);
+                    setToast('Changes discarded');
+                  }}
+                />
+              )}
+            </motion.div>
+          </Box>
+        </Box>
+
+        {/* Order details */}
+        <Dialog
+          open={orderOpen}
+          onClose={closeOrder}
+          maxWidth="xs"
+          fullWidth
+          aria-labelledby="order-title"
+          slotProps={{
+            transition: {
+              onExited: () => {
+                setOpenOrder(null);
+                // MUI restores focus too, but the row may have re-rendered (e.g. after a refund).
+                const el = orderReturnFocus.current;
+                if (el?.isConnected) el.focus();
+                orderReturnFocus.current = null;
+              },
+            },
+          }}
+        >
+          {openOrder && (
+            <>
+              <DialogTitle id="order-title">Order {openOrder.id}</DialogTitle>
+              <DialogContent>
+                <Stack spacing={1.5}>
+                  <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
+                    <Typography color="text.secondary">Customer</Typography>
+                    <Typography sx={{ fontWeight: 600 }}>{openOrder.customer}</Typography>
+                  </Stack>
+                  <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
+                    <Typography color="text.secondary">Date</Typography>
+                    <Typography>{openOrder.date}</Typography>
+                  </Stack>
+                  <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography color="text.secondary">Status</Typography>
+                    <StatusChip status={openOrder.status} />
+                  </Stack>
+                  <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
+                    <Typography color="text.secondary">Total</Typography>
+                    <Typography sx={{ fontWeight: 800 }}>{money(openOrder.amount)}</Typography>
+                  </Stack>
+                </Stack>
+              </DialogContent>
+              <DialogActions>
+                {openOrder.status === 'Paid' && (
+                  <Button
+                    variant="ghost"
+                    color="danger"
+                    onClick={() => {
+                      setOrders((o) => o.map((x) => (x.id === openOrder.id ? { ...x, status: 'Refunded' } : x)));
+                      setToast(`Order ${openOrder.id} refunded`);
+                      closeOrder();
+                    }}
+                  >
+                    Refund
+                  </Button>
+                )}
+                <Button onClick={closeOrder}>Done</Button>
+              </DialogActions>
+            </>
+          )}
+        </Dialog>
+
+        {/* New order */}
+        <Dialog open={newOpen} onClose={() => setNewOpen(false)} maxWidth="xs" fullWidth aria-labelledby="new-order-title">
+          <DialogTitle id="new-order-title">New order</DialogTitle>
+          {/* A real form, so Enter in either field submits. */}
+          <Box
+            component="form"
+            noValidate
+            sx={{ display: 'contents' }}
+            onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+              e.preventDefault();
+              createOrder();
+            }}
+          >
+            <DialogContent>
+              <Stack spacing={2} sx={{ pt: 1 }}>
+                <TextField label="Customer name" value={draft.customer} onChange={(e) => setDraft((d) => ({ ...d, customer: e.target.value }))} fullWidth autoFocus />
+                <TextField
+                  label="Amount (USD)"
+                  type="number"
+                  value={draft.amount}
+                  onChange={(e) => setDraft((d) => ({ ...d, amount: e.target.value }))}
+                  fullWidth
+                  error={draft.amount !== '' && !(Number(draft.amount) > 0)}
+                  helperText={draft.amount !== '' && !(Number(draft.amount) > 0) ? 'Enter an amount above 0' : ' '}
+                />
+              </Stack>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="ghost" onClick={() => setNewOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={!draft.customer.trim() || !(Number(draft.amount) > 0)}>
+                Create order
+              </Button>
+            </DialogActions>
+          </Box>
+        </Dialog>
+
+        {/* Customer drawer */}
+        <Drawer
+          open={customerOpen}
+          onClose={closeCustomer}
+          anchor="right"
+          aria-label={customer?.name ?? 'Customer'}
+          slotProps={{ transition: { onExited: () => setCustomer(null) } }}
+        >
+          {customer && (
+            <Box sx={{ width: { xs: 300, sm: 360 }, p: 3 }}>
+              <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography component="h2" sx={{ fontWeight: 800, fontSize: 20 }}>
+                  {customer.name}
+                </Typography>
+                <IconButton aria-label="Close details" onClick={closeCustomer}>
+                  <Close />
+                </IconButton>
+              </Stack>
+              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mt: 2 }}>
+                <Avatar size="lg" status={customer.status}>
+                  {initials(customer.name)}
+                </Avatar>
+                <Box>
+                  <Typography color="text.secondary">{customer.email}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Customer since {customer.joined}
+                  </Typography>
+                </Box>
+              </Stack>
+              <Divider sx={{ my: 3 }} />
+              <Stack spacing={1.5}>
+                <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
+                  <Typography color="text.secondary">Plan</Typography>
+                  <Typography sx={{ fontWeight: 600 }}>{customer.plan}</Typography>
+                </Stack>
+                <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
+                  <Typography color="text.secondary">Lifetime spend</Typography>
+                  <Typography sx={{ fontWeight: 600 }}>{money(customer.spent)}</Typography>
+                </Stack>
+                <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
+                  <Typography color="text.secondary">Orders</Typography>
+                  <Typography sx={{ fontWeight: 600 }}>{orders.filter((o) => o.customer === customer.name).length}</Typography>
+                </Stack>
+              </Stack>
+              <Button
+                fullWidth
+                variant="soft"
+                sx={{ mt: 3 }}
+                onClick={() => {
+                  setToast(`Email drafted to ${customer.name}`);
+                  closeCustomer();
+                }}
+              >
+                Send email
+              </Button>
+            </Box>
+          )}
+        </Drawer>
+
+        <Snackbar
+          key={toast?.id ?? 0}
+          open={toast?.open ?? false}
+          autoHideDuration={3000}
+          onClose={(_, reason) => {
+            // A click elsewhere on the page should not dismiss the confirmation.
+            if (reason === 'clickaway') return;
+            setToastState((t) => (t ? { ...t, open: false } : t));
+          }}
+          message={toast?.message ?? ''}
+          color="success"
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        />
+      </Box>
+    </MotionConfig>
   );
 }
