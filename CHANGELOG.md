@@ -44,5 +44,4 @@ Nothing has been published to npm yet. This is the first planned release. Before
 
 ### Known issues
 
-- `@sorbet-ui/icons` is an empty placeholder and is not published.
 - No screen reader testing yet. Automated checks (axe on every story and site page, contrast tests) pass in light and dark.

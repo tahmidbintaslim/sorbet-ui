@@ -94,7 +94,6 @@
   },
   "dependencies": {
     "@sorbet-ui/core": "workspace:*",
-    "@sorbet-ui/icons": "workspace:*",
     "@sorbet-ui/react": "workspace:*",
     "@sorbet-ui/theme": "workspace:*",
     "@sorbet-ui/tokens": "workspace:*"

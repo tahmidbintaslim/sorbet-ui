@@ -118,7 +118,7 @@ The public packages were numbered 1.0.0 before anything was published; the readi
 
 Before the first publish, add an `NPM_TOKEN` from a member of the `sorbet-ui` npm org (the `@sorbet-ui` scope).
 
-Private packages (`@sorbet-ui/icons`, `docs`, `web`) are never versioned or published.
+Private packages (`docs`, `web`) are never versioned or published.
 
 ## Troubleshooting
 

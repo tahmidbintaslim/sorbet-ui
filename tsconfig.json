@@ -21,7 +21,6 @@
       "@sorbet-ui/tokens": ["packages/tokens/src"],
       "@sorbet-ui/theme": ["packages/theme/src"],
       "@sorbet-ui/react": ["packages/react/src"],
-      "@sorbet-ui/icons": ["packages/icons/src"],
       "@sorbet-ui/core": ["packages/core/src"]
     }
   },
