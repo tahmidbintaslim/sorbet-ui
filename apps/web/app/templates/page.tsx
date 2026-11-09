@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import { Container, Typography } from '@mui/material';
 import TemplateCards from '@/components/TemplateCards';
 import { TEMPLATES } from '@/lib/templates';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: 'Templates',
   description: 'Free, MIT-licensed page templates built with Sorbet UI blocks.',
-};
+  path: '/templates',
+});
 
 export default function TemplatesPage() {
   return (

@@ -1,10 +1,15 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import { Grid, Link, Typography } from '@mui/material';
 import CatalogCard from '@/components/CatalogCard';
 import { CATALOG } from '@/lib/catalog';
 import { SITE } from '@/lib/site';
 
-export const metadata: Metadata = { title: 'Components' };
+export const metadata: Metadata = pageMeta({
+  title: 'Components',
+  description: 'All 30 Sorbet UI components, each with one variant, color and size API, in light and dark.',
+  path: '/docs/components',
+});
 
 export default function Components() {
   return (

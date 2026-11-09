@@ -1,8 +1,13 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import { Typography } from '@mui/material';
 import CodeBlock from '@/components/CodeBlock';
 
-export const metadata: Metadata = { title: 'Theming' };
+export const metadata: Metadata = pageMeta({
+  title: 'Theming',
+  description: 'Light and dark themes, design tokens, and how to customize the Sorbet UI theme for Material UI.',
+  path: '/docs/theming',
+});
 
 const MODE = `import { useState } from 'react';
 import { ThemeProvider } from '@mui/material';

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import { Box, Container, Typography } from '@mui/material';
 import TemplatePreview from '@/components/TemplatePreview';
@@ -9,8 +10,9 @@ export const dynamicParams = false;
 export const generateStaticParams = () => TEMPLATES.map((t) => ({ slug: t.slug }));
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const t = getTemplate((await params).slug);
-  return { title: t ? `${t.name} template` : 'Template', description: t?.description };
+  const slug = (await params).slug;
+  const t = getTemplate(slug);
+  return pageMeta({ title: t ? `${t.name} template` : 'Template', description: t?.description, path: `/templates/${slug}` });
 }
 
 export default async function TemplatePage({ params }: { params: Promise<{ slug: string }> }) {

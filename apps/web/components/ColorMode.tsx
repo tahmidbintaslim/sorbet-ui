@@ -5,6 +5,7 @@
 import * as React from 'react';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { darkTheme, lightTheme } from '@sorbet-ui/theme';
+import { MotionConfig } from 'motion/react';
 
 // The site self-hosts Inter and JetBrains Mono through next/font (see app/layout.tsx),
 // exposed as CSS variables; layer them over the published themes.
@@ -51,16 +52,15 @@ export default function ColorModeProvider({ children }: { children: React.ReactN
   const value = React.useMemo(
     () => ({
       mode,
-      toggle: () =>
-        setMode((m) => {
-          const next: Mode = m === 'light' ? 'dark' : 'light';
-          try {
-            window.localStorage.setItem(KEY, next);
-          } catch {
-            /* storage unavailable: the choice just won't persist */
-          }
-          return next;
-        }),
+      toggle: () => {
+        const next: Mode = mode === 'light' ? 'dark' : 'light';
+        try {
+          window.localStorage.setItem(KEY, next);
+        } catch {
+          /* storage unavailable: the choice just won't persist */
+        }
+        setMode(next);
+      },
     }),
     [mode],
   );
@@ -74,7 +74,7 @@ export default function ColorModeProvider({ children }: { children: React.ReactN
     <ColorModeContext.Provider value={value}>
       <ThemeProvider theme={THEMES[mode]}>
         <CssBaseline />
-        {children}
+        <MotionConfig reducedMotion="user">{children}</MotionConfig>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

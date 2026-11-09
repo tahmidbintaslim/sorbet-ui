@@ -4,11 +4,28 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import ColorModeProvider from '@/components/ColorMode';
 import SiteShell from '@/components/SiteShell';
 import { SITE } from '@/lib/site';
+import { SITE_URL, pageMeta } from '@/lib/seo';
 
 export const metadata: Metadata = {
+  ...pageMeta({ path: '/' }),
+  metadataBase: new URL(SITE_URL),
   title: { default: `${SITE.name}: ${SITE.tagline}`, template: `%s | ${SITE.name}` },
-  description: SITE.description,
-  openGraph: { title: SITE.name, description: SITE.description, type: 'website' },
+};
+
+// Structured data for search engines: the site and the library it documents.
+const JSON_LD = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'WebSite', name: SITE.name, url: SITE_URL, description: SITE.description },
+    {
+      '@type': 'SoftwareSourceCode',
+      name: SITE.name,
+      description: SITE.description,
+      codeRepository: SITE.github,
+      programmingLanguage: 'TypeScript',
+      license: 'https://opensource.org/licenses/MIT',
+    },
+  ],
 };
 
 const sans = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
@@ -20,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
       <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
         <AppRouterCacheProvider options={{ enableCssLayer: false }}>
           <ColorModeProvider>
             <SiteShell>{children}</SiteShell>

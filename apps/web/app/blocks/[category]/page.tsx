@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import { Container, Stack, Typography } from '@mui/material';
 import BlockViewer from '@/components/BlockViewer';
@@ -9,8 +10,9 @@ export const dynamicParams = false;
 export const generateStaticParams = () => categoriesWithBlocks().map((c) => ({ category: c.id }));
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
-  const c = getCategory((await params).category);
-  return { title: c ? `${c.title} blocks` : 'Blocks', description: c?.description };
+  const id = (await params).category;
+  const c = getCategory(id);
+  return pageMeta({ title: c ? `${c.title} blocks` : 'Blocks', description: c?.description, path: `/blocks/${id}` });
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {

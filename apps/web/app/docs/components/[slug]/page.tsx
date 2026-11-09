@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import { Typography } from '@mui/material';
 import CodeBlock from '@/components/CodeBlock';
@@ -12,8 +13,9 @@ export const dynamicParams = false;
 export const generateStaticParams = () => CATALOG.map((d) => ({ slug: d.slug }));
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const demo = getEntry((await params).slug);
-  return demo ? { title: demo.name, description: demo.description } : {};
+  const slug = (await params).slug;
+  const demo = getEntry(slug);
+  return pageMeta({ title: demo?.name, description: demo?.description, path: `/docs/components/${slug}` });
 }
 
 export default async function ComponentPage({ params }: { params: Params }) {

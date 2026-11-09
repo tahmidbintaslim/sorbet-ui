@@ -1,9 +1,14 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import { Typography } from '@mui/material';
 import CodeBlock, { CommandLine } from '@/components/CodeBlock';
 import { REGISTRY_URL, addCommand } from '@/lib/registry';
 
-export const metadata: Metadata = { title: 'Getting started' };
+export const metadata: Metadata = pageMeta({
+  title: 'Getting started',
+  description: 'Install Sorbet UI, wrap your app in its theme, and your existing Material UI screens restyle. Vite and Next.js.',
+  path: '/docs',
+});
 
 const INSTALL = `npm install @sorbet-ui/react @sorbet-ui/theme \\
   @mui/material @mui/icons-material @mui/x-date-pickers \\
