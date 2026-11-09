@@ -37,6 +37,7 @@ export {
 } from './DatePicker';
 export { Dialog, DialogActions, DialogContent, DialogTitle, type DialogProps } from './Dialog';
 export { Drawer, type DrawerProps } from './Drawer';
+export { Menu, type MenuColor, type MenuProps, type MenuSize, type MenuVariant } from './Menu';
 export { Pagination, type PaginationProps } from './Pagination';
 export { Popover, type PopoverProps } from './Popover';
 export {
