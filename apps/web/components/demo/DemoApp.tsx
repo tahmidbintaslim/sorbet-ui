@@ -333,9 +333,44 @@ function Customers({ onOpen }: { onOpen: (c: Customer) => void }) {
 }
 
 // ---------------------------------------------------------------- Settings
-function SettingsView({ onSaved }: { onSaved: () => void }) {
-  const [name, setName] = React.useState('Sam Rivera');
-  const [digest, setDigest] = React.useState('weekly');
+export type SettingsState = {
+  name: string;
+  email: string;
+  bio: string;
+  notifyOrders: boolean;
+  notifyRefunds: boolean;
+  notifyProduct: boolean;
+  digest: 'daily' | 'weekly' | 'never';
+};
+const DEFAULT_SETTINGS: SettingsState = {
+  name: 'Sam Rivera',
+  email: 'sam.rivera@example.com',
+  bio: 'Head of operations at Acme.',
+  notifyOrders: true,
+  notifyRefunds: true,
+  notifyProduct: false,
+  digest: 'weekly',
+};
+
+// Fully controlled: the values live in DemoApp, so switching tabs (which unmounts
+// the inactive panel) or switching views keeps unsaved edits.
+function SettingsView({
+  value,
+  onChange,
+  tab,
+  onTabChange,
+  dirty,
+  onSave,
+  onCancel,
+}: {
+  value: SettingsState;
+  onChange: (patch: Partial<SettingsState>) => void;
+  tab: string;
+  onTabChange: (tab: string) => void;
+  dirty: boolean;
+  onSave: () => void;
+  onCancel: () => void;
+}) {
   return (
     <Stack spacing={3}>
       <Typography component="h2" sx={{ fontWeight: 800, fontSize: 26 }}>
@@ -344,7 +379,8 @@ function SettingsView({ onSaved }: { onSaved: () => void }) {
       <Card variant="outlined" sx={{ p: { xs: 2, sm: 3 } }}>
         <Tabs
           variant="soft"
-          defaultValue="profile"
+          value={tab}
+          onChange={onTabChange}
           aria-label="Settings sections"
           tabs={[
             {
@@ -353,14 +389,14 @@ function SettingsView({ onSaved }: { onSaved: () => void }) {
               content: (
                 <Stack spacing={2.5} sx={{ pt: 3, maxWidth: 520 }}>
                   <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                    <Avatar size="lg">{initials(name || 'S R')}</Avatar>
-                    <Button variant="soft" size="sm">
-                      Change avatar
-                    </Button>
+                    <Avatar size="lg">{initials(value.name.trim() || 'S R')}</Avatar>
+                    <Typography variant="body2" color="text.secondary">
+                      Your avatar shows your initials. Photo upload is not part of this demo.
+                    </Typography>
                   </Stack>
-                  <TextField label="Full name" value={name} onChange={(e) => setName(e.target.value)} variant="soft" fullWidth />
-                  <TextField label="Email" defaultValue="sam.rivera@example.com" variant="soft" fullWidth />
-                  <TextField label="Bio" defaultValue="Head of operations at Acme." variant="soft" fullWidth multiline minRows={3} />
+                  <TextField label="Full name" value={value.name} onChange={(e) => onChange({ name: e.target.value })} variant="soft" fullWidth />
+                  <TextField label="Email" type="email" value={value.email} onChange={(e) => onChange({ email: e.target.value })} variant="soft" fullWidth />
+                  <TextField label="Bio" value={value.bio} onChange={(e) => onChange({ bio: e.target.value })} variant="soft" fullWidth multiline minRows={3} />
                 </Stack>
               ),
             },
@@ -369,14 +405,19 @@ function SettingsView({ onSaved }: { onSaved: () => void }) {
               label: 'Notifications',
               content: (
                 <Stack spacing={1.5} sx={{ pt: 3, maxWidth: 520 }}>
-                  <Switch label="New orders" defaultChecked />
-                  <Switch label="Refund requests" defaultChecked />
-                  <Switch label="Product updates" />
+                  <Switch label="New orders" checked={value.notifyOrders} onChange={(e) => onChange({ notifyOrders: e.target.checked })} />
+                  <Switch label="Refund requests" checked={value.notifyRefunds} onChange={(e) => onChange({ notifyRefunds: e.target.checked })} />
+                  <Switch label="Product updates" checked={value.notifyProduct} onChange={(e) => onChange({ notifyProduct: e.target.checked })} />
                   <Divider />
                   <Typography variant="body2" color="text.secondary" id="digest-label">
                     Email digest
                   </Typography>
-                  <Select value={digest} onChange={(e) => setDigest(String(e.target.value))} inputProps={{ 'aria-labelledby': 'digest-label' }} sx={{ maxWidth: 240 }}>
+                  <Select
+                    value={value.digest}
+                    onChange={(e) => onChange({ digest: e.target.value as SettingsState['digest'] })}
+                    inputProps={{ 'aria-labelledby': 'digest-label' }}
+                    sx={{ maxWidth: 240 }}
+                  >
                     <MenuItem value="daily">Daily</MenuItem>
                     <MenuItem value="weekly">Weekly</MenuItem>
                     <MenuItem value="never">Never</MenuItem>
@@ -400,9 +441,16 @@ function SettingsView({ onSaved }: { onSaved: () => void }) {
             },
           ]}
         />
-        <Stack direction="row" spacing={1.5} sx={{ mt: 3 }}>
-          <Button onClick={onSaved}>Save changes</Button>
-          <Button variant="ghost">Cancel</Button>
+        <Stack direction="row" spacing={1.5} sx={{ mt: 3, alignItems: 'center', flexWrap: 'wrap' }} useFlexGap>
+          <Button onClick={onSave} disabled={!dirty}>
+            Save changes
+          </Button>
+          <Button variant="ghost" onClick={onCancel} disabled={!dirty}>
+            Cancel
+          </Button>
+          <Typography variant="body2" color="text.secondary" role="status">
+            {dirty ? 'Unsaved changes' : 'All changes saved'}
+          </Typography>
         </Stack>
       </Card>
     </Stack>
@@ -425,6 +473,11 @@ export default function DemoApp() {
   const [toast, setToast] = React.useState<string | null>(null);
   const [mobileNav, setMobileNav] = React.useState(false);
   const [draft, setDraft] = React.useState({ customer: '', amount: '' });
+  // Settings: the working copy, the last saved snapshot, and the open tab.
+  const [settings, setSettings] = React.useState<SettingsState>(DEFAULT_SETTINGS);
+  const [savedSettings, setSavedSettings] = React.useState<SettingsState>(DEFAULT_SETTINGS);
+  const [settingsTab, setSettingsTab] = React.useState('profile');
+  const settingsDirty = (Object.keys(settings) as (keyof SettingsState)[]).some((k) => settings[k] !== savedSettings[k]);
 
   const go = (v: View) => {
     setView(v);
@@ -537,7 +590,23 @@ export default function DemoApp() {
             {view === 'overview' && <Overview orders={orders} onOpenOrder={showOrder} />}
             {view === 'orders' && <Orders orders={orders} onOpenOrder={showOrder} onNew={openNewOrder} />}
             {view === 'customers' && <Customers onOpen={showCustomer} />}
-            {view === 'settings' && <SettingsView onSaved={() => setToast('Settings saved')} />}
+            {view === 'settings' && (
+              <SettingsView
+                value={settings}
+                onChange={(patch) => setSettings((s) => ({ ...s, ...patch }))}
+                tab={settingsTab}
+                onTabChange={setSettingsTab}
+                dirty={settingsDirty}
+                onSave={() => {
+                  setSavedSettings(settings);
+                  setToast('Settings saved');
+                }}
+                onCancel={() => {
+                  setSettings(savedSettings);
+                  setToast('Changes discarded');
+                }}
+              />
+            )}
           </motion.div>
         </Box>
       </Box>
