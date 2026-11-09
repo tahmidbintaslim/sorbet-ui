@@ -67,6 +67,14 @@ export {
   type SliderVariant,
 } from './Slider';
 export { Snackbar, SnackbarContent, type SnackbarProps } from './Snackbar';
+export {
+  Stepper,
+  type StepperColor,
+  type StepperProps,
+  type StepperSize,
+  type StepperStep,
+  type StepperVariant,
+} from './Stepper';
 export { Switch, type SwitchProps } from './Switch';
 export { Table, type TableColumn, type TableProps } from './Table';
 export { Tabs, type TabItem, type TabsProps } from './Tabs';
