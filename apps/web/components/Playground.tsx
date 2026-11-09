@@ -1,19 +1,20 @@
 'use client';
-import * as React from 'react';
 import { Box, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import { TOUCH } from '@/lib/touch';
 import CodeBlock from './CodeBlock';
 import { getDemo } from './demos';
 import { getEntry } from '@/lib/catalog';
 import { COLORS, SIZES, VARIANTS, type Color, type Size, type Variant } from '@/lib/site';
+import { useUrlParam } from '@/lib/use-url-param';
 
 // Live preview with variant/color/size pickers and matching source.
 export default function Playground({ slug }: { slug: string }) {
   const demo = getDemo(slug);
   const entry = getEntry(slug);
-  const [variant, setVariant] = React.useState<Variant>('solid');
-  const [color, setColor] = React.useState<Color>('primary');
-  const [size, setSize] = React.useState<Size>('md');
+  // Picks live in the URL (?variant=&color=&size=) so a configured example can be shared.
+  const [variant, setVariant] = useUrlParam<Variant>('variant', 'solid', VARIANTS);
+  const [color, setColor] = useUrlParam<Color>('color', 'primary', COLORS);
+  const [size, setSize] = useUrlParam<Size>('size', 'md', SIZES);
   if (!demo || !entry) return null;
 
   const pick = <T extends string>(
