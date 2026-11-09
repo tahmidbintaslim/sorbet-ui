@@ -249,6 +249,20 @@ test('blocks: code tab shows the block source', async ({ page }) => {
   await expect(page.locator('pre[aria-label="Centered source"]')).toContainText('export default function HeroCentered');
 });
 
+test('headings never skip a level, so screen-reader outlines stay intact', async ({ page }) => {
+  for (const route of ['/', '/blocks', '/demo', '/docs', '/docs/theming', '/templates', ...TEMPLATE_ROUTES, ...BLOCK_ROUTES]) {
+    await page.goto(route);
+    const levels = await page.evaluate(() =>
+      [...document.querySelectorAll('h1,h2,h3,h4,h5,h6')]
+        .filter((h) => (h as HTMLElement).offsetHeight > 0 && !h.closest('[aria-hidden="true"]'))
+        .map((h) => Number(h.tagName[1]))
+    );
+    expect(levels.filter((l) => l === 1), `${route}: one h1`).toHaveLength(1);
+    const skips = levels.filter((l, i) => i > 0 && l > levels[i - 1] + 1);
+    expect(skips, `${route}: heading levels ${levels.join(',')}`).toEqual([]);
+  }
+});
+
 test('registry: every block has a shadcn item whose code matches the site source', async ({ request, page }) => {
   const index = await (await request.get('/r/registry.json')).json();
   const names = index.items.map((i: { name: string }) => i.name);
