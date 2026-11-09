@@ -16,7 +16,7 @@ export default function BlockViewer({ id, name, description }: { id: string; nam
     <Box component="article" id={id} sx={{ scrollMarginTop: 90 }}>
       <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', mb: 1.5 }} useFlexGap>
         <Box>
-          <Typography component="h3" sx={{ fontWeight: 700, fontSize: 18 }}>
+          <Typography component="h2" sx={{ fontWeight: 700, fontSize: 18 }}>
             {name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
