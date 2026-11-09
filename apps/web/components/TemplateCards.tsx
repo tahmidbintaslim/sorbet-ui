@@ -4,6 +4,7 @@ import { Box, Grid, Stack, Typography } from '@mui/material';
 import { Chip } from '@sorbet-ui/react';
 import { colorPalette } from '@sorbet-ui/tokens';
 import { TEMPLATES } from '@/lib/templates';
+import { scoop, scoopAt } from '@/lib/scoops';
 
 const GRADIENTS = [
   [colorPalette.primary[300], colorPalette.secondary[300]],
@@ -22,10 +23,10 @@ export default function TemplateCards() {
           <Box
             component={NextLink}
             href={`/templates/${t.slug}`}
-            sx={{ display: 'block', height: '100%', borderRadius: 4, overflow: 'hidden', border: 1, borderColor: 'divider', bgcolor: 'background.paper', color: 'text.primary', textDecoration: 'none', transition: 'transform .2s, box-shadow .2s', '&:hover': { transform: 'translateY(-3px)', boxShadow: '0 20px 40px -24px rgba(15,23,42,.4)' } }}
+            sx={{ display: 'block', height: '100%', borderRadius: 4, overflow: 'hidden', border: 1, borderColor: 'divider', bgcolor: 'background.paper', color: 'text.primary', textDecoration: 'none', transition: 'transform .35s cubic-bezier(.3,1.6,.5,1), box-shadow .25s, border-color .2s', '&:hover': { borderColor: scoop(scoopAt(i), 'fill'), transform: `translateY(-6px) rotate(${i % 2 ? 0.8 : -0.8}deg)`, boxShadow: `0 18px 36px -20px ${scoop(scoopAt(i), 'fill')}` }, '@media (prefers-reduced-motion: reduce)': { '&:hover': { transform: 'none' } }, '&:hover .thumb': { transform: 'scale(1.04)' } }}
           >
             {/* Wireframe thumbnail: one bar per block in the template. */}
-            <Box aria-hidden sx={{ p: 2.5, height: 170, background: `linear-gradient(135deg, ${GRADIENTS[i % 6][0]}, ${GRADIENTS[i % 6][1]})` }}>
+            <Box aria-hidden className="thumb" sx={{ transition: 'transform .5s cubic-bezier(.3,1.6,.5,1)', p: 2.5, height: 170, background: `linear-gradient(135deg, ${GRADIENTS[i % 6][0]}, ${GRADIENTS[i % 6][1]})` }}>
               <Stack spacing={0.75} sx={{ bgcolor: 'rgba(255,255,255,.85)', borderRadius: 2, p: 1.25, height: '100%', overflow: 'hidden' }}>
                 {t.blocks.slice(0, 7).map((b, j) => (
                   <Box key={b} sx={{ height: j === 1 ? 28 : 10, borderRadius: 1, bgcolor: j === 1 ? 'rgba(15,23,42,.18)' : 'rgba(15,23,42,.08)', width: j % 3 === 2 ? '70%' : '100%' }} />

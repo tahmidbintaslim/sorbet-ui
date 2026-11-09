@@ -6,6 +6,7 @@ import Search from '@mui/icons-material/Search';
 import { Chip } from '@sorbet-ui/react';
 import { BLOCKS, CATEGORIES, blocksIn } from '@/lib/blocks';
 import { useUrlParam } from '@/lib/use-url-param';
+import { scoop, scoopAt } from '@/lib/scoops';
 
 export default function BlocksIndex() {
   // ?q= keeps a search shareable and restores it on back/reload.
@@ -51,12 +52,12 @@ export default function BlocksIndex() {
               {group}
             </Typography>
             <Grid container spacing={2}>
-              {CATEGORIES.filter((c) => c.group === group && blocksIn(c.id).length > 0).map((c) => (
+              {CATEGORIES.filter((c) => c.group === group && blocksIn(c.id).length > 0).map((c, i) => (
                 <Grid key={c.id} size={{ xs: 12, sm: 6, md: 4 }}>
                   <Box
                     component={NextLink}
                     href={`/blocks/${c.id}`}
-                    sx={{ display: 'block', height: '100%', p: 2.5, borderRadius: 3, border: 1, borderColor: 'divider', bgcolor: 'background.paper', color: 'text.primary', textDecoration: 'none', transition: 'border-color .2s, transform .2s', '&:hover': { borderColor: 'primary.main', transform: 'translateY(-2px)' } }}
+                    sx={{ display: 'block', height: '100%', p: 2.5, borderRadius: 3, border: 1, borderColor: 'divider', bgcolor: 'background.paper', color: 'text.primary', textDecoration: 'none', position: 'relative', overflow: 'hidden', '&::before': { content: '""', position: 'absolute', left: 0, right: 0, top: 0, height: 5, bgcolor: scoop(scoopAt(i + (group === 'Application' ? 3 : 0)), 'fill') }, transition: 'border-color .2s, box-shadow .25s, transform .35s cubic-bezier(.3,1.6,.5,1)', '&:hover': { borderColor: scoop(scoopAt(i + (group === 'Application' ? 3 : 0)), 'fill'), transform: 'translateY(-4px) rotate(-0.6deg)', boxShadow: `0 18px 36px -20px ${scoop(scoopAt(i + (group === 'Application' ? 3 : 0)), 'fill')}` }, '@media (prefers-reduced-motion: reduce)': { '&:hover': { transform: 'none' } } }}
                   >
                     <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                       <Typography component="h3" sx={{ fontWeight: 700 }}>
