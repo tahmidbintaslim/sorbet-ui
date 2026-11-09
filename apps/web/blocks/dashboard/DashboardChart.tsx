@@ -28,6 +28,7 @@ const data: Record<Range, { label: string; total: string; points: [string, numbe
 };
 
 const fmt = (n: number) => (n >= 10000 ? `$${(n / 1000).toFixed(1)}k` : `$${n.toLocaleString('en-US')}`);
+const short = (n: number) => (n >= 1000 ? `$${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : `$${n}`);
 
 function Bars({ range }: { range: Range }) {
   const { points, label } = data[range];
@@ -38,8 +39,14 @@ function Bars({ range }: { range: Range }) {
       <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: { xs: 0.5, sm: 1.5 }, height: 220, borderBottom: 1, borderColor: 'divider' }}>
         {points.map(([k, v]) => (
           <Box key={k} sx={{ flex: 1, minWidth: 0, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'center' }}>
-            <Typography aria-hidden variant="caption" color="text.secondary" sx={{ mb: 0.5, display: { xs: points.length > 7 ? 'none' : 'block', sm: 'block' }, fontSize: 11 }}>
-              {fmt(v)}
+            <Typography aria-hidden variant="caption" color="text.secondary" sx={{ mb: 0.5, display: { xs: points.length > 7 ? 'none' : 'block', sm: 'block' }, fontSize: 12, whiteSpace: 'nowrap' }}>
+              {/* Phones get the compact form ($1.4k) so labels never collide. */}
+              <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+                {short(v)}
+              </Box>
+              <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                {fmt(v)}
+              </Box>
             </Typography>
             <Box
               sx={{
@@ -56,7 +63,7 @@ function Bars({ range }: { range: Range }) {
       </Box>
       <Box aria-hidden sx={{ display: 'flex', gap: { xs: 0.5, sm: 1.5 }, mt: 1 }}>
         {points.map(([k]) => (
-          <Typography key={k} variant="caption" color="text.secondary" sx={{ flex: 1, minWidth: 0, textAlign: 'center', overflow: 'hidden', fontSize: { xs: 10, sm: 12 } }}>
+          <Typography key={k} variant="caption" color="text.secondary" sx={{ flex: 1, minWidth: 0, textAlign: 'center', overflow: 'hidden', fontSize: 12, whiteSpace: 'nowrap' }}>
             {k}
           </Typography>
         ))}
@@ -71,7 +78,7 @@ export default function DashboardChart() {
     <Box component="section" sx={{ py: { xs: 6, md: 10 } }}>
       <Container maxWidth="md">
         <Card variant="outlined" sx={{ p: { xs: 2.5, md: 3 } }}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ justifyContent: 'space-between', alignItems: { sm: 'flex-start' } }} spacing={2}>
+          <Stack direction={{ xs: 'column', md: 'row' }} sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }} spacing={2}>
             <Box>
               <Typography component="h2" sx={{ fontWeight: 800, fontSize: 22, letterSpacing: '-0.02em' }}>
                 Revenue
