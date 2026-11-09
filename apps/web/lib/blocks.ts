@@ -1,6 +1,6 @@
 // Block categories, in display order. Blocks themselves are discovered from
-// blocks/<category>/*.tsx by scripts/gen-blocks.mjs (see lib/blocks-source.ts).
-import { BLOCKS } from './blocks-source';
+// blocks/<category>/*.tsx by scripts/gen-blocks.mjs (see lib/blocks-meta.ts).
+import { BLOCKS } from './blocks-meta';
 
 export type CategoryGroup = 'Marketing' | 'Application';
 export const CATEGORIES: { id: string; title: string; group: CategoryGroup; description: string }[] = [

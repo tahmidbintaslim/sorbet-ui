@@ -2,7 +2,8 @@ import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { CATALOG } from '../lib/catalog';
 import { categoriesWithBlocks } from '../lib/blocks';
-import { BLOCKS, BLOCK_SOURCE } from '../lib/blocks-source';
+import { BLOCKS } from '../lib/blocks-meta';
+import { BLOCK_SOURCE } from '../lib/blocks-source';
 import { registryName } from '../lib/registry';
 import { TEMPLATES } from '../lib/templates';
 
