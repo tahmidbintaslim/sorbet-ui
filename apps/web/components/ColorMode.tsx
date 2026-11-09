@@ -6,6 +6,7 @@ import * as React from 'react';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { darkTheme, lightTheme } from '@sorbet-ui/theme';
 import { MotionConfig } from 'motion/react';
+import { COLOR_MODE_KEY } from '@/lib/site';
 
 // The site self-hosts Inter and JetBrains Mono through next/font (see app/layout.tsx),
 // exposed as CSS variables; layer them over the published themes.
@@ -21,7 +22,10 @@ const site = (base: typeof lightTheme) =>
 const THEMES = { light: site(lightTheme), dark: site(darkTheme) };
 
 export type Mode = 'light' | 'dark';
-const KEY = 'sorbet-color-mode';
+
+// useLayoutEffect warns during server rendering; it only matters in the browser.
+const useIsoLayoutEffect = typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
+const KEY = COLOR_MODE_KEY;
 
 const ColorModeContext = React.createContext<{ mode: Mode; toggle: () => void }>({
   mode: 'light',
@@ -40,13 +44,21 @@ function readStored(): Mode | null {
 }
 
 export default function ColorModeProvider({ children }: { children: React.ReactNode }) {
-  // Start light so server and first client render match; adjust after mount.
+  // Start light so server and first client render match. The inline script in
+  // app/layout.tsx has already marked <html> with the right mode; adopt it in a
+  // layout effect, which runs before the browser paints the hydrated page.
   const [mode, setMode] = React.useState<Mode>('light');
 
-  React.useEffect(() => {
-    const stored = readStored();
-    const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    setMode(stored ?? preferred);
+  useIsoLayoutEffect(() => {
+    const marked = document.documentElement.dataset.mode;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    setMode(marked === 'dark' || marked === 'light' ? marked : (readStored() ?? (mq.matches ? 'dark' : 'light')));
+    // Follow OS changes until the visitor picks a mode themselves.
+    const onChange = (e: MediaQueryListEvent) => {
+      if (!readStored()) setMode(e.matches ? 'dark' : 'light');
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
   }, []);
 
   const value = React.useMemo(
@@ -65,7 +77,7 @@ export default function ColorModeProvider({ children }: { children: React.ReactN
     [mode],
   );
 
-  React.useEffect(() => {
+  useIsoLayoutEffect(() => {
     document.documentElement.style.colorScheme = mode;
     document.documentElement.dataset.mode = mode;
   }, [mode]);

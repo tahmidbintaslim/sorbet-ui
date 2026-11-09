@@ -9,6 +9,9 @@ export const SITE = {
   npm: 'https://www.npmjs.com/package/@sorbet-ui/react',
 } as const;
 
+// localStorage key for the visitor's color mode (read before paint in app/layout.tsx).
+export const COLOR_MODE_KEY = 'sorbet-color-mode';
+
 export const VARIANTS = ['solid', 'soft', 'outlined', 'ghost', 'plain'] as const;
 export const COLORS = [
   'primary',
