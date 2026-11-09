@@ -256,6 +256,13 @@ const StyledTableBody = styled(MuiTableBody, {
           cursor: 'pointer',
         },
       }),
+      '&[data-clickable="true"]': {
+        cursor: 'pointer',
+      },
+      '&:focus-visible': {
+        outline: `2px solid ${colorScale.main}`,
+        outlineOffset: -2,
+      },
       '&.Mui-selected': {
         backgroundColor: isDark ? colorScale.alpha20 : colorScale.alpha12,
         '&:hover': {
@@ -503,7 +510,24 @@ function TableInner<T>(
                   <MuiTableRow
                     key={rowId}
                     selected={isSelected}
-                    onClick={() => onRowClick?.(row, index)}
+                    onClick={onRowClick ? () => onRowClick(row, index) : undefined}
+                    // A clickable row must also work from the keyboard (WCAG 2.1.1): it
+                    // joins the tab order and Enter / Space activate it. It keeps its
+                    // native row role so the table structure stays intact for screen readers.
+                    tabIndex={onRowClick ? 0 : undefined}
+                    onKeyDown={
+                      onRowClick
+                        ? (event: React.KeyboardEvent<HTMLTableRowElement>) => {
+                            // Ignore keys typed into controls inside the row (checkboxes, buttons).
+                            if (event.target !== event.currentTarget) return;
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault();
+                              onRowClick(row, index);
+                            }
+                          }
+                        : undefined
+                    }
+                    data-clickable={onRowClick ? 'true' : undefined}
                     hover={hoverable}
                   >
                     {selectable && (
