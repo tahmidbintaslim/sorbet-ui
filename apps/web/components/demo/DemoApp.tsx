@@ -413,9 +413,15 @@ function SettingsView({ onSaved }: { onSaved: () => void }) {
 export default function DemoApp() {
   const [view, setView] = React.useState<View>('overview');
   const [orders, setOrders] = React.useState<Order[]>(ORDERS);
+  // Dialog / drawer content stays mounted while they animate closed: `open` flips
+  // first, and the shown item is cleared only once the exit transition ends.
+  const [orderOpen, setOrderOpen] = React.useState(false);
   const [openOrder, setOpenOrder] = React.useState<Order | null>(null);
   const [newOpen, setNewOpen] = React.useState(false);
+  const [customerOpen, setCustomerOpen] = React.useState(false);
   const [customer, setCustomer] = React.useState<Customer | null>(null);
+  // The element that opened the order dialog (a table row), refocused on close.
+  const orderReturnFocus = React.useRef<HTMLElement | null>(null);
   const [toast, setToast] = React.useState<string | null>(null);
   const [mobileNav, setMobileNav] = React.useState(false);
   const [draft, setDraft] = React.useState({ customer: '', amount: '' });
@@ -423,6 +429,23 @@ export default function DemoApp() {
   const go = (v: View) => {
     setView(v);
     setMobileNav(false);
+  };
+
+  const showOrder = (o: Order) => {
+    orderReturnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setOpenOrder(o);
+    setOrderOpen(true);
+  };
+  const closeOrder = () => setOrderOpen(false);
+  const showCustomer = (c: Customer) => {
+    setCustomer(c);
+    setCustomerOpen(true);
+  };
+  const closeCustomer = () => setCustomerOpen(false);
+  const openNewOrder = () => {
+    // Always start from an empty form: Cancel, Esc and the backdrop discard the draft.
+    setDraft({ customer: '', amount: '' });
+    setNewOpen(true);
   };
 
   const createOrder = () => {
@@ -440,7 +463,6 @@ export default function DemoApp() {
     };
     setOrders((o) => [next, ...o]);
     setNewOpen(false);
-    setDraft({ customer: '', amount: '' });
     setToast(`Order ${next.id} created`);
   };
 
@@ -484,7 +506,7 @@ export default function DemoApp() {
       </Box>
 
       {/* Mobile nav */}
-      <Drawer open={mobileNav} onClose={() => setMobileNav(false)} anchor="left">
+      <Drawer open={mobileNav} onClose={() => setMobileNav(false)} anchor="left" aria-label="Menu">
         <Box sx={{ width: 260 }}>
           <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
             <Typography sx={{ fontWeight: 800 }}>Acme Admin</Typography>
@@ -512,16 +534,33 @@ export default function DemoApp() {
 
         <Box component="section" aria-label="Demo content" sx={{ p: { xs: 2, md: 4 }, maxWidth: 1280 }}>
           <motion.div key={view} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: EASE }}>
-            {view === 'overview' && <Overview orders={orders} onOpenOrder={setOpenOrder} />}
-            {view === 'orders' && <Orders orders={orders} onOpenOrder={setOpenOrder} onNew={() => setNewOpen(true)} />}
-            {view === 'customers' && <Customers onOpen={setCustomer} />}
+            {view === 'overview' && <Overview orders={orders} onOpenOrder={showOrder} />}
+            {view === 'orders' && <Orders orders={orders} onOpenOrder={showOrder} onNew={openNewOrder} />}
+            {view === 'customers' && <Customers onOpen={showCustomer} />}
             {view === 'settings' && <SettingsView onSaved={() => setToast('Settings saved')} />}
           </motion.div>
         </Box>
       </Box>
 
       {/* Order details */}
-      <Dialog open={openOrder !== null} onClose={() => setOpenOrder(null)} maxWidth="xs" fullWidth aria-labelledby="order-title">
+      <Dialog
+        open={orderOpen}
+        onClose={closeOrder}
+        maxWidth="xs"
+        fullWidth
+        aria-labelledby="order-title"
+        slotProps={{
+          transition: {
+            onExited: () => {
+              setOpenOrder(null);
+              // MUI restores focus too, but the row may have re-rendered (e.g. after a refund).
+              const el = orderReturnFocus.current;
+              if (el?.isConnected) el.focus();
+              orderReturnFocus.current = null;
+            },
+          },
+        }}
+      >
         {openOrder && (
           <>
             <DialogTitle id="order-title">Order {openOrder.id}</DialogTitle>
@@ -553,13 +592,13 @@ export default function DemoApp() {
                   onClick={() => {
                     setOrders((o) => o.map((x) => (x.id === openOrder.id ? { ...x, status: 'Refunded' } : x)));
                     setToast(`Order ${openOrder.id} refunded`);
-                    setOpenOrder(null);
+                    closeOrder();
                   }}
                 >
                   Refund
                 </Button>
               )}
-              <Button onClick={() => setOpenOrder(null)}>Done</Button>
+              <Button onClick={closeOrder}>Done</Button>
             </DialogActions>
           </>
         )}
@@ -568,6 +607,16 @@ export default function DemoApp() {
       {/* New order */}
       <Dialog open={newOpen} onClose={() => setNewOpen(false)} maxWidth="xs" fullWidth aria-labelledby="new-order-title">
         <DialogTitle id="new-order-title">New order</DialogTitle>
+        {/* A real form, so Enter in either field submits. */}
+        <Box
+          component="form"
+          noValidate
+          sx={{ display: 'contents' }}
+          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            createOrder();
+          }}
+        >
         <DialogContent>
           <Stack spacing={2} sx={{ pt: 1 }}>
             <TextField label="Customer name" value={draft.customer} onChange={(e) => setDraft((d) => ({ ...d, customer: e.target.value }))} fullWidth autoFocus />
@@ -586,21 +635,28 @@ export default function DemoApp() {
           <Button variant="ghost" onClick={() => setNewOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={createOrder} disabled={!draft.customer.trim() || !(Number(draft.amount) > 0)}>
+          <Button type="submit" disabled={!draft.customer.trim() || !(Number(draft.amount) > 0)}>
             Create order
           </Button>
         </DialogActions>
+        </Box>
       </Dialog>
 
       {/* Customer drawer */}
-      <Drawer open={customer !== null} onClose={() => setCustomer(null)} anchor="right">
+      <Drawer
+        open={customerOpen}
+        onClose={closeCustomer}
+        anchor="right"
+        aria-label={customer?.name ?? 'Customer'}
+        slotProps={{ transition: { onExited: () => setCustomer(null) } }}
+      >
         {customer && (
-          <Box sx={{ width: { xs: 300, sm: 360 }, p: 3 }} role="region" aria-label={`${customer.name} details`}>
+          <Box sx={{ width: { xs: 300, sm: 360 }, p: 3 }}>
             <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography component="h2" sx={{ fontWeight: 800, fontSize: 20 }}>
                 {customer.name}
               </Typography>
-              <IconButton aria-label="Close details" onClick={() => setCustomer(null)}>
+              <IconButton aria-label="Close details" onClick={closeCustomer}>
                 <Close />
               </IconButton>
             </Stack>
@@ -636,7 +692,7 @@ export default function DemoApp() {
               sx={{ mt: 3 }}
               onClick={() => {
                 setToast(`Email drafted to ${customer.name}`);
-                setCustomer(null);
+                closeCustomer();
               }}
             >
               Send email
