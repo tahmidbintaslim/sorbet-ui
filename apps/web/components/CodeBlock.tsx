@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import Check from '@mui/icons-material/Check';
+import ErrorOutline from '@mui/icons-material/ErrorOutlineOutlined';
 import { touchTarget } from '@/lib/touch';
 
 const MONO = 'var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
@@ -41,34 +42,83 @@ function highlight(code: string): React.ReactNode[] {
   return out;
 }
 
+type CopyState = 'idle' | 'copied' | 'failed';
+
 function useCopy(text: string) {
-  const [copied, setCopied] = React.useState(false);
+  const [state, setState] = React.useState<CopyState>('idle');
+  const timer = React.useRef<number | undefined>(undefined);
+  // Never set state after the block unmounts (e.g. navigating away right after copying).
+  React.useEffect(() => () => window.clearTimeout(timer.current), []);
   const copy = async () => {
-    // Clipboard access can be denied (insecure context, permissions): fail quietly.
+    window.clearTimeout(timer.current);
+    let next: CopyState;
     try {
+      // Clipboard access can be missing (insecure context) or denied (permissions).
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
       await navigator.clipboard.writeText(text);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
+      next = 'copied';
     } catch {
-      /* clipboard unavailable */
+      next = 'failed';
     }
+    setState(next);
+    // A failure stays up longer so there is time to read it.
+    timer.current = window.setTimeout(() => setState('idle'), next === 'failed' ? 5000 : 1500);
   };
-  return { copied, copy };
+  return { state, copy };
 }
 
+const FAILED = 'Copy failed. Select the code and copy it manually.';
+const SR_ONLY = {
+  position: 'absolute',
+  width: 1,
+  height: 1,
+  p: 0,
+  overflow: 'hidden',
+  clip: 'rect(0 0 0 0)',
+  whiteSpace: 'nowrap',
+} as const;
+
 function CopyButton({ text, onDark }: { text: string; onDark?: boolean }) {
-  const { copied, copy } = useCopy(text);
+  const { state, copy } = useCopy(text);
   return (
-    <Tooltip title={copied ? 'Copied' : 'Copy'}>
-      <IconButton
-        size="small"
-        onClick={copy}
-        aria-label="Copy code"
-        sx={[touchTarget, onDark ? { color: '#cbd5e1', '&:hover': { bgcolor: 'rgba(255,255,255,.08)' } } : {}]}
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, minWidth: 0 }}>
+      {/* Announces the result; the failure is also shown as text, not only in a tooltip. */}
+      <Typography
+        component="span"
+        role="status"
+        sx={{
+          fontSize: 12,
+          fontWeight: 600,
+          lineHeight: 1.4,
+          px: 1,
+          py: 0.5,
+          borderRadius: 1,
+          // Its own background so it stays readable where it overlaps the code.
+          color: onDark ? '#fecaca' : 'text.primary',
+          bgcolor: onDark ? '#450a0a' : 'background.paper',
+          ...(state !== 'failed' && SR_ONLY),
+        }}
       >
-        {copied ? <Check fontSize="small" /> : <ContentCopy fontSize="small" />}
-      </IconButton>
-    </Tooltip>
+        {state === 'failed' ? FAILED : state === 'copied' ? 'Copied' : ''}
+      </Typography>
+      <Tooltip title={state === 'copied' ? 'Copied' : state === 'failed' ? 'Copy failed' : 'Copy'}>
+        <IconButton
+          size="small"
+          onClick={copy}
+          aria-label="Copy code"
+          data-copy-state={state}
+          sx={[touchTarget, onDark ? { color: '#cbd5e1', '&:hover': { bgcolor: 'rgba(255,255,255,.08)' } } : {}]}
+        >
+          {state === 'copied' ? (
+            <Check fontSize="small" />
+          ) : state === 'failed' ? (
+            <ErrorOutline fontSize="small" sx={{ color: onDark ? '#fca5a5' : 'error.main' }} />
+          ) : (
+            <ContentCopy fontSize="small" />
+          )}
+        </IconButton>
+      </Tooltip>
+    </Box>
   );
 }
 
