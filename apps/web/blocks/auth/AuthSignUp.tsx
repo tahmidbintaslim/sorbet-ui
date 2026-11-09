@@ -17,6 +17,8 @@ export default function AuthSignUp() {
   const [touched, setTouched] = React.useState<Record<Field, boolean>>({ name: false, email: false, password: false });
   const [agreed, setAgreed] = React.useState(false);
   const [done, setDone] = React.useState(false);
+  // Demo-only links: say what they would do instead of pointing at '#'.
+  const [note, setNote] = React.useState('');
 
   const errors = {
     name: validate('name', values.name),
@@ -45,7 +47,7 @@ export default function AuthSignUp() {
           </Typography>
           {done ? (
             <Alert color="success" sx={{ mt: 3 }}>
-              Welcome aboard, {values.name.split(' ')[0]}! We sent a confirmation link to {values.email}.
+              Demo only: nothing was sent. In your app, {values.email} would get a confirmation link.
             </Alert>
           ) : (
             <Box
@@ -77,11 +79,23 @@ export default function AuthSignUp() {
                 label={
                   <span>
                     I agree to the{' '}
-                    <Link href="#" underline="hover">
+                    <Link
+                      component="button"
+                      type="button"
+                      underline="hover"
+                      sx={{ verticalAlign: 'baseline' }}
+                      onClick={() => setNote('Demo only: link this to your own Terms page.')}
+                    >
                       Terms
                     </Link>{' '}
                     and{' '}
-                    <Link href="#" underline="hover">
+                    <Link
+                      component="button"
+                      type="button"
+                      underline="hover"
+                      sx={{ verticalAlign: 'baseline' }}
+                      onClick={() => setNote('Demo only: link this to your own Privacy Policy page.')}
+                    >
                       Privacy Policy
                     </Link>
                   </span>
@@ -94,9 +108,18 @@ export default function AuthSignUp() {
           )}
           <Typography variant="body2" color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
             Already have an account?{' '}
-            <Link href="#" underline="hover" sx={{ fontWeight: 600 }}>
+            <Link
+              component="button"
+              type="button"
+              underline="hover"
+              sx={{ fontWeight: 600, verticalAlign: 'baseline' }}
+              onClick={() => setNote('Demo only: in your app, link this to your sign-in page.')}
+            >
               Sign in
             </Link>
+          </Typography>
+          <Typography variant="body2" color="text.secondary" role="status" sx={{ mt: 2, textAlign: 'center', minHeight: '1.5em' }}>
+            {note}
           </Typography>
         </Card>
       </Container>

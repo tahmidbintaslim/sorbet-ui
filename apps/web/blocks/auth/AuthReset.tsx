@@ -7,6 +7,8 @@ import { Alert, Button, Card, TextField } from '@sorbet-ui/react';
 export default function AuthReset() {
   const [email, setEmail] = React.useState('');
   const [sent, setSent] = React.useState(false);
+  // Demo-only links: say what they would do instead of pointing at '#'.
+  const [note, setNote] = React.useState('');
   return (
     <Box component="section" sx={{ py: { xs: 6, md: 10 } }}>
       <Container maxWidth="sm">
@@ -20,7 +22,7 @@ export default function AuthReset() {
           {sent ? (
             <>
               <Alert color="success" sx={{ mt: 3 }}>
-                If an account exists for {email}, a reset link is on its way. It expires in 30 minutes.
+                Demo only: nothing was sent. In your app, a reset link would go to {email} if it has an account.
               </Alert>
               <Button variant="soft" color="neutral" fullWidth sx={{ mt: 2 }} onClick={() => setSent(false)}>
                 Use a different email
@@ -52,9 +54,18 @@ export default function AuthReset() {
           )}
           <Typography variant="body2" color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
             Remembered it?{' '}
-            <Link href="#" underline="hover" sx={{ fontWeight: 600 }}>
+            <Link
+              component="button"
+              type="button"
+              underline="hover"
+              sx={{ fontWeight: 600, verticalAlign: 'baseline' }}
+              onClick={() => setNote('Demo only: in your app, link this to your sign-in page.')}
+            >
               Back to sign in
             </Link>
+          </Typography>
+          <Typography variant="body2" color="text.secondary" role="status" sx={{ mt: 2, textAlign: 'center', minHeight: '1.5em' }}>
+            {note}
           </Typography>
         </Card>
       </Container>
