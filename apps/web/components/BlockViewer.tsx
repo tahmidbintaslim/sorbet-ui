@@ -1,18 +1,28 @@
 'use client';
-// Preview / Code switch for one block. The code is the block's real source,
-// copied in at build time by scripts/gen-blocks.mjs.
+// Preview / Code switch for one block. The server page passes the rendered block
+// as children and its real source (from scripts/gen-blocks.mjs) as a prop, so each
+// page ships only its own blocks and source text.
 import * as React from 'react';
 import { Box, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { AnimatePresence, motion } from 'motion/react';
 import CodeBlock, { CommandLine } from './CodeBlock';
-import { BLOCK_SOURCE } from '@/lib/blocks-source';
-import { BLOCK_COMPONENTS } from './blocks-registry';
 import { addCommand, registryName } from '@/lib/registry';
 import { touchTarget } from '@/lib/touch';
 
-export default function BlockViewer({ id, name, description }: { id: string; name: string; description: string }) {
+export default function BlockViewer({
+  id,
+  name,
+  description,
+  source,
+  children,
+}: {
+  id: string;
+  name: string;
+  description: string;
+  source: string;
+  children: React.ReactNode;
+}) {
   const [view, setView] = React.useState<'preview' | 'code'>('preview');
-  const Block = BLOCK_COMPONENTS[id];
   return (
     <Box component="article" id={id} sx={{ scrollMarginTop: 80 }}>
       <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', mb: 1.5 }} useFlexGap>
@@ -51,10 +61,10 @@ export default function BlockViewer({ id, name, description }: { id: string; nam
                 },
               }}
             >
-              <Block />
+              {children}
             </Box>
           ) : (
-            <CodeBlock code={BLOCK_SOURCE[id]} title={`${id}.tsx`} label={`${name} source`} />
+            <CodeBlock code={source} title={`${id}.tsx`} label={`${name} source`} />
           )}
         </motion.div>
       </AnimatePresence>

@@ -4,7 +4,7 @@ import NextLink from 'next/link';
 import { Box, Collapse, Link, Stack, Typography } from '@mui/material';
 import { Button, Chip } from '@sorbet-ui/react';
 import CodeBlock from './CodeBlock';
-import { BLOCKS } from '@/lib/blocks-source';
+import { BLOCKS } from '@/lib/blocks-meta';
 
 export default function TemplateHeader({ name, description, source, blocks }: { name: string; description: string; source: string; blocks: string[] }) {
   const [open, setOpen] = React.useState(false);

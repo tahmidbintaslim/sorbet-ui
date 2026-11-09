@@ -1,6 +1,6 @@
 // Free templates: full pages assembled from blocks. Each has a live preview at
 // /templates/<slug> and the page source shown on the template page.
-import { BLOCKS } from './blocks-source';
+import { BLOCKS } from './blocks-meta';
 
 export type Template = { slug: string; name: string; description: string; blocks: string[]; tags: string[] };
 

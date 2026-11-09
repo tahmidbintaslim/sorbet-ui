@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 import { pageMeta } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import { Container, Stack, Typography } from '@mui/material';
+import * as React from 'react';
 import BlockViewer from '@/components/BlockViewer';
+import { BLOCK_COMPONENTS } from '@/components/blocks-registry';
+import { BLOCK_SOURCE } from '@/lib/blocks-source';
 import BlockCategoryNav, { BackToBlocks } from '@/components/BlockCategoryNav';
 import { blocksIn, categoriesWithBlocks, getCategory } from '@/lib/blocks';
 
@@ -32,7 +35,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
       <BlockCategoryNav current={category} />
       <Stack spacing={7} sx={{ mt: 5 }}>
         {blocks.map((b) => (
-          <BlockViewer key={b.id} id={b.id} name={b.name} description={b.description} />
+          <BlockViewer key={b.id} id={b.id} name={b.name} description={b.description} source={BLOCK_SOURCE[b.id]}>
+            {React.createElement(BLOCK_COMPONENTS[b.id])}
+          </BlockViewer>
         ))}
       </Stack>
     </Container>

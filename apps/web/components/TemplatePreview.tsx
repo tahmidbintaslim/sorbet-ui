@@ -1,5 +1,5 @@
-'use client';
-// Renders a template's blocks top to bottom, as the full page would.
+// Server component: renders a template's blocks top to bottom, as the full page would.
+// Only these blocks' client code ships to the page.
 import { BLOCK_COMPONENTS } from './blocks-registry';
 
 export default function TemplatePreview({ blocks }: { blocks: string[] }) {
