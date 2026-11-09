@@ -8,6 +8,7 @@ import { Button, Switch } from '@sorbet-ui/react';
 import { TOUCH, touchTarget } from '@/lib/touch';
 import { colorPalette } from '@sorbet-ui/tokens';
 import CodeBlock from '../CodeBlock';
+import { SCOOPS, scoop } from '@/lib/scoops';
 import { COLORS, SIZES, type Color, type Size } from '@/lib/site';
 
 const VARIANTS = ['solid', 'soft', 'outlined', 'dash', 'ghost', 'plain'] as const;
@@ -22,26 +23,42 @@ const DOT: Record<Color, string> = {
   neutral: colorPalette.neutral[500],
 };
 
-// Celebration burst: sorbet-colored dots fly out from the button.
+// Sprinkle burst: candy confetti (dots, sprinkles and tiny scoops) pops out of the
+// button, arcs and falls. transform/opacity only; skipped for reduced motion.
 function Burst({ id }: { id: number }) {
-  const dots = React.useMemo(
+  const bits = React.useMemo(
     () =>
-      Array.from({ length: 14 }, (_, i) => {
-        const a = (i / 14) * Math.PI * 2;
-        const r = 60 + Math.random() * 40;
-        return { x: Math.cos(a) * r, y: Math.sin(a) * r, c: Object.values(DOT)[i % 6] };
+      Array.from({ length: 26 }, (_, i) => {
+        const a = (i / 26) * Math.PI * 2 + Math.random() * 0.3;
+        const r = 70 + Math.random() * 90;
+        const x = Math.cos(a) * r;
+        const y = Math.sin(a) * r * 0.75;
+        return {
+          x,
+          y: [0, y - 30, y + 40 + Math.random() * 30],
+          rotate: (Math.random() - 0.5) * 720,
+          shape: i % 3,
+          c: SCOOPS[i % SCOOPS.length],
+          delay: Math.random() * 0.06,
+        };
       }),
     [id],
   );
   return (
-    <Box aria-hidden sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: 'grid', placeItems: 'center' }}>
-      {dots.map((d, i) => (
+    <Box aria-hidden sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: 'grid', placeItems: 'center', overflow: 'hidden' }}>
+      {bits.map((d, i) => (
         <motion.span
           key={`${id}-${i}`}
-          initial={{ x: 0, y: 0, scale: 1, opacity: 1 }}
-          animate={{ x: d.x, y: d.y, scale: 0, opacity: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          style={{ position: 'absolute', width: 10, height: 10, borderRadius: '50%', background: d.c }}
+          initial={{ x: 0, y: 0, scale: 0.4, opacity: 1, rotate: 0 }}
+          animate={{ x: d.x, y: d.y, scale: [0.4, 1.15, 0.6], opacity: [1, 1, 0], rotate: d.rotate }}
+          transition={{ duration: 1.1, ease: [0.2, 0.8, 0.4, 1], times: [0, 0.4, 1], delay: d.delay }}
+          style={{
+            position: 'absolute',
+            width: d.shape === 1 ? 14 : 10,
+            height: d.shape === 1 ? 5 : 10,
+            borderRadius: d.shape === 2 ? '50% 50% 20% 20%' : 999,
+            background: scoop(d.c, 'fill'),
+          }}
         />
       ))}
     </Box>
@@ -70,6 +87,11 @@ export default function LivePlayground() {
     if (loading) return;
     if (!reduce) setBursts((b) => [...b.slice(-3), Date.now()]);
   };
+  // Every new variant gets a sprinkle burst.
+  const pickVariant = (v: V) => {
+    setVariant(v);
+    fire();
+  };
 
   return (
     <Grid container spacing={3} sx={{ alignItems: 'stretch' }}>
@@ -88,7 +110,8 @@ export default function LivePlayground() {
         <CodeBlock code={code} title={file === 'tsx' ? 'ShipIt.tsx' : 'App.tsx'} label="Playground source" />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }} sx={{ order: { xs: 1, md: 2 } }}>
-        <Box sx={{ height: '100%', border: 1, borderColor: 'divider', borderRadius: 3, bgcolor: 'background.paper', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <Box sx={{ height: '100%', p: '5px', borderRadius: '22px', background: `linear-gradient(135deg, ${SCOOPS.map((c) => scoop(c, 'fill')).join(', ')})` }}>
+        <Box sx={{ height: '100%', borderRadius: '17px', bgcolor: 'background.paper', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <Box
            
             data-testid="playground-preview"
@@ -98,8 +121,8 @@ export default function LivePlayground() {
               minHeight: 200,
               display: 'grid',
               placeItems: 'center',
-              backgroundImage: `radial-gradient(${t.palette.divider} 1px, transparent 1px)`,
-              backgroundSize: '16px 16px',
+              backgroundImage: `radial-gradient(${t.palette.divider} 1.5px, transparent 1.5px)`,
+              backgroundSize: '18px 18px',
             })}
           >
             <motion.div layout transition={{ type: 'spring', stiffness: 380, damping: 26 }}>
@@ -110,7 +133,7 @@ export default function LivePlayground() {
             <AnimatePresence>{bursts.map((id) => <Burst key={id} id={id} />)}</AnimatePresence>
           </Box>
           <Stack spacing={2} sx={{ p: 2.5, borderTop: 1, borderColor: 'divider' }}>
-            <ToggleButtonGroup size="small" exclusive value={variant} onChange={(_, v) => v && setVariant(v)} aria-label="Variant" sx={{ flexWrap: 'wrap', '& .MuiToggleButton-root': touchTarget }}>
+            <ToggleButtonGroup size="small" exclusive value={variant} onChange={(_, v) => v && pickVariant(v)} aria-label="Variant" sx={{ flexWrap: 'wrap', '& .MuiToggleButton-root': touchTarget }}>
               {VARIANTS.map((v) => (
                 <ToggleButton key={v} value={v}>
                   {v}
@@ -170,6 +193,7 @@ export default function LivePlayground() {
               <Switch label="Loading" checked={loading} onChange={(_, c) => setLoading(c)} />
             </Stack>
           </Stack>
+        </Box>
         </Box>
       </Grid>
     </Grid>
