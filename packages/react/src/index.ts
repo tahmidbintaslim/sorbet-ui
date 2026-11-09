@@ -1,4 +1,15 @@
 // Components
+export {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  type AccordionColor,
+  type AccordionDetailsProps,
+  type AccordionProps,
+  type AccordionSize,
+  type AccordionSummaryProps,
+  type AccordionVariant,
+} from './Accordion';
 export { Alert, type AlertProps } from './Alert';
 export {
   Autocomplete,
