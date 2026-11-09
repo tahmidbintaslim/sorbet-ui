@@ -6,7 +6,7 @@ import * as React from 'react';
 import NextLink from 'next/link';
 import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { type Theme } from '@mui/material/styles';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import LinkButton from './LinkButton';
 import CodeBlock, { CommandLine } from './CodeBlock';
@@ -110,9 +110,8 @@ function Shot({ file, href, label, eager }: (typeof SHOTS)[number] & { eager?: b
 }
 
 export function Hero() {
-  const reduce = useReducedMotion();
-  const item = (i: number) =>
-    reduce ? {} : { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, ease: EASE, delay: 0.08 * i } };
+  // Same props on server and client; MotionConfig handles reduced motion.
+  const item = (i: number) => ({ initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, ease: EASE, delay: 0.08 * i } });
 
   return (
     <Box component="section" aria-labelledby="hero-title" sx={{ overflow: 'hidden' }}>
