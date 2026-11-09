@@ -1,6 +1,6 @@
 # Sorbet UI documentation
 
-Sorbet UI is a set of 26 React components built on Material UI (MUI) v7. Every component takes the same `variant` and `size` props and, with the three exceptions listed under [`color`](#color), the same `color` prop. Each still accepts the props of the MUI component it wraps. The [Storybook](https://sorbet-ui.vercel.app) shows every component with live controls.
+Sorbet UI is a set of 30 React components built on Material UI (MUI) v7. Every component takes the same `variant` and `size` props and, with the three exceptions listed under [`color`](#color), the same `color` prop. Each still accepts the props of the MUI component it wraps. The [Storybook](https://sorbet-ui.vercel.app) shows every component with live controls.
 
 Sorbet UI is in development and nothing has been published to npm. The packages were numbered 1.0.0 before any release; they now start at 0.1.0, which is unreleased.
 
@@ -179,6 +179,54 @@ import { Pagination, Tabs } from '@sorbet-ui/react';
 
 <Pagination count={10} page={page} onChange={(_, next) => setPage(next)} />
 ```
+
+`Stepper` takes steps as data (or MUI `Step` children). The current step gets `aria-current="step"`; pass `onStepClick` to make steps buttons.
+
+```tsx
+import { Stepper } from '@sorbet-ui/react';
+
+<Stepper
+  aria-label="Checkout progress"
+  variant="soft"
+  activeStep={1}
+  steps={[{ label: 'Cart' }, { label: 'Shipping' }, { label: 'Payment', optional: true }, { label: 'Review' }]}
+/>
+```
+
+`Menu` wraps MUI's Menu; use `MenuItem` children. Name it with `aria-labelledby` (the trigger's id), which goes on the `role="menu"` list.
+
+```tsx
+import { Button, Menu, MenuItem } from '@sorbet-ui/react';
+
+<Button id="actions-button" aria-haspopup="true" aria-expanded={open} onClick={(e) => setAnchor(e.currentTarget)}>
+  Actions
+</Button>
+<Menu variant="outlined" aria-labelledby="actions-button" anchorEl={anchor} open={open} onClose={() => setAnchor(null)}>
+  <MenuItem onClick={close}>Rename</MenuItem>
+  <MenuItem onClick={close}>Archive</MenuItem>
+</Menu>
+```
+
+### Disclosure and loading
+
+```tsx
+import { Accordion, AccordionDetails, AccordionSummary, Skeleton } from '@sorbet-ui/react';
+
+<Accordion variant="outlined" defaultExpanded>
+  <AccordionSummary>Can I cancel any time?</AccordionSummary>
+  <AccordionDetails>Yes, until the end of the billing period.</AccordionDetails>
+</Accordion>
+
+// Skeletons are aria-hidden; mark the loading region instead.
+<div aria-busy="true">
+  <span className="sr-only">Loading profile</span>
+  <Skeleton shape="circular" size="md" />
+  <Skeleton width="60%" />
+  <Skeleton shape="rounded" size="lg" animation="wave" />
+</div>
+```
+
+`Skeleton` takes a `shape` (`text`, `rectangular`, `rounded`, `circular`); MUI's shape values also still work in `variant`. Its pulse and wave animations stop under `prefers-reduced-motion`.
 
 ### Data display
 

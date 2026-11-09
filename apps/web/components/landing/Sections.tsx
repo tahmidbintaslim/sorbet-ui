@@ -12,11 +12,12 @@ import LinkButton from '../LinkButton';
 import { CATALOG } from '@/lib/catalog';
 import { SITE } from '@/lib/site';
 
-// All 26 exported components (the docs catalog groups a few of them).
+// All 30 exported components (the docs catalog groups a few of them).
 export const COMPONENTS = [
-  'Alert', 'Autocomplete', 'Avatar', 'Badge', 'Breadcrumbs', 'Button', 'Card', 'Checkbox', 'Chip',
-  'DatePicker', 'Dialog', 'Drawer', 'Pagination', 'Popover', 'Progress', 'Radio', 'Rating', 'Select',
-  'Slider', 'Snackbar', 'Switch', 'Table', 'Tabs', 'TextField', 'ToggleButtonGroup', 'Tooltip',
+  'Accordion', 'Alert', 'Autocomplete', 'Avatar', 'Badge', 'Breadcrumbs', 'Button', 'Card', 'Checkbox',
+  'Chip', 'DatePicker', 'Dialog', 'Drawer', 'Menu', 'Pagination', 'Popover', 'Progress', 'Radio',
+  'Rating', 'Select', 'Skeleton', 'Slider', 'Snackbar', 'Stepper', 'Switch', 'Table', 'Tabs',
+  'TextField', 'ToggleButtonGroup', 'Tooltip',
 ];
 const COLORS = ['primary', 'secondary', 'success', 'warning', 'danger', 'info'] as const;
 const DOCS = new Map(CATALOG.map((c) => [c.name, c.slug]));
@@ -24,7 +25,7 @@ const DOCS = new Map(CATALOG.map((c) => [c.name, c.slug]));
 /** Two rows scrolling in opposite directions; pauses on hover/focus, static with reduced motion. */
 export function ComponentMarquee() {
   const reduce = useReducedMotion();
-  const rows = [COMPONENTS.slice(0, 13), COMPONENTS.slice(13)];
+  const rows = [COMPONENTS.slice(0, 15), COMPONENTS.slice(15)];
   return (
     <Stack spacing={1.5} sx={{ '--gap': '12px', maskImage: reduce ? 'none' : 'linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent)' }}>
       {rows.map((row, r) => (
@@ -83,7 +84,7 @@ const PLANS = [
     note: 'MIT, forever',
     cta: { label: 'Get started', href: '/docs' },
     featured: true,
-    items: ['All 26 components', 'Light and dark themes', 'Design tokens package', 'TypeScript types, ESM and CJS', 'Storybook with every story'],
+    items: ['All 30 components', 'Light and dark themes', 'Design tokens package', 'TypeScript types, ESM and CJS', 'Storybook with every story'],
   },
   {
     name: 'Pro',

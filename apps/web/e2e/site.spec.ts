@@ -121,6 +121,7 @@ test('every component preview renders something visible', async ({ page }) => {
 const OVERLAYS = [
   { slug: 'dialog', trigger: 'Open dialog', role: 'dialog', name: 'Delete project?' },
   { slug: 'drawer', trigger: 'Open drawer', role: 'navigation', name: 'Drawer menu' },
+  { slug: 'menu', trigger: 'Project actions', role: 'menu', name: 'Project actions' },
   { slug: 'popover', trigger: 'Show details', role: 'presentation', name: undefined },
 ] as const;
 for (const theme of ['light', 'dark'] as const) {
@@ -165,7 +166,7 @@ test('keyboard: skip link reaches main content', async ({ page }) => {
 });
 
 for (const theme of ['light', 'dark'] as const) {
-  for (const route of ['/', '/blocks', '/demo', '/docs', '/docs/components/button', '/docs/components/table', '/docs/components/autocomplete', '/docs/components/date-picker', '/templates', ...TEMPLATE_ROUTES, ...BLOCK_ROUTES]) {
+  for (const route of ['/', '/blocks', '/demo', '/docs', '/docs/components/button', '/docs/components/table', '/docs/components/autocomplete', '/docs/components/date-picker', '/docs/components/accordion', '/docs/components/stepper', '/docs/components/skeleton', '/templates', ...TEMPLATE_ROUTES, ...BLOCK_ROUTES]) {
     test(`a11y (axe) ${theme} ${route}`, async ({ browser }) => {
       // Reduced motion renders every section in its final state, so axe never
       // measures text mid-fade.

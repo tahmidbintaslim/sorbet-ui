@@ -2,7 +2,7 @@
 
 React components on Material UI v7 or v9 with one `variant`, `color` and `size` API, plus light and dark themes.
 
-- 26 components: Alert, Autocomplete, Avatar, Badge, Breadcrumbs, Button, Card, Checkbox, Chip, DatePicker, Dialog, Drawer, Pagination, Popover, Progress, Radio, Rating, Select, Slider, Snackbar, Switch, Table, Tabs, TextField, ToggleButtonGroup, Tooltip
+- 30 components: Accordion, Alert, Autocomplete, Avatar, Badge, Breadcrumbs, Button, Card, Checkbox, Chip, DatePicker, Dialog, Drawer, Menu, Pagination, Popover, Progress, Radio, Rating, Select, Skeleton, Slider, Snackbar, Stepper, Switch, Table, Tabs, TextField, ToggleButtonGroup, Tooltip
 - Variants: `solid`, `soft`, `outlined`, `ghost`, `plain` (Button also `dash`, `link`)
 - Colors: `primary`, `secondary`, `success`, `warning`, `danger`, `info`, `neutral`. Sizes: `xs` to `xl`
 - Every color pair is contrast-tested against WCAG AA in light and dark mode

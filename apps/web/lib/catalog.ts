@@ -98,6 +98,24 @@ export const CATALOG: CatalogEntry[] = [
     imports: ['Tabs'],
   },
   {
+    slug: 'accordion',
+    name: 'Accordion',
+    description: 'Disclosure panels with a summary button and a labelled region.',
+    imports: ['Accordion', 'AccordionSummary', 'AccordionDetails'],
+  },
+  {
+    slug: 'stepper',
+    name: 'Stepper',
+    description: 'Progress through numbered steps. Pass steps as data.',
+    imports: ['Stepper'],
+  },
+  {
+    slug: 'skeleton',
+    name: 'Skeleton',
+    description: 'Loading placeholders that stay still for reduced motion.',
+    imports: ['Skeleton'],
+  },
+  {
     slug: 'table',
     name: 'Table',
     description: 'Data table driven by column definitions.',
@@ -132,6 +150,12 @@ export const CATALOG: CatalogEntry[] = [
     name: 'Drawer',
     description: 'Side sheet that slides in from any edge.',
     imports: ['Drawer'],
+  },
+  {
+    slug: 'menu',
+    name: 'Menu',
+    description: 'Keyboard-navigable action menu anchored to a trigger.',
+    imports: ['Menu', 'MenuItem'],
   },
   {
     slug: 'popover',

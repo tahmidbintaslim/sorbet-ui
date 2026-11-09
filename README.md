@@ -1,12 +1,12 @@
 # Sorbet UI
 
-React components built on Material UI v7 or v9, with one `variant`, `color` and `size` API across 26 components, plus design tokens and light and dark themes.
+React components built on Material UI v7 or v9, with one `variant`, `color` and `size` API across 30 components, plus design tokens and light and dark themes.
 
 [![CI](https://github.com/tahmidbintaslim/sorbet-ui/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/tahmidbintaslim/sorbet-ui/actions/workflows/test.yml)
 [![Storybook](https://img.shields.io/badge/Storybook-live-FF4785?logo=storybook&logoColor=white)](https://sorbet-ui.vercel.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**Live demo: [Storybook](https://sorbet-ui.vercel.app)**. Every component with live controls, 372 stories in all, deployed from `main` on Vercel.
+**Live demo: [Storybook](https://sorbet-ui.vercel.app)**. Every component with live controls, 425 stories in all, deployed from `main` on Vercel.
 
 **Status: in development.** Nothing has been published to npm. The packages were numbered 1.0.0 on `main` before any release; the readiness pass lowered every package to 0.1.0, which is still unreleased. To try it today, run it from source (see [Getting started](#getting-started)).
 
@@ -50,12 +50,12 @@ Sorbet UI is a good fit if you already use Material UI and MUI X and want soft, 
 
 ## Features
 
-- 26 components, from Button and TextField to Table, DatePicker and Autocomplete, each with the variant, color and size props above (exceptions are listed under [Components](#components)).
+- 30 components, from Button and TextField to Table, DatePicker and Autocomplete, each with the variant, color and size props above (exceptions are listed under [Components](#components)).
 - `@sorbet-ui/tokens`: 7 color scales with alpha steps, spacing, radius, shadows, z-index, breakpoints, typography and animations, as plain TypeScript objects.
 - `@sorbet-ui/theme`: `lightTheme` and `darkTheme`, built with MUI `createTheme` from those tokens.
-- Dark mode: 24 of the 26 components read the MUI palette mode and switch to lighter shades under `darkTheme`. Progress and Rating use the same shades in both modes.
+- Dark mode: 28 of the 30 components read the MUI palette mode and switch to lighter shades under `darkTheme`. Progress and Rating use the same shades in both modes.
 - ESM and CommonJS builds with TypeScript types for every published package; `@sorbet-ui/react` starts with a `"use client"` directive.
-- 578 unit tests (Vitest, Testing Library, jest-axe in six files) and 374 Storybook stories that run as browser tests in Chromium, each checked with axe.
+- 817 unit tests (Vitest, Testing Library, jest-axe in eight files) and 427 Storybook tests that run as browser tests in Chromium, each checked with axe.
 
 ## Screenshots
 
@@ -77,7 +77,7 @@ The npm packages use the `@sorbet-ui` scope. The npm org `sorbet-ui` exists; pub
 
 | Package           | Contents                                                                                                       |
 | ----------------- | -------------------------------------------------------------------------------------------------------------- |
-| `@sorbet-ui/react`  | The 26 components                                                                                              |
+| `@sorbet-ui/react`  | The 30 components                                                                                              |
 | `@sorbet-ui/theme`  | `lightTheme` and `darkTheme` (MUI `createTheme`) built from the tokens                                         |
 | `@sorbet-ui/tokens` | Colors (7 scales with alpha steps), spacing, radius, shadows, z-index, breakpoints, typography and animations  |
 | `@sorbet-ui/core`   | Shared types, variant presets, accessibility helpers and headless state helpers (Progress and Rating use them) |
@@ -159,6 +159,7 @@ All components take the 5 sizes above. The 7 colors apply everywhere except in t
 
 | Component         | `variant` values                                | Notes                                                           |
 | ----------------- | ----------------------------------------------- | --------------------------------------------------------------- |
+| Accordion         | solid, soft, outlined, ghost, plain             | Also exports AccordionSummary, AccordionDetails                 |
 | Alert             | solid, soft, outlined, ghost, plain             |                                                                 |
 | Autocomplete      | solid, soft, outlined, ghost, plain             | Uses `error`; `color` styles the multi-select tags only         |
 | Avatar            | solid, soft, outlined, ghost, plain             | Optional `status` dot                                           |
@@ -171,14 +172,17 @@ All components take the 5 sizes above. The 7 colors apply everywhere except in t
 | DatePicker        | solid, soft, outlined, ghost, plain             | MUI X with dayjs; re-exports `dayjs`; `color` has no effect yet |
 | Dialog            | solid, soft, outlined, ghost, plain             | Also exports DialogTitle, DialogContent, DialogActions          |
 | Drawer            | solid, soft, outlined, ghost, plain             | Accepts `color` but ignores it                                  |
+| Menu              | solid, soft, outlined, ghost, plain             | Use MenuItem children; MUI's `menu` / `selectedMenu` still work |
 | Pagination        | solid, soft, outlined, ghost, plain             |                                                                 |
 | Popover           | solid, soft, outlined, ghost, plain             |                                                                 |
 | Progress          | solid, soft, outlined, ghost, plain             | Linear and circular                                             |
 | Radio             | solid, soft, outlined, ghost, plain             | `label` prop                                                    |
 | Rating            | solid, soft, outlined, ghost, plain             |                                                                 |
 | Select            | solid, soft, outlined, ghost, plain             | Also exports MenuItem                                           |
+| Skeleton          | solid, soft, outlined, ghost, plain             | `shape` prop; MUI shape values still work in `variant`          |
 | Slider            | solid, soft, outlined, ghost, plain             |                                                                 |
 | Snackbar          | solid, soft, outlined, ghost, plain             | Also exports SnackbarContent                                    |
+| Stepper           | solid, soft, outlined, ghost, plain             | `steps` as data or MUI Step children; clickable steps           |
 | Switch            | solid, soft, outlined, ghost, plain             |                                                                 |
 | Table             | solid, soft, outlined, ghost, plain             | Sorting, row selection, pagination, sticky header               |
 | Tabs              | solid, soft, outlined, ghost, plain             | Horizontal or vertical, optional panels                         |
@@ -188,9 +192,9 @@ All components take the 5 sizes above. The 7 colors apply everywhere except in t
 
 ## Accessibility
 
-- Every color pair the variants use is covered by `packages/tokens/src/contrast.test.ts` (118 tests), in both themes: solid `contrastText` on `main`, on the hover shade and on the pressed shade; `main` text on white, the page and paper; soft text on its tints; and 3:1 for outlined borders and icons. In dark mode, solid fills use dark ink text (slate 900) on the brighter fills.
-- Storybook runs axe (WCAG 2.0/2.1 A and AA) on every story in CI, and any violation fails the build. All 374 stories pass, including the Dark Mode stories, which render with `darkTheme`.
-- The docs site's end-to-end suite runs axe on every page, block category, template and the demo, in light and dark, and with Dialog, Drawer and Popover open.
+- Every color pair the variants use is covered by `packages/tokens/src/contrast.test.ts` (212 tests), in both themes: solid `contrastText` on `main`, on the hover shade and on the pressed shade; `main` text on white, the page and paper; soft text on its tints; and 3:1 for outlined borders and icons. In dark mode, solid fills use dark ink text (slate 900) on the brighter fills.
+- Storybook runs axe (WCAG 2.0/2.1 A and AA) on every story in CI, and any violation fails the build. All 427 story tests pass, including the Dark Mode stories, which render with `darkTheme`.
+- The docs site's end-to-end suite runs axe on every page, block category, template and the demo, in light and dark, and with Dialog, Drawer, Menu and Popover open.
 - Form controls forward `aria-label` / `aria-labelledby` to the real input; loading states name their spinner "Loading" and set `aria-busy`.
 - Components rely on the keyboard and ARIA behavior of the MUI components they wrap. Automated checks are not a full audit: the library has not yet been tested with screen readers.
 
@@ -215,7 +219,7 @@ flowchart LR
   tokens["@sorbet-ui/tokens<br/>colors, spacing, typography"]
   core["@sorbet-ui/core<br/>types, variant presets, a11y helpers"]
   theme["@sorbet-ui/theme<br/>lightTheme, darkTheme"]
-  react["@sorbet-ui/react<br/>26 components"]
+  react["@sorbet-ui/react<br/>30 components"]
   mui[("Material UI 7 or 9, MUI X 8 or 9, Emotion<br/>peer dependencies")]
   docs["apps/docs<br/>Storybook, deployed on Vercel"]
   web["apps/web<br/>Next.js docs site, blocks, templates, demo"]
@@ -255,7 +259,7 @@ pnpm web:dev             # demo page on http://localhost:3000
 pnpm lint
 pnpm type-check
 pnpm test:ci             # 505 unit tests
-pnpm test:storybook:ci   # 372 Storybook stories in headless Chromium
+pnpm test:storybook:ci   # 427 Storybook tests in headless Chromium
 pnpm build               # packages, Storybook and the web demo
 ```
 
@@ -272,8 +276,8 @@ No environment variables are needed to install, build or test. The optional ones
 
 ## Tests
 
-- 578 unit tests in 29 files (Vitest, Testing Library, jsdom), including the component tests, light/dark rendering of components and the core variant helpers, a CommonJS `require()` check of the built bundle (skipped until `pnpm build:packages` has run), and 118 contrast checks for the tokens.
-- 374 Storybook stories, each run as a test in headless Chromium through Vitest browser mode with axe (any WCAG A/AA violation fails), including 128 interaction (`play`) functions.
+- 817 unit tests in 35 files (Vitest, Testing Library, jsdom), including the component tests, light/dark rendering of components and the core variant helpers, a CommonJS `require()` check of the built bundle (skipped until `pnpm build:packages` has run), and 212 contrast checks for the tokens.
+- 427 Storybook tests, each run in headless Chromium through Vitest browser mode with axe (any WCAG A/AA violation fails), including 144 interaction (`play`) functions.
 - The docs site (`apps/web`) has a Playwright suite that runs axe on every page in light and dark.
 - The CI workflow (`.github/workflows/test.yml`) runs lint, type-check, both test suites and a full build on every push and pull request to `main`. See [TESTING_GUIDE.md](TESTING_GUIDE.md) for the other workflows.
 

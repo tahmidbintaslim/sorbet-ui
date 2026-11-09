@@ -14,7 +14,7 @@ export default function Components() {
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 3 }}>
         Each page has a live preview with variant, color and size pickers and matching source.
-        Autocomplete, DatePicker, Dialog, Drawer, Popover and Snackbar are in{' '}
+        Autocomplete, DatePicker, Dialog, Drawer, Menu, Popover and Snackbar are in{' '}
         <Link href={SITE.storybook} rel="noopener">
           Storybook
         </Link>
