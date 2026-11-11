@@ -165,14 +165,15 @@ export default function PageHeader({
           right: { xs: 0, md: 'auto' },
           mx: { md: 'auto' },
           transition: 'rotate .5s cubic-bezier(.3,1.8,.5,1), scale .5s cubic-bezier(.3,1.8,.5,1)',
-          '[data-testid="page-header"]:hover &': { rotate: '6deg', scale: '1.05' },
-          '@media (prefers-reduced-motion: reduce)': { transition: 'none', '[data-testid="page-header"]:hover &': { rotate: 'none', scale: 'none' } },
+          '.page-header:hover &': { rotate: '6deg', scale: '1.05' },
+          '@media (prefers-reduced-motion: reduce)': { transition: 'none', '.page-header:hover &': { rotate: 'none', scale: 'none' } },
         }}
       />
     </Box>
   );
   return (
     <Box
+      className="page-header"
       data-testid="page-header"
       data-flavor={flavor}
       sx={{
