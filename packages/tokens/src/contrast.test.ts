@@ -5,6 +5,7 @@ import {
   colorPalette,
   colorScaleForMode,
   darkModeColorPalette,
+  DARK_INK,
   textColors,
   textColorsForMode,
   type ColorScale,
@@ -287,6 +288,58 @@ describe.each(semanticColors)('%s accordion, menu and stepper pairs (dark)', (na
   // Ghost Menu: a selected item that is also hovered sits on neutral 700.
   it('light on the neutral 700 hover', () => {
     expect(contrast(scale.light, neutral[700])).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+});
+
+// Site scoops (apps/web/lib/scoops.ts): the website's per-scoop accents.
+// ink = 700 (light) / 300 (dark), pill = 800 / 200, pastel = 100 / alpha20,
+// candy = 200 / 300 under DARK_INK, tint = 50 / alpha8, glow blobs = 200 / 500.
+describe('site scoops', () => {
+  const SCOOPS = ['danger', 'warning', 'success', 'primary', 'secondary', 'info'] as const;
+  const AA_LARGE = 3;
+  const DARK_PAGE = backgrounds.dark.default;
+  const toHex = (rgb: Rgb) => `#${rgb.map((c) => Math.round(c).toString(16).padStart(2, '0')).join('')}`;
+  const rgba = (hex: string, a: number) => {
+    const [r, g, b] = parseColor(hex).rgb;
+    return `rgba(${r}, ${g}, ${b}, ${a})`;
+  };
+  // Opaque color of a translucent layer over a backdrop.
+  const over = (value: string, backdrop: string) => toHex(flatten(value, parseColor(backdrop).rgb));
+  const lightTints = SCOOPS.map((s) => colorPalette[s][50]);
+  const darkTints = SCOOPS.map((s) => over(colorPalette[s].alpha8, DARK_PAGE));
+
+  describe.each(SCOOPS)('%s', (name) => {
+    const s = colorPalette[name];
+
+    it('light: ink on white, on every scoop tint and on its pastel sticker', () => {
+      for (const bg of [WHITE, ...lightTints, s[100]]) expect(contrast(s[700], bg)).toBeGreaterThanOrEqual(AA_TEXT);
+    });
+    it('light: pill text on its pastel', () => {
+      expect(contrast(s[800], s[100])).toBeGreaterThanOrEqual(AA_TEXT);
+    });
+    it('light: hero ink stays large-text readable over any glow blob (200 at 70%) on the hero tints', () => {
+      for (const tint of lightTints)
+        for (const g of SCOOPS) expect(contrast(s[700], rgba(colorPalette[g][200], 0.7), tint)).toBeGreaterThanOrEqual(AA_LARGE);
+    });
+    it('both: dark ink on the candy chip', () => {
+      expect(contrast(DARK_INK, s[200])).toBeGreaterThanOrEqual(AA_TEXT);
+      expect(contrast(DARK_INK, s[300])).toBeGreaterThanOrEqual(AA_TEXT);
+    });
+    it('dark: ink on the page, on every scoop tint and on its pastel sticker', () => {
+      for (const bg of [DARK_PAGE, ...darkTints, over(s.alpha20, DARK_PAGE)]) expect(contrast(s[300], bg)).toBeGreaterThanOrEqual(AA_TEXT);
+    });
+    it('dark: pill text on its pastel', () => {
+      expect(contrast(s[200], over(s.alpha20, DARK_PAGE))).toBeGreaterThanOrEqual(AA_TEXT);
+    });
+    it('dark: hero ink over any glow blob (500 at 28%) on the hero tints', () => {
+      for (const tint of darkTints)
+        for (const g of SCOOPS) expect(contrast(s[300], rgba(colorPalette[g][500], 0.28), tint)).toBeGreaterThanOrEqual(AA_TEXT);
+    });
+  });
+
+  it('secondary text on every scoop tint, both modes', () => {
+    for (const bg of lightTints) expect(contrast(textColors.light.secondary, bg)).toBeGreaterThanOrEqual(AA_TEXT);
+    for (const bg of darkTints) expect(contrast(textColors.dark.secondary, bg)).toBeGreaterThanOrEqual(AA_TEXT);
   });
 });
 

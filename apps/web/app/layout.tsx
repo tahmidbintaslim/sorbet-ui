@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Caveat, Inter, JetBrains_Mono } from 'next/font/google';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import ColorModeProvider from '@/components/ColorMode';
 import SiteShell from '@/components/SiteShell';
@@ -36,13 +36,15 @@ const JSON_LD = {
 };
 
 const sans = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+// Handwriting for the hand-drawn notes on the landing page (one weight, not preloaded).
+const hand = Caveat({ subsets: ['latin'], weight: '700', variable: '--font-hand', display: 'swap', preload: false });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
 
 export const viewport: Viewport = { width: 'device-width', initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${mono.variable} ${hand.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: INIT_MODE }} />
         <style dangerouslySetInnerHTML={{ __html: PRE_HYDRATION_CSS }} />

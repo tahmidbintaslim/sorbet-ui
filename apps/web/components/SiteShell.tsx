@@ -2,8 +2,8 @@
 import * as React from 'react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Box, Chip, Container, Divider, Drawer, Grid, IconButton, Link, Stack, Typography } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { Box, Chip, Container, Divider, Drawer, GlobalStyles, Grid, IconButton, Link, Stack, Typography } from '@mui/material';
+import { alpha, keyframes } from '@mui/material/styles';
 import DarkMode from '@mui/icons-material/DarkMode';
 import LightMode from '@mui/icons-material/LightMode';
 import GitHub from '@mui/icons-material/GitHub';
@@ -14,6 +14,15 @@ import Logo from './Logo';
 import GitHubStars from './GitHubStars';
 import { SITE } from '@/lib/site';
 import { TOUCH, touchRow, touchTarget } from '@/lib/touch';
+import { NO_MOTION, scoop, scoopAt, scoopVars } from '@/lib/scoops';
+import { ScoopRow } from './fun/Decor';
+
+const wiggle = keyframes`
+  0%, 100% { transform: rotate(0) scale(1); }
+  20% { transform: rotate(-14deg) scale(1.1); }
+  45% { transform: rotate(10deg) scale(1.05); }
+  70% { transform: rotate(-5deg); }
+`;
 
 const NAV = [
   { href: '/docs', label: 'Docs' },
@@ -49,13 +58,24 @@ const FOOTER = [
 const isActive = (href: string, pathname: string) => (href === '/docs' ? pathname === '/docs' : pathname.startsWith(href));
 
 const navLinkSx = {
-  px: 1.25,
+  px: 1.5,
   py: 0.75,
-  borderRadius: 2,
+  borderRadius: 999,
   fontSize: 15,
   whiteSpace: 'nowrap',
-  '&:hover': { color: 'text.primary', bgcolor: 'action.hover' },
+  transition: 'background-color .2s, color .2s, transform .3s cubic-bezier(.3,1.8,.5,1)',
 } as const;
+
+/** Each nav item is its own scoop: a pastel pill on hover and when active. */
+const scoopPill = (i: number, active: boolean) => {
+  const s = scoopAt(i);
+  const on = { color: scoop(s, 'pill'), bgcolor: scoop(s, 'pastel') };
+  return {
+    ...(active && on),
+    '&:hover': { ...on, transform: 'translateY(-1px) rotate(-2deg)' },
+    '@media (prefers-reduced-motion: reduce)': { '&:hover': { transform: 'none' } },
+  };
+};
 
 const drawerLinkSx = {
   display: 'flex',
@@ -83,6 +103,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <GlobalStyles styles={scoopVars} />
       <Link
         href="#main"
         sx={{
@@ -114,7 +135,15 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
             href="/"
             direction="row"
             spacing={1}
-            sx={{ alignItems: 'center', color: 'text.primary', textDecoration: 'none', py: 1.5, flexShrink: 0 }}
+            sx={{
+              alignItems: 'center',
+              color: 'text.primary',
+              textDecoration: 'none',
+              py: 1.5,
+              flexShrink: 0,
+              '& .logo': { transformOrigin: '50% 90%' },
+              '&:hover .logo, &:focus-visible .logo': { animation: `${wiggle} .7s cubic-bezier(.3,1.4,.5,1)`, ...NO_MOTION },
+            }}
           >
             <Logo />
             <Typography component="span" sx={{ fontWeight: 800, fontSize: 18, letterSpacing: '-0.02em' }}>
@@ -123,7 +152,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
           </Stack>
 
           <Box component="nav" aria-label="Main" sx={{ display: { xs: 'none', md: 'flex' }, flexGrow: 1, gap: 0.5 }}>
-            {NAV.map((n) => {
+            {NAV.map((n, i) => {
               const active = isActive(n.href, pathname);
               return (
                 <Link
@@ -132,7 +161,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                   href={n.href}
                   underline="none"
                   aria-current={active ? 'page' : undefined}
-                  sx={{ ...navLinkSx, ...touchRow, fontWeight: active ? 600 : 500, color: active ? 'text.primary' : 'text.secondary', bgcolor: active ? 'action.selected' : 'transparent' }}
+                  sx={{ ...navLinkSx, ...touchRow, fontWeight: active ? 700 : 500, color: 'text.secondary', ...scoopPill(i, active) }}
                 >
                   {n.label}
                 </Link>
@@ -194,7 +223,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
         </Stack>
         <Box component="nav" aria-label="Main" sx={{ p: 1 }}>
           <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0 }}>
-            {NAV.map((n) => {
+            {NAV.map((n, i) => {
               const active = isActive(n.href, pathname);
               return (
                 <li key={n.href}>
@@ -204,7 +233,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                     underline="none"
                     onClick={closeMenu}
                     aria-current={active ? 'page' : undefined}
-                    sx={{ ...drawerLinkSx, fontWeight: active ? 700 : 500, bgcolor: active ? 'action.selected' : 'transparent' }}
+                    sx={{ ...drawerLinkSx, fontWeight: active ? 700 : 500, ...scoopPill(i, active) }}
                   >
                     {n.label}
                   </Link>
@@ -233,7 +262,8 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
         {children}
       </Box>
 
-      <Box component="footer" sx={{ borderTop: 1, borderColor: 'divider', pt: 6, pb: 4, mt: 10 }}>
+      <Box component="footer" sx={{ borderTop: 1, borderColor: 'divider', pt: 6, pb: 4, mt: 10, position: 'relative' }}>
+        <ScoopRow size={22} sx={{ position: 'absolute', top: -27, left: '50%', transform: 'translateX(-50%)' }} />
         <Container maxWidth="lg">
           <Grid container spacing={4}>
             <Grid size={{ xs: 12, md: 6 }}>
