@@ -4,6 +4,8 @@ import { AlertTitle, Box, Link, Typography } from '@mui/material';
 import { Alert, Tabs } from '@sorbet-ui/react';
 import CodeBlock, { CommandLine } from '@/components/CodeBlock';
 import { REGISTRY_URL, addCommand } from '@/lib/registry';
+import PageHeader from '@/components/fun/PageHeader';
+import { SECTION_FLAVOR } from '@/lib/sections';
 
 export const metadata: Metadata = pageMeta({
   title: 'Getting started',
@@ -185,15 +187,12 @@ function SeeResult({ where }: { where: string }) {
 export default function GettingStarted() {
   return (
     <>
-      <Typography component="h1" variant="h3" sx={{ fontWeight: 800 }} gutterBottom>
-        Getting started
-      </Typography>
-      <Typography color="text.secondary">
+      <PageHeader flavor={SECTION_FLAVOR.docs} doodle="cone" aside="start here!" title="Getting started">
         Sorbet UI wraps Material UI v7 or v9. Install the packages and their peer dependencies, wrap
         your app in a Sorbet theme, and render a component.
-      </Typography>
+      </PageHeader>
 
-      <Alert color="info" variant="soft" sx={{ mt: 3 }} data-testid="prerelease-notice">
+      <Alert color="info" variant="soft" data-testid="prerelease-notice">
         <AlertTitle>Pre-release: not on npm yet</AlertTitle>
         Version 0.1.0 of the <code>@sorbet-ui/*</code> packages is not published to npm yet, so{' '}
         <code>npm install @sorbet-ui/react</code> fails with a 404 today. Until it is, build the

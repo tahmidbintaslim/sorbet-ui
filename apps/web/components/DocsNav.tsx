@@ -5,20 +5,26 @@ import { usePathname } from 'next/navigation';
 import { Box, Link, Typography } from '@mui/material';
 import { CATALOG } from '@/lib/catalog';
 import { TOUCH } from '@/lib/touch';
+import { scoop, type Scoop } from '@/lib/scoops';
+import { SECTION_FLAVOR } from '@/lib/sections';
+import { ScoopDot } from './fun/Decor';
 
-const GROUPS = [
+// Every group has a flavor dot; the current page is a pill in its section's flavor.
+const GROUPS: { title: string; c: Scoop; items: { href: string; label: string; c: Scoop }[] }[] = [
   {
     title: 'Overview',
+    c: SECTION_FLAVOR.docs,
     items: [
-      { href: '/docs', label: 'Getting started' },
-      { href: '/docs/theming', label: 'Theming' },
+      { href: '/docs', label: 'Getting started', c: SECTION_FLAVOR.docs },
+      { href: '/docs/theming', label: 'Theming', c: SECTION_FLAVOR.theming },
     ],
   },
   {
     title: 'Components',
+    c: SECTION_FLAVOR.components,
     items: [
-      { href: '/docs/components', label: 'All components' },
-      ...CATALOG.map((d) => ({ href: `/docs/components/${d.slug}`, label: d.name })),
+      { href: '/docs/components', label: 'All components', c: SECTION_FLAVOR.components },
+      ...CATALOG.map((d) => ({ href: `/docs/components/${d.slug}`, label: d.name, c: SECTION_FLAVOR.components })),
     ],
   },
 ];
@@ -45,7 +51,8 @@ export default function DocsNav({ inDrawer = false, onNavigate }: { inDrawer?: b
     <Box ref={ref} component="nav" aria-label="Docs" sx={inDrawer ? { p: 2 } : { position: { md: 'sticky' }, top: { md: 88 } }}>
       {GROUPS.map((g) => (
         <Box key={g.title} sx={{ mb: 3 }}>
-          <Typography variant="overline" color="text.secondary">
+          <Typography variant="overline" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 1 }}>
+            <ScoopDot c={g.c} size={10} />
             {g.title}
           </Typography>
           <Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
@@ -64,13 +71,12 @@ export default function DocsNav({ inDrawer = false, onNavigate }: { inDrawer?: b
                       display: 'block',
                       py: 0.5,
                       [TOUCH]: { display: 'flex', alignItems: 'center', minHeight: 44, py: 0 },
-                      px: 1,
-                      borderRadius: 1,
+                      px: 1.5,
+                      borderRadius: 999,
                       fontWeight: active ? 700 : 400,
-                      bgcolor: active ? 'action.selected' : 'transparent',
-                      borderLeft: 3,
-                      borderColor: active ? 'primary.main' : 'transparent',
-                      '&:hover': { bgcolor: 'action.hover' },
+                      transition: 'background-color .2s, color .2s',
+                      ...(active && { bgcolor: scoop(i.c, 'pastel'), color: scoop(i.c, 'pill') }),
+                      '&:hover': { bgcolor: scoop(i.c, 'pastel'), color: scoop(i.c, 'pill') },
                     }}
                   >
                     {i.label}
