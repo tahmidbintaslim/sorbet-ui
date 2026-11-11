@@ -5,6 +5,8 @@ import { Chip } from '@sorbet-ui/react';
 import { colorPalette } from '@sorbet-ui/tokens';
 import { TEMPLATES } from '@/lib/templates';
 import { scoop, scoopAt } from '@/lib/scoops';
+import { SECTION_FLAVOR } from '@/lib/sections';
+import { StickerBadge } from './fun/Decor';
 
 const GRADIENTS = [
   [colorPalette.primary[300], colorPalette.secondary[300]],
@@ -23,7 +25,7 @@ export default function TemplateCards() {
           <Box
             component={NextLink}
             href={`/templates/${t.slug}`}
-            sx={{ display: 'block', height: '100%', borderRadius: 4, overflow: 'hidden', border: 1, borderColor: 'divider', bgcolor: 'background.paper', color: 'text.primary', textDecoration: 'none', transition: 'transform .35s cubic-bezier(.3,1.6,.5,1), box-shadow .25s, border-color .2s', '&:hover': { borderColor: scoop(scoopAt(i), 'fill'), transform: `translateY(-6px) rotate(${i % 2 ? 0.8 : -0.8}deg)`, boxShadow: `0 18px 36px -20px ${scoop(scoopAt(i), 'fill')}` }, '@media (prefers-reduced-motion: reduce)': { '&:hover': { transform: 'none' } }, '&:hover .thumb': { transform: 'scale(1.04)' } }}
+            sx={{ display: 'block', height: '100%', borderRadius: 4, overflow: 'hidden', border: 1, borderColor: 'divider', bgcolor: 'background.paper', color: 'text.primary', textDecoration: 'none', transition: 'transform .35s cubic-bezier(.3,1.6,.5,1), box-shadow .25s, border-color .2s', '&:hover': { borderColor: scoop(scoopAt(i), 'fill'), transform: `translateY(-6px) rotate(${i % 2 ? 0.8 : -0.8}deg)`, boxShadow: `0 18px 36px -20px ${scoop(scoopAt(i), 'fill')}` }, '& .sticker-badge': { transition: 'rotate .4s cubic-bezier(.3,1.6,.5,1), scale .4s cubic-bezier(.3,1.6,.5,1)' }, '&:hover .sticker-badge': { rotate: '-8deg', scale: '1.12' }, '&:hover .thumb': { transform: 'scale(1.04)' }, '@media (prefers-reduced-motion: reduce)': { '&:hover': { transform: 'none' }, '&:hover .thumb': { transform: 'none' }, '&:hover .sticker-badge': { rotate: '8deg', scale: 'none' } } }}
           >
             {/* Wireframe thumbnail: one bar per block in the template. */}
             <Box aria-hidden className="thumb" sx={{ transition: 'transform .5s cubic-bezier(.3,1.6,.5,1)', p: 2.5, height: 170, background: `linear-gradient(135deg, ${GRADIENTS[i % 6][0]}, ${GRADIENTS[i % 6][1]})` }}>
@@ -38,7 +40,9 @@ export default function TemplateCards() {
                 <Typography component="h2" sx={{ fontWeight: 700, fontSize: 18 }}>
                   {t.name}
                 </Typography>
-                <Chip size="sm" variant="soft" color="success" label="Free" />
+                <StickerBadge c="success" size={48} sx={{ my: -1 }}>
+                  Free
+                </StickerBadge>
               </Stack>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                 {t.description}
@@ -57,7 +61,7 @@ export default function TemplateCards() {
         <Box
           component={NextLink}
           href="/demo"
-          sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', minHeight: 300, p: 3, borderRadius: 4, border: '2px dashed', borderColor: 'divider', color: 'text.primary', textDecoration: 'none', '&:hover': { borderColor: 'primary.main' } }}
+          sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', minHeight: 300, p: 3, borderRadius: 4, border: '2px dashed', borderColor: scoop(SECTION_FLAVOR.demo, 'fill'), bgcolor: scoop(SECTION_FLAVOR.demo, 'tint'), color: 'text.primary', textDecoration: 'none', transition: 'transform .35s cubic-bezier(.3,1.6,.5,1)', '&:hover': { transform: 'translateY(-6px) rotate(-0.8deg)' }, '@media (prefers-reduced-motion: reduce)': { '&:hover': { transform: 'none' } } }}
         >
           <Typography component="h2" sx={{ fontWeight: 700, fontSize: 18 }}>
             Admin dashboard (live demo)

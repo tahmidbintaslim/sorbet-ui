@@ -1,34 +1,38 @@
 'use client';
 import * as React from 'react';
 import NextLink from 'next/link';
-import { Box, Collapse, Link, Stack, Typography } from '@mui/material';
-import { Button, Chip } from '@sorbet-ui/react';
+import { Box, Collapse, Container, Link, Typography } from '@mui/material';
+import { Button } from '@sorbet-ui/react';
 import CodeBlock from './CodeBlock';
 import { BLOCKS } from '@/lib/blocks-meta';
+import { SECTION_FLAVOR } from '@/lib/sections';
+import PageHeader from './fun/PageHeader';
+import { StickerBadge } from './fun/Decor';
 
 export default function TemplateHeader({ name, description, source, blocks }: { name: string; description: string; source: string; blocks: string[] }) {
   const [open, setOpen] = React.useState(false);
   return (
-    <Box>
-      <Link component={NextLink} href="/templates" underline="hover" sx={{ fontSize: 14 }}>
-        ← All templates
-      </Link>
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ justifyContent: 'space-between', alignItems: { md: 'flex-end' }, mt: 1 }}>
-        <Box>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Typography component="h1" sx={{ fontWeight: 800, fontSize: { xs: 32, md: 44 }, letterSpacing: '-0.035em' }}>
-              {name}
-            </Typography>
-            <Chip size="sm" variant="soft" color="success" label="Free" />
-          </Stack>
-          <Typography color="text.secondary" sx={{ mt: 1, maxWidth: 680 }}>
-            {description}
-          </Typography>
-        </Box>
-        <Button variant={open ? 'soft' : 'solid'} onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="template-source">
-          {open ? 'Hide source' : 'Get the code'}
-        </Button>
-      </Stack>
+    <>
+      <PageHeader
+        bleed
+        flavor={SECTION_FLAVOR.templates}
+        doodle="sundae"
+        title={name}
+        back={{ href: '/templates', label: 'All templates' }}
+        badge={
+          <StickerBadge c="success" size={52}>
+            Free
+          </StickerBadge>
+        }
+        action={
+          <Button variant={open ? 'soft' : 'solid'} color="secondary" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="template-source">
+            {open ? 'Hide source' : 'Get the code'}
+          </Button>
+        }
+      >
+        {description}
+      </PageHeader>
+      <Container maxWidth="lg">
       <Collapse in={open}>
         <Box id="template-source" sx={{ mt: 2 }}>
           <CodeBlock code={source} title="app/page.tsx" label={`${name} page source`} />
@@ -48,6 +52,7 @@ export default function TemplateHeader({ name, description, source, blocks }: { 
           </Typography>
         </Box>
       </Collapse>
-    </Box>
+      </Container>
+    </>
   );
 }

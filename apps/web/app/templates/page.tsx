@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { pageMeta } from '@/lib/seo';
-import { Container, Typography } from '@mui/material';
+import { Container } from '@mui/material';
 import TemplateCards from '@/components/TemplateCards';
 import { TEMPLATES } from '@/lib/templates';
+import PageHeader from '@/components/fun/PageHeader';
+import { SECTION_FLAVOR } from '@/lib/sections';
 
 export const metadata: Metadata = pageMeta({
   title: 'Templates',
@@ -12,14 +14,13 @@ export const metadata: Metadata = pageMeta({
 
 export default function TemplatesPage() {
   return (
-    <Container maxWidth="lg" sx={{ pt: { xs: 5, md: 8 } }}>
-      <Typography component="h1" sx={{ fontWeight: 800, fontSize: { xs: 40, md: 56 }, letterSpacing: '-0.04em' }}>
-        Templates
-      </Typography>
-      <Typography color="text.secondary" sx={{ fontSize: 18, mt: 1.5, maxWidth: 680 }}>
+    <>
+      <PageHeader bleed size="lg" flavor={SECTION_FLAVOR.templates} doodle="sundae" aside="ready to serve" title="Templates">
         {TEMPLATES.length} free page templates, MIT licensed. Each is a stack of blocks you can preview, then copy into your app.
-      </Typography>
-      <TemplateCards />
-    </Container>
+      </PageHeader>
+      <Container maxWidth="lg" sx={{ pt: 2 }}>
+        <TemplateCards />
+      </Container>
+    </>
   );
 }

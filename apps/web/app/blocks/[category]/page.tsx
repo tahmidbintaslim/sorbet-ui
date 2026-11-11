@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
 import { pageMeta } from '@/lib/seo';
 import { notFound } from 'next/navigation';
-import { Container, Stack, Typography } from '@mui/material';
+import { Container, Stack } from '@mui/material';
 import * as React from 'react';
 import BlockViewer from '@/components/BlockViewer';
 import { BLOCK_COMPONENTS } from '@/components/blocks-registry';
 import { BLOCK_SOURCE } from '@/lib/blocks-source';
-import BlockCategoryNav, { BackToBlocks } from '@/components/BlockCategoryNav';
+import BlockCategoryNav from '@/components/BlockCategoryNav';
+import PageHeader from '@/components/fun/PageHeader';
+import { SECTION_FLAVOR } from '@/lib/sections';
 import { blocksIn, categoriesWithBlocks, getCategory } from '@/lib/blocks';
 
 export const dynamicParams = false;
@@ -24,22 +26,20 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   if (!c) notFound();
   const blocks = blocksIn(category);
   return (
-    <Container maxWidth="lg" sx={{ pt: { xs: 5, md: 8 } }}>
-      <BackToBlocks />
-      <Typography component="h1" sx={{ fontWeight: 800, fontSize: { xs: 36, md: 48 }, letterSpacing: '-0.035em', mt: 1 }}>
-        {c.title}
-      </Typography>
-      <Typography color="text.secondary" sx={{ fontSize: 18, mt: 1 }}>
+    <>
+      <PageHeader bleed flavor={SECTION_FLAVOR.blocks} doodle="waffle" title={c.title} back={{ href: '/blocks', label: 'All blocks' }}>
         {c.description} {blocks.length} {blocks.length === 1 ? 'block' : 'blocks'}.
-      </Typography>
-      <BlockCategoryNav current={category} />
-      <Stack spacing={7} sx={{ mt: 5 }}>
-        {blocks.map((b) => (
-          <BlockViewer key={b.id} id={b.id} name={b.name} description={b.description} source={BLOCK_SOURCE[b.id]}>
-            {React.createElement(BLOCK_COMPONENTS[b.id])}
-          </BlockViewer>
-        ))}
-      </Stack>
-    </Container>
+      </PageHeader>
+      <Container maxWidth="lg">
+        <BlockCategoryNav current={category} />
+        <Stack spacing={7} sx={{ mt: 5 }}>
+          {blocks.map((b, i) => (
+            <BlockViewer key={b.id} id={b.id} name={b.name} description={b.description} source={BLOCK_SOURCE[b.id]} index={i}>
+              {React.createElement(BLOCK_COMPONENTS[b.id])}
+            </BlockViewer>
+          ))}
+        </Stack>
+      </Container>
+    </>
   );
 }
