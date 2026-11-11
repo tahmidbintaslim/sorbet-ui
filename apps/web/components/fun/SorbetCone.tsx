@@ -86,7 +86,7 @@ export default function SorbetCone({ size = 300 }: { size?: number }) {
       }}
       data-wobble={wobbling}
     >
-      <svg viewBox="0 0 240 320" width="100%" height="auto" focusable="false" style={{ display: 'block', overflow: 'visible' }}>
+      <svg viewBox="0 0 240 320" focusable="false" style={{ display: 'block', width: '100%', height: 'auto', overflow: 'visible' }}>
         <defs>
           <pattern id={waffle} width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
             <rect width="14" height="14" fill={scoop('warning', 'fill')} />

@@ -1,4 +1,4 @@
-import { CallToAction, Compare, ComponentMarquee, Facts, Hero, Playground } from '@/components/Landing';
+import { CallToAction, Compare, ComponentMarquee, Facts, Hero, HowItWorks, Playground } from '@/components/Landing';
 
 export default function Home() {
   return (
@@ -6,6 +6,7 @@ export default function Home() {
       <Hero />
       <ComponentMarquee />
       <Facts />
+      <HowItWorks />
       <Compare />
       <Playground />
       <CallToAction />

@@ -348,7 +348,9 @@ test('landing: the marquee pauses on hover and with its pause button', async ({ 
   const state = () => track.evaluate((el) => getComputedStyle(el).animationPlayState);
   await track.scrollIntoViewIfNeeded();
   await expect.poll(state).toBe('running');
-  await track.hover();
+  // The track never stops moving, so point at it directly (hover() waits for it to be still).
+  const box = (await track.locator('..').boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await expect.poll(state).toBe('paused');
   await page.mouse.move(0, 0);
   await expect.poll(state).toBe('running');
@@ -375,6 +377,24 @@ test('docs: playground picks are restored from the URL', async ({ page }) => {
   await expect(code).toContainText('variant="soft"');
   await expect(code).toContainText('color="danger"');
   await expect(code).toContainText('size="lg"');
+});
+
+test('landing: hand-drawn ink draws itself, and is shown finished with reduced motion', async ({ browser }) => {
+  // Normal motion: the three sketch diagrams finish drawing once scrolled to.
+  const page = await browser.newPage();
+  await page.goto('/');
+  await page.locator('#how').scrollIntoViewIfNeeded();
+  const offsets = () => page.locator('#how svg path').evaluateAll((els) => els.map((el) => parseFloat(getComputedStyle(el).strokeDashoffset)));
+  await expect.poll(async () => Math.max(...(await offsets())), { timeout: 8000 }).toBe(0);
+  await page.close();
+  // Reduced motion: no animation at all, every stroke fully drawn.
+  const ctx = await browser.newContext({ reducedMotion: 'reduce' });
+  const still = await ctx.newPage();
+  await still.goto('/');
+  const paths = still.locator('#how svg path');
+  expect(await paths.count()).toBeGreaterThan(10);
+  expect(await paths.evaluateAll((els) => els.every((el) => getComputedStyle(el).animationName === 'none'))).toBe(true);
+  await ctx.close();
 });
 
 test('landing: template screens link to their pages', async ({ page }) => {
