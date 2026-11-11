@@ -402,7 +402,7 @@ test('demo: create an order, filter it, and see the toast', async ({ page }) => 
   await page.goto('/demo');
   const app = page.getByTestId('demo-app');
   const nav = app.getByRole('navigation', { name: 'Demo app' }).first();
-  if (!(await nav.isVisible())) await app.getByRole('button', { name: 'Open menu' }).click();
+  if (!(await nav.isVisible())) await app.getByRole('button', { name: /^Demo sections/ }).click();
   await page.getByRole('navigation', { name: 'Demo app' }).filter({ visible: true }).getByRole('link', { name: /Orders/ }).click();
   await expect(page).toHaveURL(/\/demo#orders$/);
   await app.getByRole('button', { name: 'New order' }).click();
@@ -547,7 +547,7 @@ test('demo: choosing a view in the mobile menu moves focus to its heading', asyn
   await page.setViewportSize({ width: 375, height: 800 });
   await page.goto('/demo');
   const app = page.getByTestId('demo-app');
-  await app.getByRole('button', { name: 'Open menu' }).click();
+  await app.getByRole('button', { name: /^Demo sections/ }).click();
   const menu = page.getByRole('dialog', { name: 'Menu' });
   await menu.getByRole('link', { name: /Customers/ }).click();
   await expect(menu).toBeHidden();

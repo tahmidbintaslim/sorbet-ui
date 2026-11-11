@@ -61,4 +61,24 @@ describe('Alert', () => {
     );
     expect(getComputedStyle(screen.getByTestId('alert-loading')).opacity).not.toBe('0.8');
   });
+
+  it('shows the icon that matches its color, not a check mark for everything', () => {
+    const cases = [
+      ['info', 'InfoOutlinedIcon'],
+      ['success', 'CheckCircleOutlinedIcon'],
+      ['warning', 'ReportProblemOutlinedIcon'],
+      ['danger', 'ErrorOutlinedIcon'],
+      ['neutral', 'InfoOutlinedIcon'],
+    ] as const;
+    for (const [color, testId] of cases) {
+      const { unmount } = render(<Alert color={color}>{color}</Alert>);
+      expect(screen.getByTestId(testId)).toBeInTheDocument();
+      unmount();
+    }
+  });
+
+  it('hides the icon with icon={false}', () => {
+    render(<Alert icon={false} data-testid="no-icon">Plain</Alert>);
+    expect(screen.getByTestId('no-icon').querySelector('.MuiAlert-icon')).toBeNull();
+  });
 });

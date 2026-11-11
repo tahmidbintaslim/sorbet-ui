@@ -22,7 +22,7 @@ const TOKEN = {
 // Tiny TSX/shell highlighter: comments, strings, keywords and JSX tags. Good
 // enough for short docs snippets and avoids shipping a full highlighter.
 const RE =
-  /(\/\/.*$|^#.*$)|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`)|\b(import|from|export|default|function|return|const|let|type|interface|npm|pnpm|yarn|install|add)\b|(<\/?[A-Za-z][\w.]*)/gm;
+  /((?:^|(?<=\s))\/\/.*$|^#.*$)|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`)|\b(import|from|export|default|function|return|const|let|type|interface|npm|pnpm|yarn|install|add)\b|(<\/?[A-Za-z][\w.]*)/gm;
 
 function highlight(code: string): React.ReactNode[] {
   const out: React.ReactNode[] = [];

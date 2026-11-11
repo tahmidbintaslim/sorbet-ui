@@ -8,6 +8,10 @@ import {
 import { styled } from '@mui/material/styles';
 import { animations, colorScaleForMode, sizing, typography } from '@sorbet-ui/tokens';
 import * as React from 'react';
+import CheckCircleOutlined from '@mui/icons-material/CheckCircleOutlined';
+import ErrorOutlined from '@mui/icons-material/ErrorOutlined';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import ReportProblemOutlined from '@mui/icons-material/ReportProblemOutlined';
 
 // =============================================================================
 // TYPES
@@ -185,6 +189,18 @@ const LoadingWrapper = styled('span')({
 // COMPONENT
 // =============================================================================
 
+// Default icon per color. Sorbet never passes MUI a `severity`, so without this MUI
+// falls back to its own default (success) and every alert showed a check mark.
+const DEFAULT_ICON: Record<NonNullable<AlertProps['color']>, React.ComponentType<{ fontSize?: 'inherit' }>> = {
+  primary: InfoOutlined,
+  secondary: InfoOutlined,
+  neutral: InfoOutlined,
+  info: InfoOutlined,
+  success: CheckCircleOutlined,
+  warning: ReportProblemOutlined,
+  danger: ErrorOutlined,
+};
+
 export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
   (
     {
@@ -217,7 +233,9 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
       if (startIcon) {
         return startIcon;
       }
-      return icon;
+      if (icon !== undefined) return icon; // includes icon={false} to hide it
+      const Icon = DEFAULT_ICON[color] ?? InfoOutlined;
+      return <Icon fontSize="inherit" />;
     };
 
     return (

@@ -5,6 +5,7 @@
 import * as React from 'react';
 import {
   Box,
+  Button as MuiButton,
   CardActionArea,
   DialogActions,
   DialogContent,
@@ -31,7 +32,7 @@ import Add from '@mui/icons-material/Add';
 import Close from '@mui/icons-material/Close';
 import TrendingUp from '@mui/icons-material/TrendingUp';
 import TrendingDown from '@mui/icons-material/TrendingDown';
-import Menu from '@mui/icons-material/Menu';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
   Alert,
   Avatar,
@@ -670,7 +671,7 @@ export default function DemoApp() {
           <Box sx={{ width: 260 }}>
             <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
               <Typography sx={{ fontWeight: 800 }}>Acme Admin</Typography>
-              <IconButton aria-label="Close menu" onClick={() => setMobileNav(false)}>
+              <IconButton aria-label="Close sections" onClick={() => setMobileNav(false)}>
                 <Close />
               </IconButton>
             </Stack>
@@ -681,10 +682,19 @@ export default function DemoApp() {
         <Box sx={{ flex: 1, minWidth: 0 }}>
           {/* Top bar */}
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', px: { xs: 2, md: 4 }, py: 1.5, borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
-            <IconButton aria-label="Open menu" aria-expanded={mobileNav} onClick={() => setMobileNav(true)} sx={{ display: { md: 'none' } }}>
-              <Menu />
-            </IconButton>
-            <Typography sx={{ fontWeight: 700, flex: 1 }}>{NAV.find((n) => n.id === view)?.label}</Typography>
+            {/* Phones: a labelled section switcher, so it can't be mistaken for the site menu above it. */}
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <MuiButton
+                aria-label={`Demo sections, current: ${NAV.find((n) => n.id === view)?.label}`}
+                aria-expanded={mobileNav}
+                onClick={() => setMobileNav(true)}
+                endIcon={<ExpandMore />}
+                sx={{ display: { md: 'none' }, minHeight: 44, px: 1.5, borderRadius: 999, fontWeight: 700, color: 'text.primary', bgcolor: 'action.hover', textTransform: 'none' }}
+              >
+                {NAV.find((n) => n.id === view)?.label}
+              </MuiButton>
+              <Typography sx={{ fontWeight: 700, display: { xs: 'none', md: 'block' } }}>{NAV.find((n) => n.id === view)?.label}</Typography>
+            </Box>
             <Badge badgeContent={3} color="danger">
               <Avatar size="sm" status="online">
                 SR
