@@ -8,7 +8,8 @@ import { Button, Switch } from '@sorbet-ui/react';
 import { TOUCH, touchTarget } from '@/lib/touch';
 import { colorPalette } from '@sorbet-ui/tokens';
 import CodeBlock from '../CodeBlock';
-import { SCOOPS, scoop } from '@/lib/scoops';
+import Burst from '../fun/Burst';
+import { CandyFrame } from '../fun/Decor';
 import { COLORS, SIZES, type Color, type Size } from '@/lib/site';
 
 const VARIANTS = ['solid', 'soft', 'outlined', 'dash', 'ghost', 'plain'] as const;
@@ -22,48 +23,6 @@ const DOT: Record<Color, string> = {
   info: colorPalette.info[500],
   neutral: colorPalette.neutral[500],
 };
-
-// Sprinkle burst: candy confetti (dots, sprinkles and tiny scoops) pops out of the
-// button, arcs and falls. transform/opacity only; skipped for reduced motion.
-function Burst({ id }: { id: number }) {
-  const bits = React.useMemo(
-    () =>
-      Array.from({ length: 26 }, (_, i) => {
-        const a = (i / 26) * Math.PI * 2 + Math.random() * 0.3;
-        const r = 70 + Math.random() * 90;
-        const x = Math.cos(a) * r;
-        const y = Math.sin(a) * r * 0.75;
-        return {
-          x,
-          y: [0, y - 30, y + 40 + Math.random() * 30],
-          rotate: (Math.random() - 0.5) * 720,
-          shape: i % 3,
-          c: SCOOPS[i % SCOOPS.length],
-          delay: Math.random() * 0.06,
-        };
-      }),
-    [id],
-  );
-  return (
-    <Box aria-hidden sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: 'grid', placeItems: 'center', overflow: 'hidden' }}>
-      {bits.map((d, i) => (
-        <motion.span
-          key={`${id}-${i}`}
-          initial={{ x: 0, y: 0, scale: 0.4, opacity: 1, rotate: 0 }}
-          animate={{ x: d.x, y: d.y, scale: [0.4, 1.15, 0.6], opacity: [1, 1, 0], rotate: d.rotate }}
-          transition={{ duration: 1.1, ease: [0.2, 0.8, 0.4, 1], times: [0, 0.4, 1], delay: d.delay }}
-          style={{
-            position: 'absolute',
-            width: d.shape === 1 ? 14 : 10,
-            height: d.shape === 1 ? 5 : 10,
-            borderRadius: d.shape === 2 ? '50% 50% 20% 20%' : 999,
-            background: scoop(d.c, 'fill'),
-          }}
-        />
-      ))}
-    </Box>
-  );
-}
 
 export default function LivePlayground() {
   const reduce = useReducedMotion();
@@ -110,8 +69,7 @@ export default function LivePlayground() {
         <CodeBlock code={code} title={file === 'tsx' ? 'ShipIt.tsx' : 'App.tsx'} label="Playground source" />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }} sx={{ order: { xs: 1, md: 2 } }}>
-        <Box sx={{ height: '100%', p: '5px', borderRadius: '22px', background: `linear-gradient(135deg, ${SCOOPS.map((c) => scoop(c, 'fill')).join(', ')})` }}>
-        <Box sx={{ height: '100%', borderRadius: '17px', bgcolor: 'background.paper', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <CandyFrame sx={{ height: '100%' }} innerSx={{ bgcolor: 'background.paper', display: 'flex', flexDirection: 'column' }}>
           <Box
            
             data-testid="playground-preview"
@@ -130,7 +88,7 @@ export default function LivePlayground() {
                 Ship it
               </Button>
             </motion.div>
-            <AnimatePresence>{bursts.map((id) => <Burst key={id} id={id} />)}</AnimatePresence>
+            <AnimatePresence>{bursts.map((id) => <Burst key={id} />)}</AnimatePresence>
           </Box>
           <Stack spacing={2} sx={{ p: 2.5, borderTop: 1, borderColor: 'divider' }}>
             <ToggleButtonGroup size="small" exclusive value={variant} onChange={(_, v) => v && pickVariant(v)} aria-label="Variant" sx={{ flexWrap: 'wrap', '& .MuiToggleButton-root': touchTarget }}>
@@ -193,8 +151,7 @@ export default function LivePlayground() {
               <Switch label="Loading" checked={loading} onChange={(_, c) => setLoading(c)} />
             </Stack>
           </Stack>
-        </Box>
-        </Box>
+        </CandyFrame>
       </Grid>
     </Grid>
   );

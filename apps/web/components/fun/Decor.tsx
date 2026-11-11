@@ -236,3 +236,86 @@ export function Shine() {
     />
   );
 }
+
+const ALL_FILLS = (['danger', 'warning', 'success', 'info', 'primary', 'secondary'] as Scoop[]).map((s) => scoop(s, 'fill'));
+
+/** Candy frame: a thick gradient border in every flavor around a display case. */
+export function CandyFrame({ children, sx, innerSx }: { children: React.ReactNode; sx?: SxProps<Theme>; innerSx?: SxProps<Theme> }) {
+  return (
+    <Box sx={[{ p: '5px', borderRadius: '22px', background: `linear-gradient(135deg, ${ALL_FILLS.join(', ')})` }, ...(Array.isArray(sx) ? sx : [sx])]}>
+      <Box sx={[{ height: '100%', borderRadius: '17px', bgcolor: 'background.default', overflow: 'hidden' }, ...(Array.isArray(innerSx) ? innerSx : [innerSx])]}>
+        {children}
+      </Box>
+    </Box>
+  );
+}
+
+// Melted edge: a flat top with drips of different lengths, tiled as a mask.
+const DRIP =
+  'M0 0H240V10C232 10 232 30 222 30C212 30 214 12 204 12C194 12 196 22 186 22C176 22 178 10 166 10C154 10 158 36 146 36C134 36 138 14 126 14C116 14 118 24 108 24C98 24 100 10 88 10C76 10 80 28 70 28C60 28 62 12 50 12C40 12 42 20 32 20C22 20 24 10 12 10C6 10 4 10 0 10Z';
+const DRIP_MASK = `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='240' height='40'><path d='${DRIP}'/></svg>`)}")`;
+
+/** A strip of melting sorbet in every flavor, dripping down from its top edge. */
+export function Drips({ sx }: { sx?: SxProps<Theme> }) {
+  return (
+    <Box
+      aria-hidden
+      data-testid="drips"
+      sx={[
+        {
+          height: 40,
+          background: `linear-gradient(90deg, ${[...ALL_FILLS, ALL_FILLS[0]].join(', ')})`,
+          maskImage: DRIP_MASK,
+          WebkitMaskImage: DRIP_MASK,
+          maskRepeat: 'repeat-x',
+          WebkitMaskRepeat: 'repeat-x',
+          maskPosition: '50% 0',
+          WebkitMaskPosition: '50% 0',
+          pointerEvents: 'none',
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
+    />
+  );
+}
+
+/** A small scoop-shaped dot: the flavor mark used in lists and pickers. */
+export function ScoopDot({ c, size = 12, sx }: { c: Scoop | 'neutral'; size?: number; sx?: SxProps<Theme> }) {
+  return (
+    <Box
+      aria-hidden
+      component="span"
+      className="scoop-dot"
+      sx={[
+        {
+          display: 'inline-block',
+          flexShrink: 0,
+          width: size,
+          height: size,
+          borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+          bgcolor: c === 'neutral' ? 'text.disabled' : scoop(c, 'fill'),
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
+    />
+  );
+}
+
+/** A sticker with a short handwritten label on it (a count, "Free"). */
+export function StickerBadge({ c, children, size = 46, rotate = 8, sx }: { c: Scoop; children: React.ReactNode; size?: number; rotate?: number; sx?: SxProps<Theme> }) {
+  return (
+    <Box
+      component="span"
+      className="sticker-badge"
+      sx={[{ position: 'relative', display: 'grid', placeItems: 'center', flexShrink: 0, width: size, height: size, rotate: `${rotate}deg` }, ...(Array.isArray(sx) ? sx : [sx])]}
+    >
+      <Sticker c={c} />
+      <Box
+        component="span"
+        sx={{ position: 'relative', zIndex: 1, fontFamily: 'var(--font-hand), cursive', fontWeight: 700, fontSize: Math.round(size * 0.48), lineHeight: 1, color: scoop(c, 'ink') }}
+      >
+        {children}
+      </Box>
+    </Box>
+  );
+}
