@@ -14,8 +14,9 @@ import Logo from './Logo';
 import GitHubStars from './GitHubStars';
 import { SITE } from '@/lib/site';
 import { TOUCH, touchRow, touchTarget } from '@/lib/touch';
-import { NO_MOTION, scoop, scoopAt, scoopVars } from '@/lib/scoops';
-import { ScoopRow } from './fun/Decor';
+import { NO_MOTION, SCOOPS, scoop, scoopVars, type Scoop } from '@/lib/scoops';
+import { SECTION_FLAVOR, flavorOf } from '@/lib/sections';
+import { Drips, ScoopRow } from './fun/Decor';
 
 const wiggle = keyframes`
   0%, 100% { transform: rotate(0) scale(1); }
@@ -24,13 +25,14 @@ const wiggle = keyframes`
   70% { transform: rotate(-5deg); }
 `;
 
-const NAV = [
-  { href: '/docs', label: 'Docs' },
-  { href: '/docs/components', label: 'Components' },
-  { href: '/docs/theming', label: 'Theming' },
-  { href: '/blocks', label: 'Blocks' },
-  { href: '/templates', label: 'Templates' },
-  { href: '/demo', label: 'Demo' },
+// Each section keeps its flavor everywhere: nav pill, page header band, accents.
+const NAV: { href: string; label: string; c: Scoop }[] = [
+  { href: '/docs', label: 'Docs', c: SECTION_FLAVOR.docs },
+  { href: '/docs/components', label: 'Components', c: SECTION_FLAVOR.components },
+  { href: '/docs/theming', label: 'Theming', c: SECTION_FLAVOR.theming },
+  { href: '/blocks', label: 'Blocks', c: SECTION_FLAVOR.blocks },
+  { href: '/templates', label: 'Templates', c: SECTION_FLAVOR.templates },
+  { href: '/demo', label: 'Demo', c: SECTION_FLAVOR.demo },
 ];
 
 const FOOTER = [
@@ -67,8 +69,7 @@ const navLinkSx = {
 } as const;
 
 /** Each nav item is its own scoop: a pastel pill on hover and when active. */
-const scoopPill = (i: number, active: boolean) => {
-  const s = scoopAt(i);
+const scoopPill = (s: Scoop, active: boolean) => {
   const on = { color: scoop(s, 'pill'), bgcolor: scoop(s, 'pastel') };
   return {
     ...(active && on),
@@ -91,6 +92,7 @@ const drawerLinkSx = {
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   const { mode, toggle } = useColorMode();
   const pathname = usePathname();
+  const flavor = flavorOf(pathname);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const menuButton = React.useRef<HTMLButtonElement>(null);
   const closeMenu = () => setMenuOpen(false);
@@ -127,6 +129,18 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
           borderColor: 'divider',
           bgcolor: alpha(t.palette.background.default, 0.8),
           backdropFilter: 'saturate(180%) blur(12px)',
+          // Awning trim under the header: the section's flavor, or every flavor at home.
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: -1,
+            height: 3,
+            background: flavor
+              ? `repeating-linear-gradient(90deg, ${scoop(flavor, 'fill')} 0 24px, ${scoop(flavor, 'pastel')} 24px 48px)`
+              : `linear-gradient(90deg, ${SCOOPS.map((c) => scoop(c, 'fill')).join(', ')})`,
+          },
         })}
       >
         <Container maxWidth="lg" sx={{ display: 'flex', alignItems: 'center', columnGap: 3, minHeight: 64 }}>
@@ -152,7 +166,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
           </Stack>
 
           <Box component="nav" aria-label="Main" sx={{ display: { xs: 'none', md: 'flex' }, flexGrow: 1, gap: 0.5 }}>
-            {NAV.map((n, i) => {
+            {NAV.map((n) => {
               const active = isActive(n.href, pathname);
               return (
                 <Link
@@ -161,7 +175,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                   href={n.href}
                   underline="none"
                   aria-current={active ? 'page' : undefined}
-                  sx={{ ...navLinkSx, ...touchRow, fontWeight: active ? 700 : 500, color: 'text.secondary', ...scoopPill(i, active) }}
+                  sx={{ ...navLinkSx, ...touchRow, fontWeight: active ? 700 : 500, color: 'text.secondary', ...scoopPill(n.c, active) }}
                 >
                   {n.label}
                 </Link>
@@ -223,7 +237,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
         </Stack>
         <Box component="nav" aria-label="Main" sx={{ p: 1 }}>
           <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0 }}>
-            {NAV.map((n, i) => {
+            {NAV.map((n) => {
               const active = isActive(n.href, pathname);
               return (
                 <li key={n.href}>
@@ -233,7 +247,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                     underline="none"
                     onClick={closeMenu}
                     aria-current={active ? 'page' : undefined}
-                    sx={{ ...drawerLinkSx, fontWeight: active ? 700 : 500, ...scoopPill(i, active) }}
+                    sx={{ ...drawerLinkSx, fontWeight: active ? 700 : 500, ...scoopPill(n.c, active) }}
                   >
                     {n.label}
                   </Link>
@@ -262,9 +276,11 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
         {children}
       </Box>
 
-      <Box component="footer" sx={{ borderTop: 1, borderColor: 'divider', pt: 6, pb: 4, mt: 10, position: 'relative' }}>
+      <Box component="footer" sx={{ pb: 4, mt: 12, position: 'relative' }}>
+        {/* Melting top edge with a row of cones standing on it. */}
         <ScoopRow size={22} sx={{ position: 'absolute', top: -27, left: '50%', transform: 'translateX(-50%)' }} />
-        <Container maxWidth="lg">
+        <Drips />
+        <Container maxWidth="lg" sx={{ pt: 3 }}>
           <Grid container spacing={4}>
             <Grid size={{ xs: 12, md: 6 }}>
               <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
