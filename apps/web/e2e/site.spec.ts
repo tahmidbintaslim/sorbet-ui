@@ -420,7 +420,7 @@ test('blocks: code tab shows the block source', async ({ page }) => {
 });
 
 test('headings never skip a level, so screen-reader outlines stay intact', async ({ page }) => {
-  for (const route of ['/', '/blocks', '/demo', '/docs', '/docs/theming', '/templates', ...TEMPLATE_ROUTES, ...BLOCK_ROUTES]) {
+  for (const route of ['/', '/blocks', '/demo', '/docs', '/docs/theming', '/docs/components', '/docs/components/button', '/templates', ...TEMPLATE_ROUTES, ...BLOCK_ROUTES]) {
     await page.goto(route);
     const levels = await page.evaluate(() =>
       [...document.querySelectorAll('h1,h2,h3,h4,h5,h6')]
@@ -613,4 +613,109 @@ test('demo: choosing a view in the mobile menu moves focus to its heading', asyn
   await expect(menu).toBeHidden();
   await expect(page).toHaveURL(/\/demo#customers$/);
   await expect(app.getByRole('heading', { level: 2, name: 'Customers' })).toBeFocused();
+});
+
+// ---------------------------------------------------------------- Sorbet look on every page
+
+test('404: shows the dropped-cone illustration and a working home link', async ({ page }) => {
+  const res = await page.goto('/no/such/page');
+  expect(res?.status()).toBe(404);
+  await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible();
+  const cone = page.getByTestId('dropped-cone');
+  await expect(cone).toBeVisible();
+  expect(await cone.locator('svg path').count()).toBeGreaterThan(3);
+  // Decorative: hidden from assistive tech.
+  await expect(cone).toHaveAttribute('aria-hidden', 'true');
+  await page.getByRole('main').getByRole('link', { name: 'Back to home' }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Already on Material UI?');
+});
+
+const HEADERS = [
+  ['/docs', 'cone', 'success'],
+  ['/docs/components', 'popsicle', 'primary'],
+  ['/docs/components/button', 'popsicle', 'primary'],
+  ['/docs/theming', 'jar', 'warning'],
+  ['/blocks', 'waffle', 'danger'],
+  ['/blocks/hero', 'waffle', 'danger'],
+  ['/templates', 'sundae', 'secondary'],
+  ['/templates/saas-landing', 'sundae', 'secondary'],
+] as const;
+
+test('page headers: every section has its flavor band with its doodle and the h1 inside', async ({ page }) => {
+  for (const [route, doodle, flavor] of HEADERS) {
+    await page.goto(route);
+    const header = page.getByTestId('page-header');
+    await expect(header, route).toHaveAttribute('data-flavor', flavor);
+    await expect(header.getByRole('heading', { level: 1 }), route).toBeVisible();
+    await expect(header.getByTestId('doodle'), route).toHaveAttribute('data-doodle', doodle);
+    await expect(header.getByTestId('awning'), route).toBeVisible();
+  }
+});
+
+test('docs header: the section doodle draws itself, and is fully drawn with reduced motion', async ({ browser }) => {
+  // Normal motion: every stroke finishes drawing.
+  const page = await browser.newPage();
+  await page.goto('/docs');
+  const offsets = () =>
+    page
+      .locator('[data-testid="page-header"] [data-testid="doodle"] svg path[pathLength]')
+      .evaluateAll((els) => els.map((el) => parseFloat(getComputedStyle(el).strokeDashoffset)));
+  await expect.poll(async () => Math.max(...(await offsets())), { timeout: 8000 }).toBe(0);
+  await page.close();
+  // Reduced motion: the doodle is in the static HTML and never animates, so it is shown finished.
+  const ctx = await browser.newContext({ reducedMotion: 'reduce' });
+  const still = await ctx.newPage();
+  const html = await (await still.request.get('/docs')).text();
+  expect(html).toContain('data-doodle="cone"');
+  await still.goto('/docs');
+  const doodle = still.getByTestId('page-header').getByTestId('doodle');
+  await expect(doodle).toBeVisible();
+  const paths = doodle.locator('svg path[pathLength]');
+  expect(await paths.count()).toBeGreaterThan(4);
+  expect(
+    await paths.evaluateAll((els) => els.every((el) => getComputedStyle(el).animationName === 'none' && getComputedStyle(el).opacity === '1')),
+  ).toBe(true);
+  // The header text is never hidden either.
+  await expect(still.getByRole('heading', { level: 1, name: 'Getting started' })).toBeVisible();
+  await ctx.close();
+});
+
+test('docs sidebar: the current page is a pill in its section flavor', async ({ page }) => {
+  await page.goto('/docs/theming');
+  await openIfCollapsed(page, 'Docs');
+  const current = page.getByRole('navigation', { name: 'Docs' }).locator('[aria-current="page"]');
+  await expect(current).toHaveText('Theming');
+  const expected = await page.evaluate(() => {
+    const probe = document.createElement('i');
+    probe.style.backgroundColor = 'var(--scoop-warning-pastel)';
+    document.body.append(probe);
+    const c = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return c;
+  });
+  await expect(current).toHaveCSS('background-color', expected);
+});
+
+test('blocks: a search with no results shows the empty cone', async ({ page }) => {
+  await page.goto('/blocks?q=zzzz-nothing');
+  const empty = page.getByTestId('block-search-empty');
+  await expect(empty).toContainText('No blocks match');
+  await expect(empty.getByTestId('doodle')).toHaveAttribute('data-doodle', 'emptyCone');
+});
+
+test('copy button: a sprinkle burst on success, none with reduced motion', async ({ browser }) => {
+  for (const reducedMotion of ['no-preference', 'reduce'] as const) {
+    const ctx = await browser.newContext({ reducedMotion, permissions: ['clipboard-read', 'clipboard-write'] });
+    await stubGitHub(ctx);
+    const page = await ctx.newPage();
+    await page.goto('/docs/theming');
+    const button = page.getByRole('button', { name: 'Copy code' }).first();
+    await button.click();
+    await expect(button).toHaveAttribute('data-copy-state', 'copied');
+    const burst = page.getByTestId('copy-burst');
+    if (reducedMotion === 'reduce') await expect(burst).toHaveCount(0);
+    else await expect(burst.locator('span').first()).toBeAttached();
+    await ctx.close();
+  }
 });

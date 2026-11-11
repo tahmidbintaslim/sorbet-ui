@@ -91,6 +91,10 @@ describe.each(semanticColors)('%s tokens on a white page (WCAG AA text)', (name)
     expect(contrast(scale.main, WHITE)).toBeGreaterThanOrEqual(AA_TEXT);
   });
 
+  it('outlined and ghost hover: dark on the alpha8 tint', () => {
+    expect(contrast(scale.dark, scale.alpha8)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+
   it('outlined and link hover: dark on white', () => {
     expect(contrast(scale.dark, WHITE)).toBeGreaterThanOrEqual(AA_TEXT);
   });
@@ -158,6 +162,11 @@ describe.each(semanticColors)('%s tokens on a dark page', (name) => {
 
   it('solid active: contrastText on the pressed shade', () => {
     expect(contrast(scale.contrastText, solidActiveShade(scale))).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+
+  it('outlined and ghost hover: dark on the alpha8 tint, on the page and on paper', () => {
+    expect(contrast(scale.dark, scale.alpha8, DARK_PAGE)).toBeGreaterThanOrEqual(AA_TEXT);
+    expect(contrast(scale.dark, scale.alpha8, DARK_PAPER)).toBeGreaterThanOrEqual(AA_TEXT);
   });
 
   it('is lighter than the light-theme main, so text on dark surfaces gains contrast', () => {
@@ -340,6 +349,38 @@ describe('site scoops', () => {
   it('secondary text on every scoop tint, both modes', () => {
     for (const bg of lightTints) expect(contrast(textColors.light.secondary, bg)).toBeGreaterThanOrEqual(AA_TEXT);
     for (const bg of darkTints) expect(contrast(textColors.dark.secondary, bg)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+
+  // Section pages: header bands, drawers, menu cards and sticker badges.
+  const DARK_PAPER = backgrounds.dark.paper;
+  const darkPaperTints = SCOOPS.map((s) => over(colorPalette[s].alpha8, DARK_PAPER));
+
+  it('page header band: title text on every scoop tint, both modes', () => {
+    for (const bg of lightTints) expect(contrast(textColors.light.primary, bg)).toBeGreaterThanOrEqual(AA_TEXT);
+    for (const bg of darkTints) expect(contrast(textColors.dark.primary, bg)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+
+  it('dark: text on a scoop tint over a paper surface (demo sidebar note)', () => {
+    for (const bg of darkPaperTints) {
+      expect(contrast(textColors.dark.primary, bg)).toBeGreaterThanOrEqual(AA_TEXT);
+      expect(contrast(textColors.dark.secondary, bg)).toBeGreaterThanOrEqual(AA_TEXT);
+    }
+  });
+
+  describe.each(SCOOPS)('%s on section pages', (name) => {
+    const s = colorPalette[name];
+
+    it('dark: current-page pill and sticker ink on their pastel over a paper surface (drawers, menu cards)', () => {
+      const pastel = over(s.alpha20, DARK_PAPER);
+      expect(contrast(s[200], pastel)).toBeGreaterThanOrEqual(AA_TEXT);
+      expect(contrast(s[300], pastel)).toBeGreaterThanOrEqual(AA_TEXT);
+    });
+    it('dark: sticker ink on its pastel over any header band tint', () => {
+      for (const tint of darkTints) expect(contrast(s[300], over(s.alpha20, tint))).toBeGreaterThanOrEqual(AA_TEXT);
+    });
+    it('dark: ink on a scoop tint over a paper surface', () => {
+      for (const bg of darkPaperTints) expect(contrast(s[300], bg)).toBeGreaterThanOrEqual(AA_TEXT);
+    });
   });
 });
 

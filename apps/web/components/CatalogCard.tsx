@@ -40,7 +40,7 @@ export default function CatalogCard({ href, name, description }: { href: string;
         sx={{ flexShrink: 0, mt: 0.5, width: 14, height: 14, borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%', bgcolor: scoop(s, 'fill'), transition: 'transform .35s cubic-bezier(.3,1.8,.5,1)' }}
       />
       <Box sx={{ minWidth: 0 }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.4 }}>
+        <Typography component="h2" variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.4 }}>
           {name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
