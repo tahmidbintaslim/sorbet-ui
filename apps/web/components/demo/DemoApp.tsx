@@ -53,6 +53,7 @@ import {
   TextField,
 } from '@sorbet-ui/react';
 import { colorPalette } from '@sorbet-ui/tokens';
+import { scoop } from '@/lib/scoops';
 import { CountUp, EASE } from '../motion';
 import { CUSTOMERS, ORDERS, RANGES, STATUS_COLOR, emailFor, formatDate, money, type Customer, type Order, type OrderStatus, type RangeId } from './data';
 
@@ -642,7 +643,7 @@ export default function DemoApp() {
             <Typography sx={{ fontWeight: 800 }}>Acme Admin</Typography>
           </Stack>
           {nav}
-          <Box sx={{ m: 2, p: 2, borderRadius: 3, bgcolor: 'action.hover' }}>
+          <Box sx={{ m: 2, p: 2, borderRadius: 3, bgcolor: scoop('info', 'tint'), border: 1, borderColor: scoop('info', 'pastel') }}>
             <Typography variant="body2" sx={{ fontWeight: 700 }}>
               This is a demo
             </Typography>
