@@ -1,19 +1,16 @@
 'use client';
-// Back link + category pills for /blocks/[category]. Client-side because MUI
+// Category pills for /blocks/[category]. Client-side because MUI
 // receives NextLink (a function) as its `component`.
 import * as React from 'react';
 import NextLink from 'next/link';
-import { Box, Link } from '@mui/material';
+import { Box } from '@mui/material';
 import { categoriesWithBlocks } from '@/lib/blocks';
-import { TOUCH, touchRow } from '@/lib/touch';
+import { TOUCH } from '@/lib/touch';
+import { scoop } from '@/lib/scoops';
+import { SECTION_FLAVOR } from '@/lib/sections';
 
-export function BackToBlocks() {
-  return (
-    <Link component={NextLink} href="/blocks" underline="hover" sx={{ fontSize: 14, ...touchRow, display: 'inline-flex' }}>
-      ← All blocks
-    </Link>
-  );
-}
+const F = SECTION_FLAVOR.blocks;
+const ON = { bgcolor: scoop(F, 'pastel'), color: scoop(F, 'pill'), borderColor: scoop(F, 'fill') };
 
 // Fade the scroll row's edges so it reads as scrollable on phones.
 const FADE = 'linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 32px), transparent 100%)';
@@ -58,15 +55,16 @@ export default function BlockCategoryNav({ current }: { current: string }) {
             flexShrink: 0,
             px: 1.5,
             py: 0.75,
-            borderRadius: 2,
+            borderRadius: 999,
             border: 1,
-            borderColor: x.id === current ? 'primary.main' : 'divider',
+            borderColor: 'divider',
             color: 'text.primary',
             textDecoration: 'none',
             fontSize: 14,
             fontWeight: 600,
-            bgcolor: x.id === current ? 'action.selected' : 'transparent',
-            '&:hover': { bgcolor: 'action.hover' },
+            transition: 'background-color .2s, color .2s, border-color .2s',
+            ...(x.id === current && ON),
+            '&:hover': ON,
             [TOUCH]: { minHeight: 44, display: 'inline-flex', alignItems: 'center' },
           }}
         >

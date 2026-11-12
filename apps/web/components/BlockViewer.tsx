@@ -8,18 +8,23 @@ import { AnimatePresence, motion } from 'motion/react';
 import CodeBlock, { CommandLine } from './CodeBlock';
 import { addCommand, registryName } from '@/lib/registry';
 import { touchTarget } from '@/lib/touch';
+import { scoopAt } from '@/lib/scoops';
+import { ScoopDot } from './fun/Decor';
 
 export default function BlockViewer({
   id,
   name,
   description,
   source,
+  index = 0,
   children,
 }: {
   id: string;
   name: string;
   description: string;
   source: string;
+  /** Position on the page: picks the block's flavor mark. */
+  index?: number;
   children: React.ReactNode;
 }) {
   const [view, setView] = React.useState<'preview' | 'code'>('preview');
@@ -27,7 +32,8 @@ export default function BlockViewer({
     <Box component="article" id={id} sx={{ scrollMarginTop: 80 }}>
       <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', mb: 1.5 }} useFlexGap>
         <Box>
-          <Typography component="h2" sx={{ fontWeight: 700, fontSize: 18 }}>
+          <Typography component="h2" sx={{ fontWeight: 700, fontSize: 18, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <ScoopDot c={scoopAt(index)} size={13} />
             {name}
           </Typography>
           <Typography variant="body2" color="text.secondary">

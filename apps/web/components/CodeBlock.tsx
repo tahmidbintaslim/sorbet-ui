@@ -4,7 +4,9 @@ import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import Check from '@mui/icons-material/Check';
 import ErrorOutline from '@mui/icons-material/ErrorOutlineOutlined';
+import { useReducedMotion } from 'motion/react';
 import { touchTarget } from '@/lib/touch';
+import Burst from './fun/Burst';
 
 const MONO = 'var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
 
@@ -46,6 +48,8 @@ type CopyState = 'idle' | 'copied' | 'failed';
 
 function useCopy(text: string) {
   const [state, setState] = React.useState<CopyState>('idle');
+  // Counts successful copies, so each one gets a fresh sprinkle burst.
+  const [copies, setCopies] = React.useState(0);
   const timer = React.useRef<number | undefined>(undefined);
   // Never set state after the block unmounts (e.g. navigating away right after copying).
   React.useEffect(() => () => window.clearTimeout(timer.current), []);
@@ -61,10 +65,11 @@ function useCopy(text: string) {
       next = 'failed';
     }
     setState(next);
+    if (next === 'copied') setCopies((n) => n + 1);
     // A failure stays up longer so there is time to read it.
     timer.current = window.setTimeout(() => setState('idle'), next === 'failed' ? 5000 : 1500);
   };
-  return { state, copy };
+  return { state, copy, copies };
 }
 
 const FAILED = 'Copy failed. Select the code and copy it manually.';
@@ -80,7 +85,8 @@ const SR_ONLY = {
 } as const;
 
 function CopyButton({ text, onDark }: { text: string; onDark?: boolean }) {
-  const { state, copy } = useCopy(text);
+  const { state, copy, copies } = useCopy(text);
+  const reduce = useReducedMotion();
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, minWidth: 0 }}>
       {/* Announces the result; the failure is also shown as text, not only in a tooltip. */}
@@ -102,6 +108,7 @@ function CopyButton({ text, onDark }: { text: string; onDark?: boolean }) {
       >
         {state === 'failed' ? FAILED : state === 'copied' ? 'Copied' : ''}
       </Typography>
+      <Box sx={{ position: 'relative', display: 'inline-flex' }}>
       <Tooltip title={state === 'copied' ? 'Copied' : state === 'failed' ? 'Copy failed' : 'Copy'}>
         <IconButton
           size="small"
@@ -119,6 +126,9 @@ function CopyButton({ text, onDark }: { text: string; onDark?: boolean }) {
           )}
         </IconButton>
       </Tooltip>
+      {/* A tiny sprinkle burst says "copied". Clipped to a box just around the button. */}
+      {state === 'copied' && !reduce && <Burst key={copies} testId="copy-burst" count={10} reach={[14, 30]} scale={0.6} sx={{ inset: -16 }} />}
+      </Box>
     </Box>
   );
 }

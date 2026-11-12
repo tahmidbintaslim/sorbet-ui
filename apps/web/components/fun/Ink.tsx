@@ -26,6 +26,7 @@ export default function Ink({
   duration = 1.2,
   delay = 0,
   stretch = false,
+  tone = 'fill',
   sx,
 }: {
   /** One entry per pen stroke, in drawing order. */
@@ -39,6 +40,8 @@ export default function Ink({
   delay?: number;
   /** Stretch to fill its box (for circling a word of any width). */
   stretch?: boolean;
+  /** `fill` is the soft marker color; `ink` is the darker pen for small drawings. */
+  tone?: 'fill' | 'ink';
   sx?: SxProps<Theme>;
 }) {
   const ref = React.useRef<SVGSVGElement>(null);
@@ -65,7 +68,7 @@ export default function Ink({
             key={i}
             d={st.d}
             pathLength={1}
-            stroke={st.neutral ? 'currentColor' : scoop(st.c ?? c, 'fill')}
+            stroke={st.neutral ? 'currentColor' : scoop(st.c ?? c, tone)}
             strokeWidth={st.w ?? width}
             sx={{
               strokeDasharray: 1,

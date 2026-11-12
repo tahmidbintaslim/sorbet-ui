@@ -5,6 +5,8 @@ import { Typography } from '@mui/material';
 import CodeBlock from '@/components/CodeBlock';
 import { CATALOG, getEntry } from '@/lib/catalog';
 import Playground from '@/components/Playground';
+import PageHeader from '@/components/fun/PageHeader';
+import { SECTION_FLAVOR } from '@/lib/sections';
 
 type Params = Promise<{ slug: string }>;
 
@@ -25,12 +27,9 @@ export default async function ComponentPage({ params }: { params: Params }) {
 
   return (
     <>
-      <Typography component="h1" variant="h3" sx={{ fontWeight: 800 }} gutterBottom>
-        {demo.name}
-      </Typography>
-      <Typography color="text.secondary" sx={{ mb: 3 }}>
+      <PageHeader flavor={SECTION_FLAVOR.components} doodle="popsicle" title={demo.name} back={{ href: '/docs/components', label: 'All components' }}>
         {demo.description}
-      </Typography>
+      </PageHeader>
       <Playground slug={demo.slug} />
       <Typography component="h2" variant="h6" sx={{ fontWeight: 700, mt: 4 }}>
         Import

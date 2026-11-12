@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import { pageMeta } from '@/lib/seo';
-import { Grid, Link, Typography } from '@mui/material';
+import { Grid, Link } from '@mui/material';
 import CatalogCard from '@/components/CatalogCard';
 import { CATALOG } from '@/lib/catalog';
 import { SITE } from '@/lib/site';
+import PageHeader from '@/components/fun/PageHeader';
+import { SECTION_FLAVOR } from '@/lib/sections';
 
 export const metadata: Metadata = pageMeta({
   title: 'Components',
@@ -14,17 +16,14 @@ export const metadata: Metadata = pageMeta({
 export default function Components() {
   return (
     <>
-      <Typography component="h1" variant="h3" sx={{ fontWeight: 800 }} gutterBottom>
-        Components
-      </Typography>
-      <Typography color="text.secondary" sx={{ mb: 3 }}>
+      <PageHeader flavor={SECTION_FLAVOR.components} doodle="popsicle" aside="pick a flavor" title="Components">
         Each page has a live preview with variant, color and size pickers and matching source.
         Autocomplete, DatePicker, Dialog, Drawer, Menu, Popover and Snackbar are in{' '}
         <Link href={SITE.storybook} rel="noopener">
           Storybook
         </Link>
         .
-      </Typography>
+      </PageHeader>
       <Grid container spacing={2}>
         {CATALOG.map((d) => (
           <Grid key={d.slug} size={{ xs: 12, sm: 6 }}>

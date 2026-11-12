@@ -9,6 +9,9 @@ import MenuBook from '@mui/icons-material/MenuBookOutlined';
 import UnfoldMore from '@mui/icons-material/UnfoldMore';
 import Close from '@mui/icons-material/Close';
 import DocsNav, { docsPageLabel } from './DocsNav';
+import { scoop } from '@/lib/scoops';
+import { flavorOf } from '@/lib/sections';
+import { ScoopRow } from './fun/Decor';
 
 const BAR = 61; // sticky bar height, kept clear when jumping to #anchors
 
@@ -23,6 +26,7 @@ export default function DocsMobileNav() {
   }
   const close = () => setOpen(false);
   const current = docsPageLabel(pathname);
+  const flavor = flavorOf(pathname) ?? 'success';
 
   return (
     <>
@@ -36,7 +40,6 @@ export default function DocsMobileNav() {
           mx: { xs: -2, sm: -3 },
           px: { xs: 2, sm: 3 },
           py: 1,
-          mb: 2,
           bgcolor: alpha(t.palette.background.default, 0.92),
           backdropFilter: 'saturate(180%) blur(12px)',
           borderBottom: 1,
@@ -51,12 +54,14 @@ export default function DocsMobileNav() {
           aria-haspopup="dialog"
           aria-expanded={open}
           aria-controls={open ? 'docs-menu' : undefined}
-          startIcon={<MenuBook />}
+          startIcon={<MenuBook sx={{ color: scoop(flavor, 'ink') }} />}
           endIcon={<UnfoldMore />}
           sx={{
             minHeight: 44,
             justifyContent: 'flex-start',
-            borderColor: 'divider',
+            borderColor: scoop(flavor, 'fill'),
+            borderRadius: 999,
+            px: 2,
             fontWeight: 600,
             textTransform: 'none',
             '& .MuiButton-endIcon': { ml: 'auto' },
@@ -97,8 +102,9 @@ export default function DocsMobileNav() {
             zIndex: 1,
           }}
         >
-          <Typography component="span" sx={{ fontWeight: 700 }}>
+          <Typography component="span" sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1.5 }}>
             Docs
+            <ScoopRow size={14} />
           </Typography>
           <IconButton onClick={close} aria-label="Close docs menu" sx={{ width: 44, height: 44, mr: -1 }}>
             <Close />

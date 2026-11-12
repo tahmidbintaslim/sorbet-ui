@@ -20,10 +20,8 @@ export default async function TemplatePage({ params }: { params: Promise<{ slug:
   if (!t) notFound();
   return (
     <>
-      <Container maxWidth="lg" sx={{ pt: { xs: 4, md: 6 }, pb: 3 }}>
-        <TemplateHeader name={t.name} description={t.description} source={templateSource(t)} blocks={t.blocks} />
-      </Container>
-      <Box sx={{ borderTop: 1, borderBottom: 1, borderColor: 'divider' }}>
+      <TemplateHeader name={t.name} description={t.description} source={templateSource(t)} blocks={t.blocks} />
+      <Box sx={{ borderTop: 1, borderBottom: 1, borderColor: 'divider', mt: 3 }}>
         <TemplatePreview blocks={t.blocks} />
       </Box>
       <Container maxWidth="lg" sx={{ pt: 3 }}>

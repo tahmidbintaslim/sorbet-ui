@@ -129,7 +129,8 @@ const getColorStyles = (color: SorbetColor, variant: SorbetVariant, isDark: bool
       '&:hover:not(:disabled)': {
         backgroundColor: colorScale.alpha8,
         borderColor: colorScale.main,
-        color: colorScale.main,
+        // `dark`, as on outlined: `main` drops below 4.5:1 on the hover tint (neutral: 4.3:1).
+        color: colorScale.dark,
       },
       '&:active:not(:disabled)': {
         backgroundColor: colorScale.alpha16,
