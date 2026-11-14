@@ -6,8 +6,9 @@
 // Runs before dev and build; the outputs are committed so type-check works without a build.
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = new URL('../blocks/', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../blocks/', import.meta.url));
 const blocks = [];
 for (const category of readdirSync(root).sort()) {
   const dir = join(root, category);

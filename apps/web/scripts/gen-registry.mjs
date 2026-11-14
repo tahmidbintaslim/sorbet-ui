@@ -7,12 +7,13 @@
 // npm dependencies come from each file's imports. Output is generated at build time (gitignored).
 import { mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // Absolute URL the items point at (registryDependencies). Override for local testing.
 const BASE = (process.env.REGISTRY_URL ?? 'https://sorbetui.tahmid.space').replace(/\/$/, '');
 const SCHEMA = 'https://ui.shadcn.com/schema/registry-item.json';
-const out = new URL('../public/r/', import.meta.url).pathname;
-const blocksDir = new URL('../blocks/', import.meta.url).pathname;
+const out = fileURLToPath(new URL('../public/r/', import.meta.url));
+const blocksDir = fileURLToPath(new URL('../blocks/', import.meta.url));
 
 /** HeroCentered -> hero-centered. Keep in sync with lib/registry.ts. */
 const kebab = (id) => id.replace(/([a-z0-9])([A-Z])/g, '$1-$2').replace(/([A-Z])([A-Z][a-z])/g, '$1-$2').toLowerCase();
