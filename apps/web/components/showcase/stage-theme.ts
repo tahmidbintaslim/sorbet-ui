@@ -45,7 +45,15 @@ export function stageCode({ flavor, radius, density, mode }: StageSettings) {
   const base = mode === 'dark' ? 'darkTheme' : 'lightTheme';
   const scale = mode === 'dark' ? `darkModeColorPalette.${flavor}` : `colorPalette.${flavor}`;
   const size = density === 'compact' ? 'sm' : 'md';
-  return `const theme = createTheme(${base}, { palette: { primary: ${scale} }, shape: { borderRadius: ${radius} } });\n\n// Sorbet components take the same choices as props:\n<Chip color="${flavor}" size="${size}" />`;
+  return [
+    `const theme = createTheme(${base}, {`,
+    `  palette: { primary: ${scale} },`,
+    `  shape: { borderRadius: ${radius} },`,
+    `});`,
+    ``,
+    `// Sorbet components take the same choices as props:`,
+    `<Chip color="${flavor}" size="${size}" />`,
+  ].join('\n');
 }
 
 /** Swatch fill for a flavor (decorative; the radio carries the name). */

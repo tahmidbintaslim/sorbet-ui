@@ -251,6 +251,7 @@ export default function DeviceShowcase() {
         position: 'relative',
         zIndex: 1,
         display: 'grid',
+        gridTemplateColumns: 'minmax(0, 1fr)',
         gap: 3,
         [TABLET]: { gridTemplateColumns: 'auto minmax(0, 1fr)', alignItems: 'center', gap: 4 },
       }}
@@ -262,6 +263,7 @@ export default function DeviceShowcase() {
         data-stage-mode={settings.mode}
         sx={{
           position: 'relative',
+          minWidth: 0,
           display: 'flex',
           justifyContent: 'center',
           gap: 3.5,
@@ -283,7 +285,7 @@ export default function DeviceShowcase() {
             data-frame="phone"
             aria-hidden={wide || undefined}
             inert={wide}
-            sx={{ flexShrink: 0, width: 'min(100%, 340px)', height: 660, [TABLET]: { width: 320 }, [WIDE]: { width: 304, height: 'auto' } }}
+            sx={{ flexShrink: 1, minWidth: 0, width: 'min(100%, 340px)', height: 660, [TABLET]: { width: 320 }, [WIDE]: { width: 304, height: 'auto' } }}
           >
             <PhoneFrame>
               <ScoopShop compact shop={shop} flavor={settings.flavor} density={settings.density} />

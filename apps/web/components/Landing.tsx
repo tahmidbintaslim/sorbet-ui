@@ -15,6 +15,7 @@ import { CountUp, Reveal, Stagger, StaggerItem } from './motion';
 import BeforeAfter, { BEFORE_AFTER_CODE } from './landing/BeforeAfter';
 import LivePlayground from './landing/LivePlayground';
 import DeviceShowcase from './showcase/DeviceShowcase';
+import DemoGrid from './showcase/DemoGrid';
 import SorbetCone from './fun/SorbetCone';
 import Marquee from './fun/Marquee';
 import Ink, { ARROW, CIRCLE, type Stroke } from './fun/Ink';
@@ -271,6 +272,19 @@ export function Facts() {
         ))}
       </Stagger>
     </Container>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Built with Sorbet: six working mini-demos, each mounted when scrolled near.
+// ---------------------------------------------------------------------------
+
+export function BuiltWith() {
+  return (
+    <Band id="built-with" py={{ xs: 6, md: 10 }}>
+      <SectionTitle c="danger" title="Built with Sorbet" lead="Six small things you would build anyway. They all work: drag, type, filter, submit." />
+      <DemoGrid />
+    </Band>
   );
 }
 
