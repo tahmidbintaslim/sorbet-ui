@@ -12,7 +12,7 @@
     "test:e2e": "playwright test",
     "clean": "rm -rf .next out",
     "gen:blocks": "node scripts/gen-blocks.mjs",
-    "gen:registry": "node scripts/gen-registry.mjs",
+    "gen:registry": "node scripts/gen-registry.mjs"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
