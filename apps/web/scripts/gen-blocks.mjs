@@ -49,3 +49,6 @@ writeFileSync(
     `\n\nexport const BLOCK_COMPONENTS: Record<string, ComponentType> = {\n${blocks.map((b) => `  ${b.id},`).join('\n')}\n};\n`,
 );
 console.log(`gen-blocks: ${blocks.length} blocks in ${new Set(blocks.map((b) => b.category)).size} categories`);
+
+// Templates share this step: their source files feed the Code tab on /templates/<slug>.
+await import('./gen-templates.mjs');

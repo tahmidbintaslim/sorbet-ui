@@ -1,69 +1,129 @@
-// Free templates: full pages assembled from blocks. Each has a live preview at
-// /templates/<slug> and the page source shown on the template page.
-import { BLOCKS } from './blocks-meta';
+// Free templates: complete, working pages and apps. Each lives in
+// templates/<slug>/ as plain source (an index.tsx plus a data file or two), has a
+// live preview at /templates/<slug>, a chrome-less one at /templates/<slug>/preview,
+// and its real files on the Code tab (see scripts/gen-templates.mjs).
+// This module is metadata only, so it is safe in client code, the sitemap and tests.
 
-export type Template = { slug: string; name: string; description: string; blocks: string[]; tags: string[] };
+export type TemplateType = 'Application' | 'Marketing' | 'E-commerce';
 
-export const TEMPLATES: Template[] = [
+export type Template = {
+  slug: string;
+  name: string;
+  /** One line for cards and meta descriptions. */
+  description: string;
+  type: TemplateType;
+  tags: string[];
+  /** What you get, shown on the template page. */
+  features: string[];
+  /** Slugs from lib/catalog.ts: the Sorbet components the template uses. */
+  components: string[];
+  /** App templates fill their frame; page templates scroll inside it. */
+  layout: 'app' | 'page';
+};
+
+// TEMP while building: only finished templates are listed.
+const READY = new Set(['analytics-dashboard']);
+const ALL: Template[] = [
+  {
+    slug: 'analytics-dashboard',
+    name: 'Analytics dashboard',
+    description: 'A store analytics app: KPI cards, a revenue chart with a hover tooltip, a sortable orders table and a customer list.',
+    type: 'Application',
+    tags: ['Dashboard', 'Charts', 'Tables'],
+    layout: 'app',
+    features: [
+      'Sidebar navigation that becomes a drawer on narrow screens',
+      'KPI cards with trends, tied to a 7 / 30 / 90 day range switch',
+      'Hand-written SVG area chart with crosshair, tooltip and keyboard support',
+      'Sortable, filterable orders table with pagination and an order dialog',
+      'New order form with validation, toasts and an activity feed',
+    ],
+    components: ['button', 'card', 'chip', 'tabs', 'table', 'pagination', 'dialog', 'drawer', 'text-field', 'select', 'avatar-badge', 'progress', 'snackbar', 'skeleton'],
+  },
+  {
+    slug: 'inbox',
+    name: 'Inbox',
+    description: 'A three-pane mail client: folders, a searchable message list with unread state, and a reading pane with replies.',
+    type: 'Application',
+    tags: ['Mail', 'Three-pane', 'Search'],
+    layout: 'app',
+    features: [
+      'Folders with live unread counts, labels and a compose dialog',
+      'Search plus All / Unread / Starred filters, with an empty state',
+      'Reading pane with star, archive, delete and mark-unread actions',
+      'Reply box that appends to the thread and confirms with a toast',
+      'Collapses to list, then detail, when the container is phone sized',
+    ],
+    components: ['button', 'chip', 'avatar-badge', 'text-field', 'dialog', 'drawer', 'tooltip', 'snackbar', 'tabs'],
+  },
+  {
+    slug: 'kanban',
+    name: 'Kanban board',
+    description: 'A project board with draggable cards, keyboard moves, a card dialog with assignee, labels and a checklist.',
+    type: 'Application',
+    tags: ['Project', 'Drag and drop', 'Dialogs'],
+    layout: 'app',
+    features: [
+      'Four columns with counts and work-in-progress limits',
+      'Drag cards between columns with motion/react, or use the move buttons',
+      'Card dialog: title, description, assignee, labels, due date and checklist',
+      'Add a card inline in any column; filter the board by person',
+      'Moves are announced to screen readers through a live region',
+    ],
+    components: ['button', 'card', 'chip', 'avatar-badge', 'dialog', 'text-field', 'select', 'checkbox', 'progress', 'tooltip', 'menu', 'snackbar'],
+  },
+  {
+    slug: 'storefront',
+    name: 'Storefront',
+    description: 'A small online shop: product grid with filters and sorting, quick view, a cart drawer with totals and a checkout stepper.',
+    type: 'E-commerce',
+    tags: ['Shop', 'Cart', 'Checkout'],
+    layout: 'page',
+    features: [
+      'Product grid with category, price and in-stock filters, and four sort orders',
+      'Quick view dialog with color and quantity pickers',
+      'Cart drawer with quantity steppers, free-shipping progress and totals',
+      'Three-step checkout with validation and an order confirmation',
+      'Products are drawn in SVG, so there are no image files to host',
+    ],
+    components: ['button', 'card', 'chip', 'select', 'checkbox', 'slider', 'rating', 'dialog', 'drawer', 'stepper', 'text-field', 'radio', 'avatar-badge', 'progress', 'alert', 'snackbar'],
+  },
   {
     slug: 'saas-landing',
     name: 'SaaS landing',
-    description: 'A full marketing page: hero, bento features, stats, pricing with a billing toggle, testimonials, FAQ and footer.',
-    tags: ['Marketing', 'Pricing'],
-    blocks: ['NavbarWithMenu', 'HeroGradient', 'FeatureBento', 'StatsRow', 'PricingTiers', 'TestimonialGrid', 'FaqAccordion', 'CtaCentered', 'FooterColumns'],
+    description: 'A marketing site for a software product: hero with a product shot, feature bento, pricing toggle, testimonials and FAQ.',
+    type: 'Marketing',
+    tags: ['Landing page', 'Pricing', 'FAQ'],
+    layout: 'page',
+    features: [
+      'Sticky navigation with a menu drawer on narrow screens',
+      'Hero with an email capture form and a product mock built from components',
+      'Feature bento with small live illustrations',
+      'Pricing with a monthly / yearly toggle and a highlighted plan',
+      'Testimonials, FAQ accordion, closing call to action and footer',
+    ],
+    components: ['button', 'card', 'chip', 'text-field', 'switch', 'accordion', 'avatar-badge', 'drawer', 'alert', 'rating'],
   },
   {
-    slug: 'product-launch',
-    name: 'Product launch',
-    description: 'A waitlist page for a new product: minimal hero with email capture, three steps, a featured quote and a newsletter footer.',
-    tags: ['Marketing', 'Waitlist'],
-    blocks: ['NavbarCentered', 'HeroMinimal', 'FeatureSteps', 'FeatureList', 'TestimonialFeatured', 'CtaNewsletter', 'FooterNewsletter'],
-  },
-  {
-    slug: 'developer-tool',
-    name: 'Developer tool',
-    description: 'For APIs and SDKs: code-first hero, feature grid, comparison table, changelog and a simple footer.',
-    tags: ['Marketing', 'Docs'],
-    blocks: ['NavbarSimple', 'HeroCode', 'FeatureGrid', 'PricingCompare', 'Changelog', 'CtaSplit', 'FooterSimple'],
-  },
-  {
-    slug: 'store',
-    name: 'Online store',
-    description: 'A small shop: product grid, cart summary, ratings and a contact section.',
-    tags: ['E-commerce'],
-    blocks: ['NavbarSimple', 'ProductGrid', 'CartSummary', 'TestimonialRating', 'ContactCards', 'FooterColumns'],
-  },
-  {
-    slug: 'auth',
-    name: 'Auth pages',
-    description: 'Sign in, sign up and password reset, with validation and success states.',
-    tags: ['Application'],
-    blocks: ['AuthSignIn', 'AuthSignUp', 'AuthReset'],
-  },
-  {
-    slug: 'workspace',
-    name: 'Workspace app',
-    description: 'App screens: shell with sidebar, KPI cards, orders table, tasks, settings and an empty state.',
-    tags: ['Application', 'Dashboard'],
-    blocks: ['DashboardShell', 'DashboardStats', 'DashboardTable', 'DashboardTasks', 'SettingsProfile', 'EmptyState'],
+    slug: 'settings',
+    name: 'Account settings',
+    description: 'Workspace settings with tabs for profile, notifications, billing and team, plus an invite dialog and a danger zone.',
+    type: 'Application',
+    tags: ['Settings', 'Billing', 'Team'],
+    layout: 'app',
+    features: [
+      'Profile form with validation, unsaved-changes bar, Save and Cancel',
+      'Notification matrix with per-channel switches and a digest picker',
+      'Billing: plan cards, usage meters, payment method and an invoice table',
+      'Team table with role menus, pending invites and an invite dialog',
+      'Danger zone with a type-to-confirm delete dialog',
+    ],
+    components: ['button', 'card', 'chip', 'tabs', 'text-field', 'select', 'switch', 'table', 'dialog', 'avatar-badge', 'progress', 'alert', 'menu', 'snackbar', 'radio'],
   },
 ];
 
-export const getTemplate = (slug: string) => TEMPLATES.find((t) => t.slug === slug);
+export const TEMPLATES: Template[] = ALL.filter((t) => READY.has(t.slug));
 
-/** The page file a developer would paste: imports each block and stacks them. */
-export function templateSource(t: Template): string {
-  const meta = t.blocks.map((id) => BLOCKS.find((b) => b.id === id)!);
-  return [
-    `// app/page.tsx: ${t.name} template. Copy each block from /blocks into ./blocks.`,
-    ...meta.map((b) => `import ${b.id} from './blocks/${b.category}/${b.id}';`),
-    '',
-    'export default function Page() {',
-    '  return (',
-    '    <>',
-    ...meta.map((b) => `      <${b.id} />`),
-    '    </>',
-    '  );',
-    '}',
-  ].join('\n');
-}
+export const TEMPLATE_TYPES: TemplateType[] = ['Application', 'Marketing', 'E-commerce'];
+
+export const getTemplate = (slug: string) => TEMPLATES.find((t) => t.slug === slug);

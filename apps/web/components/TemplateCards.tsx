@@ -1,76 +1,155 @@
 'use client';
+// Templates index: big cards, each with the real template running inside it, scaled
+// down. Previews mount when their card scrolls near the viewport (the code for each
+// template loads then too) and are inert and hidden from assistive tech: the card's
+// title link is the only control.
+import * as React from 'react';
 import NextLink from 'next/link';
-import { Box, Grid, Stack, Typography } from '@mui/material';
-import { Chip } from '@sorbet-ui/react';
-import { colorPalette } from '@sorbet-ui/tokens';
-import { TEMPLATES } from '@/lib/templates';
+import { Box, Stack, Typography } from '@mui/material';
+import ArrowForward from '@mui/icons-material/ArrowForward';
+import { Button, Chip, Skeleton } from '@sorbet-ui/react';
+import { TEMPLATES, TEMPLATE_TYPES, type Template, type TemplateType } from '@/lib/templates';
 import { scoop, scoopAt } from '@/lib/scoops';
-import { SECTION_FLAVOR } from '@/lib/sections';
-import { StickerBadge } from './fun/Decor';
+import { touchTarget } from '@/lib/touch';
+import { useColorMode } from './ColorMode';
+import TemplateStage from './TemplateStage';
 
-const GRADIENTS = [
-  [colorPalette.primary[300], colorPalette.secondary[300]],
-  [colorPalette.danger[200], colorPalette.warning[200]],
-  [colorPalette.info[200], colorPalette.success[200]],
-  [colorPalette.warning[200], colorPalette.danger[200]],
-  [colorPalette.secondary[200], colorPalette.primary[200]],
-  [colorPalette.success[200], colorPalette.info[300]],
-];
+// One lazy chunk per template.
+const LIVE: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
+  'analytics-dashboard': React.lazy(() => import('@/templates/analytics-dashboard')),
+};
+
+// The preview renders at a desktop size and is scaled to the card.
+const VIEW = { width: 1280, height: 800 };
+
+function LivePreview({ template }: { template: Template }) {
+  const { mode } = useColorMode();
+  const box = React.useRef<HTMLDivElement>(null);
+  const [scale, setScale] = React.useState<number | null>(null);
+  const [near, setNear] = React.useState(false);
+  const Live = LIVE[template.slug];
+
+  React.useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setScale(entry.contentRect.width / VIEW.width));
+    ro.observe(el);
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '300px' },
+    );
+    io.observe(el);
+    return () => {
+      ro.disconnect();
+      io.disconnect();
+    };
+  }, []);
+
+  const placeholder = (
+    <Box sx={{ position: 'absolute', inset: 0, p: 3, display: 'grid', gap: 2, gridTemplateRows: 'auto 1fr 1fr' }}>
+      <Skeleton shape="rounded" height={28} width="40%" />
+      <Skeleton shape="rounded" height="100%" />
+      <Skeleton shape="rounded" height="100%" />
+    </Box>
+  );
+
+  return (
+    <Box
+      ref={box}
+      aria-hidden
+      inert
+      data-testid={`template-thumb-${template.slug}`}
+      data-live={near && scale !== null ? 'true' : 'false'}
+      sx={{ position: 'relative', aspectRatio: `${VIEW.width} / ${VIEW.height}`, overflow: 'hidden', bgcolor: 'background.default', borderBottom: 1, borderColor: 'divider', pointerEvents: 'none', userSelect: 'none' }}
+    >
+      {near && scale !== null && Live ? (
+        <Box className="thumb" sx={{ width: VIEW.width, height: VIEW.height, transformOrigin: '0 0', transform: `scale(${scale})`, transition: 'transform .6s cubic-bezier(.22,1,.36,1)' }}>
+          <React.Suspense fallback={placeholder}>
+            <TemplateStage mode={mode} scroll={false} sx={{ width: VIEW.width, height: VIEW.height }}>
+              <Live />
+            </TemplateStage>
+          </React.Suspense>
+        </Box>
+      ) : (
+        placeholder
+      )}
+    </Box>
+  );
+}
 
 export default function TemplateCards() {
+  const [type, setType] = React.useState<TemplateType | 'All'>('All');
+  const shown = TEMPLATES.filter((t) => type === 'All' || t.type === type);
   return (
-    <Grid container spacing={3} sx={{ mt: 2 }}>
-      {TEMPLATES.map((t, i) => (
-        <Grid key={t.slug} size={{ xs: 12, sm: 6, md: 4 }}>
-          <Box
-            component={NextLink}
-            href={`/templates/${t.slug}`}
-            sx={{ display: 'block', height: '100%', borderRadius: 4, overflow: 'hidden', border: 1, borderColor: 'divider', bgcolor: 'background.paper', color: 'text.primary', textDecoration: 'none', transition: 'transform .35s cubic-bezier(.3,1.6,.5,1), box-shadow .25s, border-color .2s', '&:hover': { borderColor: scoop(scoopAt(i), 'fill'), transform: `translateY(-6px) rotate(${i % 2 ? 0.8 : -0.8}deg)`, boxShadow: `0 18px 36px -20px ${scoop(scoopAt(i), 'fill')}` }, '& .sticker-badge': { transition: 'rotate .4s cubic-bezier(.3,1.6,.5,1), scale .4s cubic-bezier(.3,1.6,.5,1)' }, '&:hover .sticker-badge': { rotate: '-8deg', scale: '1.12' }, '&:hover .thumb': { transform: 'scale(1.04)' }, '@media (prefers-reduced-motion: reduce)': { '&:hover': { transform: 'none' }, '&:hover .thumb': { transform: 'none' }, '&:hover .sticker-badge': { rotate: '8deg', scale: 'none' } } }}
-          >
-            {/* Wireframe thumbnail: one bar per block in the template. */}
-            <Box aria-hidden className="thumb" sx={{ transition: 'transform .5s cubic-bezier(.3,1.6,.5,1)', p: 2.5, height: 170, background: `linear-gradient(135deg, ${GRADIENTS[i % 6][0]}, ${GRADIENTS[i % 6][1]})` }}>
-              <Stack spacing={0.75} sx={{ bgcolor: 'rgba(255,255,255,.85)', borderRadius: 2, p: 1.25, height: '100%', overflow: 'hidden' }}>
-                {t.blocks.slice(0, 7).map((b, j) => (
-                  <Box key={b} sx={{ height: j === 1 ? 28 : 10, borderRadius: 1, bgcolor: j === 1 ? 'rgba(15,23,42,.18)' : 'rgba(15,23,42,.08)', width: j % 3 === 2 ? '70%' : '100%' }} />
-                ))}
-              </Stack>
-            </Box>
-            <Box sx={{ p: 2.5 }}>
-              <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }} spacing={1}>
-                <Typography component="h2" sx={{ fontWeight: 700, fontSize: 18 }}>
-                  {t.name}
+    <>
+      <Stack direction="row" role="group" aria-label="Filter templates by type" sx={{ flexWrap: 'wrap', gap: 1, mt: 3 }}>
+        {(['All', ...TEMPLATE_TYPES] as const).map((id) => {
+          const count = id === 'All' ? TEMPLATES.length : TEMPLATES.filter((t) => t.type === id).length;
+          return (
+            <Button key={id} size="sm" color="secondary" variant={type === id ? 'solid' : 'outlined'} aria-pressed={type === id} onClick={() => setType(id)} sx={{ ...touchTarget, borderRadius: 999 }}>
+              {id} ({count})
+            </Button>
+          );
+        })}
+      </Stack>
+      <Typography role="status" variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
+        Showing {shown.length} of {TEMPLATES.length} templates. Every preview below is the real template, running live.
+      </Typography>
+      <Box sx={{ display: 'grid', gap: { xs: 3, md: 4 }, mt: 3, gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: 'repeat(2, minmax(0, 1fr))' } }}>
+        {shown.map((t) => {
+          const c = scoopAt(TEMPLATES.indexOf(t));
+          return (
+            <Box
+              key={t.slug}
+              component="article"
+              sx={{
+                position: 'relative',
+                borderRadius: 4,
+                overflow: 'hidden',
+                border: 1,
+                borderColor: 'divider',
+                bgcolor: 'background.paper',
+                transition: 'transform .35s cubic-bezier(.3,1.4,.5,1), box-shadow .25s, border-color .2s',
+                '&:hover, &:focus-within': { borderColor: scoop(c, 'fill'), boxShadow: `0 22px 44px -28px ${scoop(c, 'fill')}` },
+                '&:hover': { transform: 'translateY(-4px)' },
+                '&:hover .go': { transform: 'translateX(4px)' },
+                '@media (prefers-reduced-motion: reduce)': { '&:hover': { transform: 'none' }, '&:hover .go': { transform: 'none' } },
+              }}
+            >
+              <LivePreview template={t} />
+              <Box sx={{ p: { xs: 2.5, md: 3 } }}>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Typography component="h2" sx={{ fontWeight: 800, fontSize: 22, letterSpacing: '-0.02em' }}>
+                    {/* Stretched link: the whole card is the click target. */}
+                    <Box
+                      component={NextLink}
+                      href={`/templates/${t.slug}`}
+                      sx={{ color: 'text.primary', textDecoration: 'none', '&::after': { content: '""', position: 'absolute', inset: 0 }, '&:focus-visible': { outline: 'none' }, '&:focus-visible::after': { outline: '3px solid', outlineColor: scoop(c, 'ink'), outlineOffset: -3, borderRadius: 4 } }}
+                    >
+                      {t.name}
+                    </Box>
+                  </Typography>
+                  <ArrowForward className="go" aria-hidden sx={{ color: scoop(c, 'ink'), transition: 'transform .25s' }} />
+                </Stack>
+                <Typography color="text.secondary" sx={{ mt: 0.75 }}>
+                  {t.description}
                 </Typography>
-                <StickerBadge c="success" size={48} sx={{ my: -1 }}>
-                  Free
-                </StickerBadge>
-              </Stack>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                {t.description}
-              </Typography>
-              <Stack direction="row" spacing={0.75} sx={{ flexWrap: 'wrap', mt: 1.5 }} useFlexGap>
-                {t.tags.map((tag) => (
-                  <Chip key={tag} size="sm" variant="outlined" color="neutral" label={tag} />
-                ))}
-                <Chip size="sm" variant="outlined" color="neutral" label={`${t.blocks.length} blocks`} />
-              </Stack>
+                <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 0.75, mt: 2 }}>
+                  <Chip size="sm" variant="soft" color="secondary" label={t.type} />
+                  {t.tags.map((tag) => (
+                    <Chip key={tag} size="sm" variant="outlined" color="neutral" label={tag} />
+                  ))}
+                </Stack>
+              </Box>
             </Box>
-          </Box>
-        </Grid>
-      ))}
-      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-        <Box
-          component={NextLink}
-          href="/demo"
-          sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', minHeight: 300, p: 3, borderRadius: 4, border: '2px dashed', borderColor: scoop(SECTION_FLAVOR.demo, 'fill'), bgcolor: scoop(SECTION_FLAVOR.demo, 'tint'), color: 'text.primary', textDecoration: 'none', transition: 'transform .35s cubic-bezier(.3,1.6,.5,1)', '&:hover': { transform: 'translateY(-6px) rotate(-0.8deg)' }, '@media (prefers-reduced-motion: reduce)': { '&:hover': { transform: 'none' } } }}
-        >
-          <Typography component="h2" sx={{ fontWeight: 700, fontSize: 18 }}>
-            Admin dashboard (live demo)
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            A working app with orders, customers, dialogs and toasts. Source in the repo under apps/web/components/demo.
-          </Typography>
-        </Box>
-      </Grid>
-    </Grid>
+          );
+        })}
+      </Box>
+    </>
   );
 }
