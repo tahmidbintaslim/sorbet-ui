@@ -13,7 +13,6 @@
     "clean": "rm -rf .next out",
     "gen:blocks": "node scripts/gen-blocks.mjs",
     "gen:registry": "node scripts/gen-registry.mjs",
-    "gen:shots": "node scripts/gen-shots.mjs"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
