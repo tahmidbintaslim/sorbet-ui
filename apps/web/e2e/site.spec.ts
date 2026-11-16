@@ -397,10 +397,26 @@ test('landing: hand-drawn ink draws itself, and is shown finished with reduced m
   await ctx.close();
 });
 
-test('landing: template screens link to their pages', async ({ page }) => {
+test('landing: the hero shows one live app in device frames, with a single accessible copy', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('link', { name: 'Acme Admin demo' }).click();
-  await expect(page).toHaveURL(/\/demo$/);
+  const stage = page.getByTestId('stage');
+  const wide = (page.viewportSize()?.width ?? 0) >= 1000;
+  // Wide screens: browser frame + phone mirror (inert, hidden from assistive tech).
+  // Phones: the phone frame only, and it is the accessible copy.
+  const phone = stage.locator('[data-frame="phone"]');
+  await expect(phone).toBeVisible();
+  await expect(stage.locator('[data-frame="browser"]')).toBeVisible({ visible: wide });
+  if (wide) {
+    await expect(phone).toHaveAttribute('aria-hidden', 'true');
+    await expect(phone).toHaveAttribute('inert', '');
+  } else {
+    await expect(phone).not.toHaveAttribute('aria-hidden', 'true');
+    expect(await phone.evaluate((el) => (el as HTMLElement).inert)).toBe(false);
+  }
+  await expect(stage.getByRole('region', { name: 'Order details' })).toHaveCount(1);
+  await expect(stage.getByRole('button', { name: /Theo Lindqvist/ })).toBeVisible();
+  // The screenshot wall is gone.
+  await expect(page.locator('img[src*="/shots/"]')).toHaveCount(0);
 });
 
 test('landing: playground controls rewrite the source', async ({ page }) => {
@@ -717,5 +733,194 @@ test('copy button: a sprinkle burst on success, none with reduced motion', async
     if (reducedMotion === 'reduce') await expect(burst).toHaveCount(0);
     else await expect(burst.locator('span').first()).toBeAttached();
     await ctx.close();
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Landing: live device showcase and the "Built with Sorbet" demos.
+// ---------------------------------------------------------------------------
+
+test('landing: selecting an order updates the detail pane in every frame', async ({ page }) => {
+  await page.goto('/');
+  const stage = page.getByTestId('stage');
+  const detail = stage.getByRole('region', { name: 'Order details' });
+  await expect(detail).toContainText('Theo Lindqvist');
+  await stage.getByRole('button', { name: /Priya Raman/ }).click();
+  await expect(detail).toContainText('Priya Raman');
+  await expect(detail).toContainText('$18.00');
+  // Shared state: every rendered copy (browser frame and phone mirror) shows the same order.
+  const copies = stage.locator('[data-testid="order-detail"]');
+  for (let i = 0; i < (await copies.count()); i++) await expect(copies.nth(i)).toContainText('Priya Raman');
+  await expect(stage.getByRole('button', { name: /Priya Raman/ })).toHaveAttribute('aria-current', 'true');
+});
+
+test('landing: marking an order done announces it and moves it to the Done tab', async ({ page }) => {
+  await page.goto('/');
+  const stage = page.getByTestId('stage');
+  await expect(stage.getByRole('tab', { name: 'Open · 6' })).toBeVisible();
+  await stage.getByRole('button', { name: 'Mark done' }).click();
+  await expect(stage.getByRole('status')).toContainText('Order #1047 handed to Theo');
+  await expect(stage.getByRole('button', { name: /Theo Lindqvist/ })).toHaveCount(0);
+  await stage.getByRole('tab', { name: 'Done · 3' }).click();
+  await expect(stage.getByRole('button', { name: /Theo Lindqvist/ })).toBeVisible();
+  // Search narrows the list.
+  await stage.getByRole('tab', { name: /^All/ }).click();
+  await stage.getByRole('searchbox', { name: 'Search orders' }).fill('mango');
+  await expect(stage.getByRole('list', { name: 'Orders' }).getByRole('button')).toHaveCount(2);
+  // The nav switches views.
+  await stage.getByRole('button', { name: 'Flavors' }).click();
+  await expect(stage.getByRole('progressbar', { name: 'Mango Tango stock' })).toBeVisible();
+});
+
+test('landing: the theme bar restyles the stage and rewrites the code', async ({ page }) => {
+  await page.goto('/');
+  const stage = page.getByTestId('stage');
+  const bar = page.getByRole('group', { name: 'Stage theme' });
+  const code = page.locator('pre[aria-label="Theme for the current stage settings"]');
+  const action = stage.getByRole('button', { name: 'Mark done' });
+  const style = (prop: string) => action.evaluate((el, p) => getComputedStyle(el).getPropertyValue(p), prop);
+
+  // Accent: the primary button and the code follow the flavor.
+  await expect(code).toContainText('primary: colorPalette.danger');
+  const raspberry = await style('background-color');
+  await bar.getByRole('radio', { name: 'Mint' }).check();
+  await expect.poll(() => style('background-color')).not.toBe(raspberry);
+  await expect(code).toContainText('primary: colorPalette.success');
+  await expect(code).toContainText('color="success"');
+
+  // Radius: the slider moves with the keyboard and the button corners follow.
+  await expect.poll(() => style('border-top-left-radius')).toBe('12px');
+  await bar.getByRole('slider', { name: 'Corner radius' }).press('Home');
+  await expect.poll(() => style('border-top-left-radius')).toBe('0px');
+  await expect(code).toContainText('borderRadius: 0');
+
+  // Density.
+  const row = stage.getByRole('button', { name: /Priya Raman/ });
+  const tall = (await row.boundingBox())!.height;
+  await bar.getByRole('button', { name: 'Compact' }).click();
+  await expect.poll(async () => (await row.boundingBox())!.height).toBeLessThan(tall);
+  await expect(code).toContainText('size="sm"');
+
+  // Mode: the stage only; the page keeps its own mode.
+  const pageMode = await page.locator('html').getAttribute('data-mode');
+  const appBg = () => stage.getByTestId('scoop-shop').last().evaluate((el) => getComputedStyle(el).backgroundColor);
+  const before = await appBg();
+  await bar.getByRole('button', { name: 'Dark stage' }).click();
+  await expect(stage).toHaveAttribute('data-stage-mode', 'dark');
+  await expect.poll(appBg).not.toBe(before);
+  await expect(code).toContainText('createTheme(darkTheme');
+  await expect(page.locator('html')).toHaveAttribute('data-mode', pageMode!);
+});
+
+test('landing: every accent passes axe in both stage modes', async ({ browser }) => {
+  test.slow();
+  const ctx = await browser.newContext({ reducedMotion: 'reduce' });
+  await stubGitHub(ctx);
+  const page = await ctx.newPage();
+  await page.goto('/');
+  const bar = page.getByRole('group', { name: 'Stage theme' });
+  const problems: string[] = [];
+  for (const mode of ['Light stage', 'Dark stage']) {
+    await bar.getByRole('button', { name: mode }).click();
+    for (const view of ['Flavors', 'Orders']) {
+      await page.getByTestId('stage').getByRole('button', { name: view }).click();
+      for (const flavor of ['Raspberry', 'Mango', 'Mint', 'Sky', 'Violet', 'Cyan', 'Slate']) {
+        await bar.getByRole('radio', { name: flavor }).check();
+        const r = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).include('[data-testid="device-showcase"]').analyze();
+        for (const v of r.violations) problems.push(`${mode} / ${view} / ${flavor}: ${v.id}, e.g. ${v.nodes[0]?.html.slice(0, 140)}`);
+      }
+    }
+  }
+  expect(problems, problems.join('\n')).toEqual([]);
+  await ctx.close();
+});
+
+test('landing: the kanban moves a ticket from the keyboard', async ({ page }) => {
+  await page.goto('/');
+  const board = page.getByTestId('demo-kanban');
+  await board.scrollIntoViewIfNeeded();
+  const scooping = board.getByRole('group', { name: 'Scooping' });
+  await expect(scooping).toBeVisible();
+  await expect(scooping).not.toContainText('Two mango cones');
+  await board.getByRole('button', { name: 'Move Two mango cones to Scooping' }).focus();
+  await page.keyboard.press('Enter');
+  await expect(scooping).toContainText('Two mango cones');
+  await expect(board.getByRole('status')).toHaveText('Two mango cones moved to Scooping');
+  // And on to the last column, where only the way back is left.
+  await board.getByRole('button', { name: 'Move Two mango cones to Ready' }).click();
+  await expect(board.getByRole('group', { name: 'Ready' })).toContainText('Two mango cones');
+  await expect(board.getByRole('button', { name: /Move Two mango cones to/ })).toHaveCount(1);
+});
+
+test('landing: the live demos mount when scrolled to, work, and pass axe', async ({ browser }) => {
+  test.slow();
+  for (const theme of ['light', 'dark'] as const) {
+    const ctx = await browser.newContext({ colorScheme: theme, reducedMotion: 'reduce' });
+    await stubGitHub(ctx);
+    const page = await ctx.newPage();
+    await page.goto('/');
+
+    // Stats: the range tabs change the number.
+    const stats = page.getByTestId('demo-stats');
+    await stats.scrollIntoViewIfNeeded();
+    await expect(stats.getByTestId('stats-value')).toHaveText('1,284');
+    await stats.getByRole('tab', { name: '30d' }).click();
+    await expect(stats.getByTestId('stats-value')).toHaveText('5,310');
+
+    // Command menu: type to filter, arrows to move, Enter to run.
+    const command = page.getByTestId('demo-command');
+    await command.scrollIntoViewIfNeeded();
+    const input = command.getByRole('combobox', { name: 'Command' });
+    await input.fill('a');
+    await expect(command.getByRole('option')).toHaveCount(4);
+    await input.press('ArrowDown');
+    await expect(command.getByRole('option', { name: /Print today/ })).toHaveAttribute('aria-selected', 'true');
+    await input.press('Enter');
+    await expect(command.getByRole('status')).toHaveText('Ran: Print today’s report');
+
+    // Filters: chips narrow the table.
+    const filters = page.getByTestId('demo-filters');
+    await filters.scrollIntoViewIfNeeded();
+    await filters.getByRole('button', { name: 'Gelato' }).click();
+    await expect(filters.getByRole('status')).toHaveText('2 of 5 flavors');
+    await expect(filters.getByRole('table').getByRole('row')).toHaveCount(3);
+
+    // Agenda: picking a day swaps the events.
+    const agenda = page.getByTestId('demo-agenda');
+    await agenda.scrollIntoViewIfNeeded();
+    await agenda.getByRole('button', { name: /Friday 20/ }).click();
+    await expect(agenda.getByRole('region', { name: 'Friday agenda' })).toContainText('night market');
+
+    // Form: inline errors, then success.
+    const form = page.getByTestId('demo-form');
+    await form.scrollIntoViewIfNeeded();
+    await form.getByRole('button', { name: 'Sign up' }).click();
+    await expect(form.getByText('Tell us your name.')).toBeVisible();
+    await expect(form.getByRole('textbox', { name: 'Name' })).toBeFocused();
+    const axe = () => new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).include('#built-with').analyze();
+    const failing = [...(await axe()).violations];
+    await form.getByRole('textbox', { name: 'Name' }).fill('Rosa Bianchi');
+    await form.getByRole('textbox', { name: 'Email' }).fill('rosa@example.com');
+    await form.getByRole('button', { name: 'Sign up' }).click();
+    await expect(form.getByRole('alert')).toContainText("You're on the list, Rosa");
+
+    failing.push(...(await axe()).violations);
+    const summary = failing.map((v) => `${theme}: ${v.id} (${v.impact}): ${v.nodes.length} nodes, e.g. ${v.nodes[0]?.html.slice(0, 140)}`);
+    expect(summary, summary.join('\n')).toEqual([]);
+    await ctx.close();
+  }
+});
+
+test('landing: no horizontal overflow from 320 to 1280', async ({ page }) => {
+  for (const width of [320, 360, 390, 600, 768, 1000, 1024, 1280]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/');
+    await page.getByTestId('demo-kanban').scrollIntoViewIfNeeded();
+    await expect(page.getByTestId('demo-kanban').getByRole('group', { name: 'Ready' })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), `overflow at ${width}`).toBeLessThanOrEqual(0);
+    // The stage never pokes out of the hero.
+    const box = (await page.getByTestId('stage').boundingBox())!;
+    expect(box.x, `stage left at ${width}`).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width, `stage right at ${width}`).toBeLessThanOrEqual(width + 0.5);
   }
 });

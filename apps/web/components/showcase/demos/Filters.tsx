@@ -35,9 +35,9 @@ export default function Filters() {
         ))}
         <Chip label="Low stock" size="sm" color="warning" variant={lowOnly ? 'solid' : 'outlined'} aria-pressed={lowOnly} onClick={() => setLowOnly((v) => !v)} sx={touchTarget} />
       </Box>
-      <Box sx={(t) => ({ flex: 1, minHeight: 0, overflow: 'auto', borderRadius: 3, bgcolor: 'background.paper', border: `1px solid ${t.palette.divider}` })}>
+      <Box sx={(t) => ({ flex: 1, minHeight: 0, overflow: 'hidden', borderRadius: '14px', bgcolor: 'background.paper', border: `1px solid ${t.palette.divider}` })}>
         <Table<Row>
-          caption="Flavors in the freezer"
+          aria-label="Flavors in the freezer"
           size="sm"
           variant="plain"
           data={rows}

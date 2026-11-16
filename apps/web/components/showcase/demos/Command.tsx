@@ -45,7 +45,7 @@ export default function Command() {
 
   return (
     <Box sx={{ height: '100%', display: 'grid', placeItems: 'center', p: 2 }}>
-      <Box sx={(t) => ({ width: '100%', maxWidth: 330, borderRadius: 4, overflow: 'hidden', bgcolor: 'background.paper', border: `1px solid ${t.palette.divider}`, boxShadow: '0 1px 2px rgb(15 23 42 / 0.05), 0 18px 36px -18px rgb(15 23 42 / 0.25)' })}>
+      <Box sx={(t) => ({ width: '100%', maxWidth: 330, borderRadius: '20px', overflow: 'hidden', bgcolor: 'background.paper', border: `1px solid ${t.palette.divider}`, boxShadow: '0 1px 2px rgb(15 23 42 / 0.05), 0 18px 36px -18px rgb(15 23 42 / 0.25)' })}>
         <Box sx={{ p: 1.25 }}>
           <TextField
             fullWidth
@@ -91,7 +91,7 @@ export default function Command() {
                 gap: 1.25,
                 px: 1.25,
                 minHeight: 34,
-                borderRadius: 2,
+                borderRadius: '10px',
                 fontSize: 13.5,
                 cursor: 'pointer',
                 '&[aria-selected="true"]': { bgcolor: t.palette.mode === 'dark' ? 'rgb(255 255 255 / 0.08)' : 'rgb(15 23 42 / 0.06)', fontWeight: 600 },
@@ -102,7 +102,7 @@ export default function Command() {
               <Box component="span" sx={{ flex: 1 }}>
                 {c.label}
               </Box>
-              <Box component="kbd" aria-hidden sx={(t) => ({ px: 0.75, borderRadius: 1, border: `1px solid ${t.palette.divider}`, fontFamily: 'inherit', fontSize: 11, color: 'text.secondary' })}>
+              <Box component="kbd" aria-hidden sx={(t) => ({ px: 0.75, borderRadius: '6px', border: `1px solid ${t.palette.divider}`, fontFamily: 'inherit', fontSize: 11, color: 'text.secondary' })}>
                 {c.hint}
               </Box>
             </Box>

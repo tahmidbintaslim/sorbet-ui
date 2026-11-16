@@ -3,8 +3,6 @@
 // range changes.
 import * as React from 'react';
 import { Box, Typography } from '@mui/material';
-import TrendingDown from '@mui/icons-material/TrendingDown';
-import TrendingUp from '@mui/icons-material/TrendingUp';
 import { motion } from 'motion/react';
 import { Chip, Tabs } from '@sorbet-ui/react';
 import { CountUp } from '../../motion';
@@ -26,7 +24,7 @@ export default function Stats() {
   const line = path(r.points);
   return (
     <Box sx={{ height: '100%', display: 'grid', placeItems: 'center', p: 2 }}>
-      <Box sx={(t) => ({ width: '100%', maxWidth: 320, p: 2.5, borderRadius: 4, bgcolor: 'background.paper', border: `1px solid ${t.palette.divider}`, boxShadow: '0 1px 2px rgb(15 23 42 / 0.05), 0 18px 36px -18px rgb(15 23 42 / 0.25)' })}>
+      <Box sx={(t) => ({ width: '100%', maxWidth: 320, p: 2.5, borderRadius: '20px', bgcolor: 'background.paper', border: `1px solid ${t.palette.divider}`, boxShadow: '0 1px 2px rgb(15 23 42 / 0.05), 0 18px 36px -18px rgb(15 23 42 / 0.25)' })}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
           <Typography id={`${id}-t`} sx={{ fontSize: 13, fontWeight: 600, color: 'text.secondary' }}>
             Scoops sold
@@ -54,7 +52,6 @@ export default function Stats() {
             size="xs"
             variant="soft"
             color={up ? 'success' : 'danger'}
-            icon={up ? <TrendingUp /> : <TrendingDown />}
             label={`${up ? '+' : ''}${r.delta}%`}
             disableAnimation
           />

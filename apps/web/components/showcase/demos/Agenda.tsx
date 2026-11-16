@@ -37,7 +37,7 @@ export default function Agenda() {
                 gap: 0.25,
                 py: 0.75,
                 minHeight: 56,
-                borderRadius: 3,
+                borderRadius: '14px',
                 bgcolor: on ? 'primary.main' : 'background.paper',
                 color: on ? 'primary.contrastText' : 'text.primary',
                 border: `1px solid ${on ? 'transparent' : t.palette.divider}`,
@@ -57,13 +57,21 @@ export default function Agenda() {
         })}
       </Box>
       <Box role="region" aria-live="polite" aria-label={`${d.long} agenda`} sx={{ flex: 1, minHeight: 0, position: 'relative' }}>
+        <Box sx={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', px: 0.5, mb: 1 }}>
+          <Typography sx={{ fontSize: 14, fontWeight: 700 }}>
+            {d.long} {d.date}
+          </Typography>
+          <Typography sx={{ fontSize: 12.5, color: 'text.secondary' }}>
+            {d.events.length} {d.events.length === 1 ? 'event' : 'events'}
+          </Typography>
+        </Box>
         <AnimatePresence mode="wait" initial={false}>
           <motion.ul key={day} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.18 }} style={{ margin: 0, padding: 0, display: 'grid', gap: 8 }}>
             {d.events.map((e) => (
               <Box
                 component="li"
                 key={e.title}
-                sx={(t) => ({ listStyle: 'none', display: 'flex', alignItems: 'center', gap: 1.25, pl: 1.25, pr: 1, py: 1, borderRadius: 3, bgcolor: 'background.paper', border: `1px solid ${t.palette.divider}`, borderLeft: `4px solid ${colorPalette[e.c][400]}` })}
+                sx={(t) => ({ listStyle: 'none', display: 'flex', alignItems: 'center', gap: 1.25, pl: 1.25, pr: 1, py: 1, borderRadius: '12px', bgcolor: 'background.paper', border: `1px solid ${t.palette.divider}`, borderLeft: `4px solid ${colorPalette[e.c][400]}` })}
               >
                 <Typography component="span" sx={{ width: 38, flexShrink: 0, fontSize: 12.5, fontWeight: 600, color: 'text.secondary', fontVariantNumeric: 'tabular-nums' }}>
                   {e.time}

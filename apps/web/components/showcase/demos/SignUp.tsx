@@ -63,7 +63,7 @@ export default function SignUp() {
         noValidate
         onSubmit={submit}
         aria-label="Join the flavor club"
-        sx={(t) => ({ width: '100%', maxWidth: 320, display: 'grid', gap: 1.5, p: 2, borderRadius: 4, bgcolor: 'background.paper', border: `1px solid ${t.palette.divider}`, boxShadow: '0 1px 2px rgb(15 23 42 / 0.05), 0 18px 36px -18px rgb(15 23 42 / 0.25)' })}
+        sx={(t) => ({ width: '100%', maxWidth: 320, display: 'grid', gap: 1.5, p: 2, borderRadius: '20px', bgcolor: 'background.paper', border: `1px solid ${t.palette.divider}`, boxShadow: '0 1px 2px rgb(15 23 42 / 0.05), 0 18px 36px -18px rgb(15 23 42 / 0.25)' })}
       >
         <Typography sx={{ fontWeight: 700, fontSize: 15 }}>Join the flavor club</Typography>
         <TextField

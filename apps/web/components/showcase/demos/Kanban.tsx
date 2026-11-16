@@ -52,7 +52,7 @@ export default function Kanban() {
               role="group"
               aria-label={name}
               data-col={col}
-              sx={(t) => ({ display: 'flex', flexDirection: 'column', gap: 1, p: 0.75, borderRadius: 3, bgcolor: t.palette.mode === 'dark' ? 'rgb(255 255 255 / 0.04)' : 'rgb(15 23 42 / 0.04)', minWidth: 0 })}
+              sx={(t) => ({ display: 'flex', flexDirection: 'column', gap: 1, p: 0.75, borderRadius: '14px', bgcolor: t.palette.mode === 'dark' ? 'rgb(255 255 255 / 0.04)' : 'rgb(15 23 42 / 0.04)', minWidth: 0 })}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 0.5, pt: 0.25 }}>
                 <Typography component="span" sx={{ fontSize: 12.5, fontWeight: 700 }}>

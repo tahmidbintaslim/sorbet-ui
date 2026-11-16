@@ -25,14 +25,13 @@ function Loading() {
   );
 }
 
-const opts = { ssr: false, loading: Loading } as const;
 const DEMOS: { id: string; title: string; blurb: string; href: string; link: string; c: Scoop; Demo: React.ComponentType }[] = [
-  { id: 'kanban', title: 'Kanban', blurb: 'Drag a ticket, or use its arrows.', href: '/docs/components/card', link: 'Card', c: 'warning', Demo: dynamic(() => import('./demos/Kanban'), opts) },
-  { id: 'stats', title: 'Stats', blurb: 'Switch the range; the number counts.', href: '/docs/components/tabs', link: 'Tabs', c: 'success', Demo: dynamic(() => import('./demos/Stats'), opts) },
-  { id: 'command', title: 'Command menu', blurb: 'Type, arrow down, press Enter.', href: '/docs/components/text-field', link: 'TextField', c: 'secondary', Demo: dynamic(() => import('./demos/Command'), opts) },
-  { id: 'filters', title: 'Filters and table', blurb: 'Chips narrow the rows.', href: '/docs/components/table', link: 'Table', c: 'primary', Demo: dynamic(() => import('./demos/Filters'), opts) },
-  { id: 'agenda', title: 'Agenda', blurb: 'Pick a day to see what is on.', href: '/docs/components/avatar-badge', link: 'Avatar', c: 'danger', Demo: dynamic(() => import('./demos/Agenda'), opts) },
-  { id: 'form', title: 'Sign-up form', blurb: 'Submit it empty, then fix it.', href: '/docs/components/checkbox', link: 'Checkbox', c: 'info', Demo: dynamic(() => import('./demos/SignUp'), opts) },
+  { id: 'kanban', title: 'Kanban', blurb: 'Drag a ticket, or use its arrows.', href: '/docs/components/card', link: 'Card', c: 'warning', Demo: dynamic(() => import('./demos/Kanban'), { ssr: false, loading: Loading }) },
+  { id: 'stats', title: 'Stats', blurb: 'Switch the range; the number counts.', href: '/docs/components/tabs', link: 'Tabs', c: 'success', Demo: dynamic(() => import('./demos/Stats'), { ssr: false, loading: Loading }) },
+  { id: 'command', title: 'Command menu', blurb: 'Type, arrow down, press Enter.', href: '/docs/components/text-field', link: 'TextField', c: 'secondary', Demo: dynamic(() => import('./demos/Command'), { ssr: false, loading: Loading }) },
+  { id: 'filters', title: 'Filters and table', blurb: 'Chips narrow the rows.', href: '/docs/components/table', link: 'Table', c: 'primary', Demo: dynamic(() => import('./demos/Filters'), { ssr: false, loading: Loading }) },
+  { id: 'agenda', title: 'Agenda', blurb: 'Pick a day to see what is on.', href: '/docs/components/avatar-badge', link: 'Avatar', c: 'danger', Demo: dynamic(() => import('./demos/Agenda'), { ssr: false, loading: Loading }) },
+  { id: 'form', title: 'Sign-up form', blurb: 'Submit it empty, then fix it.', href: '/docs/components/checkbox', link: 'Checkbox', c: 'info', Demo: dynamic(() => import('./demos/SignUp'), { ssr: false, loading: Loading }) },
 ];
 
 function DemoCard({ d }: { d: (typeof DEMOS)[number] }) {
@@ -58,7 +57,7 @@ function DemoCard({ d }: { d: (typeof DEMOS)[number] }) {
         ref={ref}
         sx={{
           position: 'relative',
-          height: 320,
+          height: 340,
           m: 0.75,
           borderRadius: '18px',
           overflow: 'hidden',

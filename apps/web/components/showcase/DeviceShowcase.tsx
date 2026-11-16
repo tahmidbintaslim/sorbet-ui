@@ -123,9 +123,9 @@ function PhoneFrame({ children }: { children: React.ReactNode }) {
 
 const groupLabel = { fontSize: 12, fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'text.secondary', whiteSpace: 'nowrap' } as const;
 
-function Group({ label, id, children }: { label: string; id?: string; children: React.ReactNode }) {
+function Group({ label, id, stack, children }: { label: string; id?: string; stack?: boolean; children: React.ReactNode }) {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 0, [NOT_WIDE]: { justifyContent: 'space-between' } }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 0, [NOT_WIDE]: stack ? { flexDirection: 'column', alignItems: 'stretch', gap: 0.5 } : { justifyContent: 'space-between' } }}>
       <Typography component="span" id={id} sx={groupLabel}>
         {label}
       </Typography>
@@ -159,14 +159,14 @@ function ThemeBar({ settings, set, setMode }: { settings: StageSettings; set: (p
         [NOT_WIDE]: { flexDirection: 'column', alignItems: 'stretch', px: 2.5, py: 2, rowGap: 1.75 },
       })}
     >
-      <Group label="Accent" id={`${id}-accent`}>
-        <Box role="radiogroup" aria-labelledby={`${id}-accent`} sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end', gap: 0.75, [TOUCH]: { gap: 0 } }}>
+      <Group stack label="Accent" id={`${id}-accent`}>
+        <Box role="radiogroup" aria-labelledby={`${id}-accent`} sx={{ display: 'flex', gap: 0.75, [NOT_WIDE]: { gap: 0, justifyContent: 'space-between', mx: -1 } }}>
           {FLAVORS.map((f) => (
             <Box
               key={f.id}
               component="label"
               title={f.name}
-              sx={{ position: 'relative', display: 'grid', placeItems: 'center', width: 26, height: 26, cursor: 'pointer', [TOUCH]: { width: 44, height: 44 }, '@media (max-width: 420px)': { width: 34 } }}
+              sx={{ position: 'relative', display: 'grid', placeItems: 'center', width: 26, height: 26, cursor: 'pointer', [TOUCH]: { height: 44 }, [NOT_WIDE]: { width: 40, height: 44 }, '@media (max-width: 359.95px)': { width: 34 } }}
             >
               <Box
                 component="input"
