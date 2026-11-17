@@ -1,7 +1,7 @@
 'use client';
 // Landing-page sections. app/page.tsx (a server component) composes them.
-// A sorbet shop: a row of scoop colors, a cone that bobs, candy chips, tilted
-// screens and scalloped bands. Copy stays short; the product does the talking.
+// A sorbet shop: a row of scoop colors, a cone that bobs, candy chips, a live
+// app in device frames and scalloped bands. Copy stays short; the product does the talking.
 // Every text color is a token pair checked in packages/tokens/src/contrast.test.ts.
 import * as React from 'react';
 import NextLink from 'next/link';
@@ -11,14 +11,16 @@ import ArrowForward from '@mui/icons-material/ArrowForward';
 import GitHub from '@mui/icons-material/GitHub';
 import LinkButton from './LinkButton';
 import CodeBlock, { CommandLine } from './CodeBlock';
-import { CountUp, Reveal, Stagger, StaggerItem, useOnScreen } from './motion';
+import { CountUp, Reveal, Stagger, StaggerItem } from './motion';
 import BeforeAfter, { BEFORE_AFTER_CODE } from './landing/BeforeAfter';
 import LivePlayground from './landing/LivePlayground';
+import DeviceShowcase from './showcase/DeviceShowcase';
+import DemoGrid from './showcase/DemoGrid';
 import SorbetCone from './fun/SorbetCone';
 import Marquee from './fun/Marquee';
 import Ink, { ARROW, CIRCLE, type Stroke } from './fun/Ink';
 import { RainbowBorder, ScoopBlobs, ScoopRow, Shine, Springy, Sticker, scallopMask } from './fun/Decor';
-import { CANDY_TEXT, DARK, NO_MOTION, SCOOPS, scoop, scoopAt, type Scoop } from '@/lib/scoops';
+import { CANDY_TEXT, NO_MOTION, SCOOPS, scoop, type Scoop } from '@/lib/scoops';
 import { colorPalette } from '@sorbet-ui/tokens';
 import { SITE } from '@/lib/site';
 import { BLOCKS } from '@/lib/blocks';
@@ -68,7 +70,7 @@ function SectionTitle({ title, lead, c }: { title: string; lead?: string; c: Sco
 }
 
 // ---------------------------------------------------------------------------
-// Hero: a scoop-colored headline, a bobbing cone, and a wall of real screens.
+// Hero: a scoop-colored headline, a bobbing cone, and the live device showcase.
 // ---------------------------------------------------------------------------
 
 // Each word of the second line is its own scoop. Transform-only entrance, so the
@@ -85,129 +87,6 @@ const pop = keyframes`
   80% { transform: translateY(0) scale(.98) rotate(-1deg); }
   100% { transform: none; }
 `;
-const floatTile = keyframes`
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -10px; }
-`;
-
-// Screens from scripts/gen-shots.mjs, each linking to its page.
-const SHOTS = [
-  ...TEMPLATES.map((t) => ({ file: t.slug, href: `/templates/${t.slug}`, label: `${t.name} template` })),
-  { file: 'demo', href: '/demo', label: 'Acme Admin demo' },
-];
-// Four columns, each starting a little lower, like a contact sheet.
-const COLUMNS = [[0, 4], [6, 1], [2, 5], [3]];
-const OFFSETS = [0, 96, 40, 140];
-const TILTS = [-3, 2.5, -1.5, 3, -2.5, 2, -3.5];
-
-function Shot({ file, href, label, eager, i }: (typeof SHOTS)[number] & { eager?: boolean; i: number }) {
-  const img = (mode: 'light' | 'dark') => (
-    <Box
-      component="img"
-      src={`/shots/${file}-${mode}.jpg`}
-      alt=""
-      width={1280}
-      height={1500}
-      loading={eager ? 'eager' : 'lazy'}
-      decoding="async"
-      sx={{
-        width: '100%',
-        height: 'auto',
-        // Show the screenshot that matches the site theme.
-        display: mode === 'dark' ? 'none' : 'block',
-        '[data-mode="dark"] &': { display: mode === 'dark' ? 'block' : 'none' },
-      }}
-    />
-  );
-  const tilt = TILTS[i % TILTS.length];
-  return (
-    <Box
-      className="tile"
-      sx={{
-        position: 'relative',
-        rotate: `${tilt}deg`,
-        animation: `${floatTile} ${6 + (i % 3)}s ease-in-out ${-i * 1.3}s infinite`,
-        transition: 'rotate .5s cubic-bezier(.3,1.6,.5,1)',
-        '&:hover, &:focus-within': { rotate: '0deg', zIndex: 2 },
-        '&:hover .back, &:focus-within .back': { rotate: `${-tilt * 2.2}deg`, scale: '1.03' },
-        '&:hover .card, &:focus-within .card': { scale: '1.04', translate: '0 -8px' },
-        ...NO_MOTION,
-      }}
-    >
-      <Box
-        aria-hidden
-        className="back"
-        sx={{
-          position: 'absolute',
-          inset: 0,
-          borderRadius: 4,
-          bgcolor: scoop(scoopAt(i + 1), 'candy'),
-          rotate: `${-tilt * 1.6}deg`,
-          translate: '6px 8px',
-          transition: 'rotate .5s cubic-bezier(.3,1.6,.5,1), scale .4s',
-          [DARK]: { opacity: 0.85 },
-        }}
-      />
-      <Box
-        component={NextLink}
-        href={href}
-        aria-label={label}
-        className="card"
-        sx={(t) => ({
-          position: 'relative',
-          display: 'block',
-          overflow: 'hidden',
-          borderRadius: 3,
-          bgcolor: 'background.paper',
-          outline: `1px solid ${t.palette.mode === 'dark' ? 'rgb(255 255 255 / 0.1)' : 'rgb(0 0 0 / 0.1)'}`,
-          outlineOffset: -1,
-          boxShadow: '0 1px 2px rgb(0 0 0 / 0.06), 0 12px 32px -8px rgb(0 0 0 / 0.22)',
-          transition: 'scale .4s cubic-bezier(.3,1.6,.5,1), translate .4s cubic-bezier(.3,1.6,.5,1), box-shadow .3s',
-          '&:hover': { boxShadow: '0 1px 2px rgb(0 0 0 / 0.06), 0 28px 48px -12px rgb(0 0 0 / 0.3)' },
-          '&:focus-visible': { outline: '3px solid', outlineColor: 'text.primary', outlineOffset: 3 },
-        })}
-      >
-        {img('light')}
-        {img('dark')}
-      </Box>
-    </Box>
-  );
-}
-
-function ScreenWall() {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const onScreen = useOnScreen(ref);
-  let n = 0;
-  return (
-    <Box
-      ref={ref}
-      sx={{
-        position: 'relative',
-        zIndex: 1,
-        mt: { xs: 6, md: 8 },
-        px: { xs: 3, md: 5 },
-        pt: 3,
-        height: { xs: 520, md: 760 },
-        overflow: 'hidden',
-        maskImage: 'linear-gradient(to bottom, #000 60%, transparent)',
-        WebkitMaskImage: 'linear-gradient(to bottom, #000 60%, transparent)',
-        '& .tile': { animationPlayState: onScreen ? 'running' : 'paused' },
-        '& .tile:hover, & .tile:focus-within': { animationPlayState: 'paused' },
-      }}
-    >
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }, gap: { xs: 3, md: 4 }, maxWidth: 1440, mx: 'auto' }}>
-        {COLUMNS.map((col, c) => (
-          <Stack key={c} spacing={{ xs: 3, md: 4 }} sx={{ pt: `${OFFSETS[c]}px`, display: { xs: c > 1 ? 'none' : 'flex', md: 'flex' } }}>
-            {col.map((i, row) => (
-              <Shot key={i} {...SHOTS[i]} eager={row === 0} i={n++} />
-            ))}
-          </Stack>
-        ))}
-      </Box>
-    </Box>
-  );
-}
-
 export function Hero() {
   return (
     <Box
@@ -329,7 +208,10 @@ export function Hero() {
         </Grid>
       </Container>
 
-      <ScreenWall />
+      {/* The product, live: one app in a browser and a phone frame, restyled by the bar under it. */}
+      <Box sx={{ position: 'relative', zIndex: 1, maxWidth: 1296, mx: 'auto', px: { xs: 2, sm: 3 }, mt: { xs: 7, md: 11 }, pb: { xs: 6, md: 8 } }}>
+        <DeviceShowcase />
+      </Box>
     </Box>
   );
 }
@@ -390,6 +272,19 @@ export function Facts() {
         ))}
       </Stagger>
     </Container>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Built with Sorbet: six working mini-demos, each mounted when scrolled near.
+// ---------------------------------------------------------------------------
+
+export function BuiltWith() {
+  return (
+    <Band id="built-with" py={{ xs: 6, md: 10 }}>
+      <SectionTitle c="danger" title="Built with Sorbet" lead="Six small things you would build anyway. They all work: drag, type, filter, submit." />
+      <DemoGrid />
+    </Band>
   );
 }
 
