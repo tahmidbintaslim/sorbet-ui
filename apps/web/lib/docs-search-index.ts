@@ -119,11 +119,71 @@ export const SEARCH_INDEX: SearchEntry[] = [
     "keywords": "Set up Sorbet UI in a Next.js App Router project, with server rendering and no style flash."
   },
   {
+    "title": "Before you start",
+    "href": "/docs/frameworks/nextjs#before-you-start",
+    "group": "Guides",
+    "hint": "Next.js"
+  },
+  {
+    "title": "Set up the App Router",
+    "href": "/docs/frameworks/nextjs#setup",
+    "group": "Guides",
+    "hint": "Next.js"
+  },
+  {
+    "title": "Dark mode",
+    "href": "/docs/frameworks/nextjs#dark-mode",
+    "group": "Guides",
+    "hint": "Next.js"
+  },
+  {
+    "title": "Pages Router",
+    "href": "/docs/frameworks/nextjs#pages-router",
+    "group": "Guides",
+    "hint": "Next.js"
+  },
+  {
+    "title": "Troubleshooting",
+    "href": "/docs/frameworks/nextjs#troubleshooting",
+    "group": "Guides",
+    "hint": "Next.js"
+  },
+  {
     "title": "Vite",
     "href": "/docs/frameworks/vite",
     "group": "Guides",
     "hint": "Guide",
     "keywords": "Set up Sorbet UI in a Vite and React project."
+  },
+  {
+    "title": "Before you start",
+    "href": "/docs/frameworks/vite#before-you-start",
+    "group": "Guides",
+    "hint": "Vite"
+  },
+  {
+    "title": "Set up Vite",
+    "href": "/docs/frameworks/vite#setup",
+    "group": "Guides",
+    "hint": "Vite"
+  },
+  {
+    "title": "Dark mode",
+    "href": "/docs/frameworks/vite#dark-mode",
+    "group": "Guides",
+    "hint": "Vite"
+  },
+  {
+    "title": "Load the Inter font",
+    "href": "/docs/frameworks/vite#fonts",
+    "group": "Guides",
+    "hint": "Vite"
+  },
+  {
+    "title": "Troubleshooting",
+    "href": "/docs/frameworks/vite#troubleshooting",
+    "group": "Guides",
+    "hint": "Vite"
   },
   {
     "title": "React Router",
@@ -133,11 +193,83 @@ export const SEARCH_INDEX: SearchEntry[] = [
     "keywords": "Set up Sorbet UI in a React Router (framework mode) project."
   },
   {
+    "title": "Before you start",
+    "href": "/docs/frameworks/react-router#before-you-start",
+    "group": "Guides",
+    "hint": "React Router"
+  },
+  {
+    "title": "Set up framework mode",
+    "href": "/docs/frameworks/react-router#setup",
+    "group": "Guides",
+    "hint": "React Router"
+  },
+  {
+    "title": "Dark mode",
+    "href": "/docs/frameworks/react-router#dark-mode",
+    "group": "Guides",
+    "hint": "React Router"
+  },
+  {
+    "title": "What we tested",
+    "href": "/docs/frameworks/react-router#what-we-tested",
+    "group": "Guides",
+    "hint": "React Router"
+  },
+  {
+    "title": "Troubleshooting",
+    "href": "/docs/frameworks/react-router#troubleshooting",
+    "group": "Guides",
+    "hint": "React Router"
+  },
+  {
     "title": "Migrating from MUI",
     "href": "/docs/migrating-from-mui",
     "group": "Guides",
     "hint": "Guide",
     "keywords": "Adopt Sorbet in an existing Material UI app one screen at a time."
+  },
+  {
+    "title": "The plan",
+    "href": "/docs/migrating-from-mui#the-plan",
+    "group": "Guides",
+    "hint": "Migrating from MUI"
+  },
+  {
+    "title": "Step 1: Swap the theme",
+    "href": "/docs/migrating-from-mui#swap-theme",
+    "group": "Guides",
+    "hint": "Migrating from MUI"
+  },
+  {
+    "title": "Keep your overrides",
+    "href": "/docs/migrating-from-mui#keep-overrides",
+    "group": "Guides",
+    "hint": "Migrating from MUI"
+  },
+  {
+    "title": "Step 2: Adopt components",
+    "href": "/docs/migrating-from-mui#adopt-components",
+    "group": "Guides",
+    "hint": "Migrating from MUI"
+  },
+  {
+    "title": "Mixing MUI and Sorbet",
+    "href": "/docs/migrating-from-mui#mixing",
+    "group": "Guides",
+    "hint": "Migrating from MUI"
+  },
+  {
+    "title": "Rollout checklist",
+    "href": "/docs/migrating-from-mui#checklist",
+    "group": "Guides",
+    "hint": "Migrating from MUI"
+  },
+  {
+    "title": "Known differences",
+    "href": "/docs/migrating-from-mui#known-differences",
+    "group": "Guides",
+    "hint": "Migrating from MUI"
   },
   {
     "title": "Theming",
