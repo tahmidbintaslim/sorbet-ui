@@ -115,7 +115,9 @@ export default function TemplateViewer({
           data-device={device}
           initial={false}
           animate={width === null ? undefined : { width }}
-          transition={{ type: 'spring', stiffness: 210, damping: 26 }}
+          // A short tween, not a spring: the template reflows on every frame, so a long
+          // settle costs real work on slow machines. Reduced motion jumps (MotionConfig).
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           style={{ width: '100%', maxWidth: '100%', minWidth: 0 }}
         >
           <Box sx={{ borderRadius: device === 'phone' ? '28px' : '14px', border: 1, borderColor: 'divider', bgcolor: 'background.paper', overflow: 'hidden', boxShadow: '0 24px 60px -32px rgba(15,23,42,.45)', transition: 'border-radius .3s' }}>

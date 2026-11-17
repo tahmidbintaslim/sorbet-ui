@@ -757,6 +757,8 @@ for (const t of TEMPLATES) {
 }
 
 test('templates: the device switch resizes the frame and the template reflows', async ({ page }) => {
+  // This checks sizes and reflow, not the resize animation, so widths jump.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/templates/inbox');
   const frame = page.getByTestId('template-frame');
