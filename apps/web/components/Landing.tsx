@@ -276,13 +276,13 @@ export function Facts() {
 }
 
 // ---------------------------------------------------------------------------
-// Built with Sorbet: six working mini-demos, each mounted when scrolled near.
+// Built with Sorbet: nine working mini-demos, each mounted when scrolled near.
 // ---------------------------------------------------------------------------
 
 export function BuiltWith() {
   return (
     <Band id="built-with" py={{ xs: 6, md: 10 }}>
-      <SectionTitle c="danger" title="Built with Sorbet" lead="Six small things you would build anyway. They all work: drag, type, filter, submit." />
+      <SectionTitle c="danger" title="Built with Sorbet" lead="Nine small things you would build anyway. They all work: drag, type, filter, order, submit." />
       <DemoGrid />
     </Band>
   );
