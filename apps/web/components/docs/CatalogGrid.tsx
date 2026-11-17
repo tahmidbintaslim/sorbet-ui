@@ -1,7 +1,6 @@
 'use client';
 // The component catalog: a quick filter (kept in the URL as ?q=) over cards grouped
 // by kind. The static HTML lists every component; filtering happens after hydration.
-import * as React from 'react';
 import { Box, InputAdornment, TextField, Typography } from '@mui/material';
 import Search from '@mui/icons-material/Search';
 import CatalogCard from '@/components/CatalogCard';
