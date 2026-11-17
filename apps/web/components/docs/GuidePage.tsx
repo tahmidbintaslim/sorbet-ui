@@ -3,7 +3,6 @@
 // Pages pass their own sections; headings use <DocHeading> (or the H2 / H3
 // helpers below) so the TOC, deep links and the search index line up.
 import * as React from 'react';
-import NextLink from 'next/link';
 import { Box, Link, Typography } from '@mui/material';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import PageHeader from '@/components/fun/PageHeader';
@@ -75,7 +74,7 @@ export default function GuidePage({
             </Link>
             <Typography variant="body2" color="text.secondary">
               Stuck?{' '}
-              <Link component={NextLink} href="/support">
+              <Link href="/support">
                 Get help
               </Link>
             </Typography>
