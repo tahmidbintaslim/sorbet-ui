@@ -39,7 +39,9 @@ export default function ApiTable({ table }: { table: ApiTableData }) {
         aria-label={`${table.name} ${table.kind === 'type' ? 'fields' : 'props'}`}
         tabIndex={0}
         data-testid={`api-${table.name}`}
-        sx={{ overflowX: 'auto', border: 1, borderColor: 'divider', borderRadius: 3, bgcolor: 'background.paper', '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 2 } }}
+        // position: relative keeps the visually hidden labels inside the scroll box, so they
+        // cannot widen the page on phones.
+        sx={{ position: 'relative', overflowX: 'auto', border: 1, borderColor: 'divider', borderRadius: 3, bgcolor: 'background.paper', '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 2 } }}
       >
         <Box component="table" sx={{ width: '100%', minWidth: 640, borderCollapse: 'collapse', fontSize: 14 }}>
           <Box component="thead" sx={{ bgcolor: 'action.hover' }}>

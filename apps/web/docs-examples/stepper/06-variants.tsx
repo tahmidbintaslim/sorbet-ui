@@ -14,7 +14,7 @@ export default function Variants() {
           <Typography variant="body2" color="text.secondary" sx={{ width: 64, flexShrink: 0 }}>
             {variant}
           </Typography>
-          <Box sx={{ flex: 1, minWidth: 0, overflowX: 'auto' }}>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
             <Stepper variant={variant} aria-label={`Steps (${variant})`} activeStep={1} steps={steps} />
           </Box>
         </Stack>

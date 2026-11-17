@@ -250,7 +250,8 @@ function MenuDemo(p: P) {
 function StepperDemo({ x, ...p }: P) {
   const steps = [{ label: 'Account' }, { label: 'Workspace' }, { label: 'Invite', optional: true }, { label: 'Done' }];
   return (
-    <Box sx={{ width: '100%', maxWidth: 560, overflowX: 'auto' }}>
+    // Four steps can be wider than a phone: the strip scrolls, so keyboard users can focus it.
+    <Box tabIndex={0} role="region" aria-label="Setup progress, scrolls sideways" sx={{ width: '100%', maxWidth: 560, overflowX: 'auto' }}>
       <Stepper {...p} {...x} aria-label="Setup progress" activeStep={1} steps={steps} />
     </Box>
   );

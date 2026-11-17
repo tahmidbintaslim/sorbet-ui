@@ -12,8 +12,10 @@ import { scoopAt } from '@/lib/scoops';
 import { ScoopDot } from '@/components/fun/Decor';
 import DocHeading from './DocHeading';
 
-// Collapsed, the panel shows the file header and about six lines of code.
-const COLLAPSED = 196;
+// Collapsed, the panel shows the file header and the first lines of code. Only those
+// lines are rendered (not the whole file clipped by overflow), so nothing in the DOM
+// sits hidden under the next section, which also keeps axe's contrast checks honest.
+const PREVIEW_LINES = 6;
 const CODE_BG = '#0b1220'; // matches CodeBlock
 const SHORT = 9; // sources this short are shown in full
 
@@ -40,6 +42,21 @@ export default function ExampleViewer({
   const collapsible = source.trimEnd().split('\n').length > SHORT;
   const collapsed = collapsible && !open;
   const codeId = `${id}-code`;
+  // A wide example scrolls sideways inside its stage; keyboard users then need to be able
+  // to focus the stage to scroll it, so it becomes a labelled, focusable region only then.
+  const stageRef = React.useRef<HTMLDivElement>(null);
+  const [scrolls, setScrolls] = React.useState(false);
+  React.useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const check = () => setScrolls(el.scrollWidth > el.clientWidth + 1);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    if (el.firstElementChild) ro.observe(el.firstElementChild);
+    return () => ro.disconnect();
+  }, []);
+  const preview = collapsed ? source.split('\n').slice(0, PREVIEW_LINES).join('\n') : undefined;
 
   return (
     <Box component="article" aria-labelledby={id} data-testid={`example-${id}`} sx={{ minWidth: 0 }}>
@@ -52,7 +69,9 @@ export default function ExampleViewer({
 
       {/* The stage: a calm dotted surface with the example centered on it. */}
       <Box
+        ref={stageRef}
         data-testid={`stage-${id}`}
+        {...(scrolls ? { tabIndex: 0, role: 'region', 'aria-label': `${title} example, scrolls sideways` } : {})}
         sx={(t) => ({
           display: 'flex',
           alignItems: 'center',
@@ -70,6 +89,7 @@ export default function ExampleViewer({
           backgroundPosition: '9px 9px',
           overflowX: 'auto',
           minWidth: 0,
+          '&:focus-visible': { outline: `2px solid ${t.palette.primary.main}`, outlineOffset: -2 },
         })}
       >
         {children}
@@ -84,13 +104,13 @@ export default function ExampleViewer({
           overflow: 'hidden',
           borderRadius: '0 0 16px 16px',
           bgcolor: CODE_BG,
-          maxHeight: collapsed ? COLLAPSED : 'none',
           // CodeBlock brings its own margins and corners; here it joins the stage.
           '& > div:first-of-type': { my: 0, borderRadius: 0, border: 0 },
-          pb: collapsible && open ? '44px' : 0,
+          // Room for the toggle under the code (open) or over the faded last lines (collapsed).
+          pb: collapsible ? (open ? '44px' : '8px') : 0,
         }}
       >
-        <CodeBlock code={source} title={file} label={`${title} source`} />
+        <CodeBlock code={source} preview={preview} title={file} label={`${title} source`} />
         {collapsible && (
           <Box
             sx={{

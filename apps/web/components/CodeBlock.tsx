@@ -179,7 +179,18 @@ export function CommandLine({ command, label = 'Install command', mt = 3 }: { co
 }
 
 /** Multi-line code panel with an optional file name header and syntax colors. */
-export default function CodeBlock({ code, label, title }: { code: string; label?: string; title?: string }) {
+export default function CodeBlock({
+  code,
+  label,
+  title,
+  preview,
+}: {
+  code: string;
+  label?: string;
+  title?: string;
+  /** Text to show instead of `code` (e.g. its first lines); Copy still copies all of `code`. */
+  preview?: string;
+}) {
   return (
     <Box
       sx={{
@@ -236,7 +247,7 @@ export default function CodeBlock({ code, label, title }: { code: string; label?
         aria-label={label ?? 'Code example'}
         sx={{ m: 0, p: 2, pr: title ? 2 : 7, overflowX: 'auto', fontFamily: MONO, fontSize: 13, lineHeight: 1.7 }}
       >
-        <code>{highlight(code)}</code>
+        <code>{highlight(preview ?? code)}</code>
       </Box>
     </Box>
   );
