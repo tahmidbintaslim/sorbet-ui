@@ -128,11 +128,53 @@ export const SEARCH_INDEX: SearchEntry[] = [
     "keywords": "Short answers to the questions people ask most."
   },
   {
+    "title": "Getting started",
+    "href": "/docs/faq#getting-started",
+    "group": "Guides",
+    "hint": "FAQ"
+  },
+  {
+    "title": "Compatibility",
+    "href": "/docs/faq#compatibility",
+    "group": "Guides",
+    "hint": "FAQ"
+  },
+  {
+    "title": "Theming",
+    "href": "/docs/faq#theming",
+    "group": "Guides",
+    "hint": "FAQ"
+  },
+  {
+    "title": "Accessibility",
+    "href": "/docs/faq#accessibility",
+    "group": "Guides",
+    "hint": "FAQ"
+  },
+  {
+    "title": "Project",
+    "href": "/docs/faq#project",
+    "group": "Guides",
+    "hint": "FAQ"
+  },
+  {
     "title": "Changelog",
     "href": "/docs/changelog",
     "group": "Guides",
     "hint": "Guide",
     "keywords": "What changed in each release."
+  },
+  {
+    "title": "Pending changes",
+    "href": "/docs/changelog#pending",
+    "group": "Guides",
+    "hint": "Changelog"
+  },
+  {
+    "title": "How releases work",
+    "href": "/docs/changelog#releases",
+    "group": "Guides",
+    "hint": "Changelog"
   },
   {
     "title": "Contributing",
@@ -142,11 +184,95 @@ export const SEARCH_INDEX: SearchEntry[] = [
     "keywords": "Report a bug, propose a component, or send a pull request."
   },
   {
+    "title": "Ways to help",
+    "href": "/docs/contributing#ways-to-help",
+    "group": "Guides",
+    "hint": "Contributing"
+  },
+  {
+    "title": "Set up the repo",
+    "href": "/docs/contributing#setup",
+    "group": "Guides",
+    "hint": "Contributing"
+  },
+  {
+    "title": "Repo map",
+    "href": "/docs/contributing#repo-map",
+    "group": "Guides",
+    "hint": "Contributing"
+  },
+  {
+    "title": "Scripts",
+    "href": "/docs/contributing#scripts",
+    "group": "Guides",
+    "hint": "Contributing"
+  },
+  {
+    "title": "Add a component",
+    "href": "/docs/contributing#add-a-component",
+    "group": "Guides",
+    "hint": "Contributing"
+  },
+  {
+    "title": "Tests and accessibility",
+    "href": "/docs/contributing#quality-bar",
+    "group": "Guides",
+    "hint": "Contributing"
+  },
+  {
+    "title": "Commits and pull requests",
+    "href": "/docs/contributing#commits-and-prs",
+    "group": "Guides",
+    "hint": "Contributing"
+  },
+  {
+    "title": "Code of conduct",
+    "href": "/docs/contributing#conduct",
+    "group": "Guides",
+    "hint": "Contributing"
+  },
+  {
     "title": "Brand assets",
     "href": "/docs/brand",
     "group": "Guides",
     "hint": "Guide",
     "keywords": "The Sorbet UI name, logo and colors, and how to use them."
+  },
+  {
+    "title": "Name",
+    "href": "/docs/brand#name",
+    "group": "Guides",
+    "hint": "Brand assets"
+  },
+  {
+    "title": "Logo",
+    "href": "/docs/brand#logo",
+    "group": "Guides",
+    "hint": "Brand assets"
+  },
+  {
+    "title": "Flavor colors",
+    "href": "/docs/brand#colors",
+    "group": "Guides",
+    "hint": "Brand assets"
+  },
+  {
+    "title": "Typography",
+    "href": "/docs/brand#typography",
+    "group": "Guides",
+    "hint": "Brand assets"
+  },
+  {
+    "title": "Doodles",
+    "href": "/docs/brand#doodles",
+    "group": "Guides",
+    "hint": "Brand assets"
+  },
+  {
+    "title": "Do and don’t",
+    "href": "/docs/brand#do-and-dont",
+    "group": "Guides",
+    "hint": "Brand assets"
   },
   {
     "title": "All components",
