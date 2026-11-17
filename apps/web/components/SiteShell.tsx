@@ -14,9 +14,9 @@ import Logo from './Logo';
 import GitHubStars from './GitHubStars';
 import { SITE } from '@/lib/site';
 import { TOUCH, touchRow, touchTarget } from '@/lib/touch';
-import { NO_MOTION, SCOOPS, scoop, scoopVars, type Scoop } from '@/lib/scoops';
+import { NO_MOTION, SCOOPS, scoop, scoopAt, scoopVars, type Scoop } from '@/lib/scoops';
 import { SECTION_FLAVOR, flavorOf } from '@/lib/sections';
-import { Drips, ScoopRow } from './fun/Decor';
+import { Drips, ScoopDot, ScoopRow } from './fun/Decor';
 
 const wiggle = keyframes`
   0%, 100% { transform: rotate(0) scale(1); }
@@ -35,24 +35,36 @@ const NAV: { href: string; label: string; c: Scoop }[] = [
   { href: '/demo', label: 'Demo', c: SECTION_FLAVOR.demo },
 ];
 
-const FOOTER = [
+// Footer columns. Internal links start with "/" (e2e checks each one resolves).
+const FOOTER: { title: string; links: { href: string; label: string }[] }[] = [
   {
     title: 'Docs',
     links: [
-      { href: '/docs', label: 'Getting started' },
-      { href: '/docs/components', label: 'Components' },
+      { href: '/docs', label: 'Introduction' },
+      { href: '/docs/installation', label: 'Installation' },
       { href: '/docs/theming', label: 'Theming' },
-      { href: '/blocks', label: 'Blocks' },
-      { href: '/templates', label: 'Templates' },
-      { href: '/demo', label: 'Demo' },
+      { href: '/docs/components', label: 'Components' },
     ],
   },
   {
     title: 'Resources',
     links: [
-      { href: SITE.github, label: 'GitHub' },
+      { href: '/blocks', label: 'Blocks' },
+      { href: '/templates', label: 'Templates' },
+      { href: '/demo', label: 'Demo' },
       { href: SITE.storybook, label: 'Storybook' },
-      { href: SITE.npm, label: 'npm' },
+      { href: '/docs/changelog', label: 'Changelog' },
+      { href: '/docs/brand', label: 'Brand' },
+    ],
+  },
+  {
+    title: 'Community',
+    links: [
+      { href: '/support', label: 'Support' },
+      { href: SITE.github, label: 'GitHub' },
+      { href: `${SITE.github}/issues/new?template=bug_report.md`, label: 'Report a bug' },
+      { href: '/docs/contributing', label: 'Contributing' },
+      { href: `${SITE.github}/security/advisories/new`, label: 'Security' },
     ],
   },
 ];
@@ -283,48 +295,76 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
         <ScoopRow size={22} sx={{ position: 'absolute', top: -27, left: '50%', transform: 'translateX(-50%)' }} />
         <Drips />
         <Container maxWidth="lg" sx={{ pt: 3 }}>
-          <Grid container spacing={4}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <Logo size={24} />
-                <Typography sx={{ fontWeight: 800 }}>{SITE.name}</Typography>
-              </Stack>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5, maxWidth: 360 }}>
-                {SITE.description}
-              </Typography>
-            </Grid>
-            {FOOTER.map((col) => (
-              <Grid key={col.title} size={{ xs: 6, md: 3 }}>
-                <Typography component="h2" variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5 }}>
-                  {col.title}
+          <Grid container spacing={{ xs: 4, md: 3 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Stack
+                component={NextLink}
+                href="/"
+                direction="row"
+                spacing={1}
+                sx={{ alignItems: 'center', color: 'text.primary', textDecoration: 'none', width: 'fit-content', ...touchRow }}
+              >
+                <Logo size={28} />
+                <Typography component="span" sx={{ fontWeight: 800, fontSize: 18, letterSpacing: '-0.02em' }}>
+                  {SITE.name}
                 </Typography>
-                <Stack spacing={1} sx={{ [TOUCH]: { gap: 0, '& > :not(style) ~ :not(style)': { mt: 0 } }, alignItems: 'flex-start' }}>
-                  {col.links.map((l) =>
-                    l.href.startsWith('/') ? (
-                      <Link key={l.label} component={NextLink} href={l.href} color="text.secondary" underline="hover" variant="body2" sx={touchRow}>
-                        {l.label}
-                      </Link>
-                    ) : (
-                      <Link key={l.label} href={l.href} rel="noopener" color="text.secondary" underline="hover" variant="body2" sx={touchRow}>
-                        {l.label}
-                      </Link>
-                    ),
-                  )}
-                </Stack>
-              </Grid>
-            ))}
+              </Stack>
+              <Typography
+                aria-hidden
+                sx={{ fontFamily: 'var(--font-hand), cursive', fontSize: 24, lineHeight: 1.1, color: scoop('danger', 'ink'), rotate: '-2deg', width: 'fit-content', mt: 1.5 }}
+              >
+                fresh scoops of MUI
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1, maxWidth: 340 }}>
+                {SITE.tagline}. {SITE.description}
+              </Typography>
+              <Box sx={{ mt: 2 }}>
+                <GitHubStars />
+              </Box>
+            </Grid>
+            <Grid size={{ xs: 12, md: 8 }}>
+              <Box component="nav" aria-label="Footer" sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', sm: 'repeat(3, 1fr)' }, gap: { xs: 3, md: 4 } }}>
+                {FOOTER.map((col, i) => (
+                  <div key={col.title}>
+                    <Typography component="h2" variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <ScoopDot c={scoopAt(i * 2)} size={10} />
+                      {col.title}
+                    </Typography>
+                    <Stack component="ul" spacing={1} sx={{ listStyle: 'none', p: 0, m: 0, [TOUCH]: { gap: 0, '& > :not(style) ~ :not(style)': { mt: 0 } }, alignItems: 'flex-start' }}>
+                      {col.links.map((l) => (
+                        <li key={l.label}>
+                          {l.href.startsWith('/') ? (
+                            <Link component={NextLink} href={l.href} color="text.secondary" underline="hover" variant="body2" sx={touchRow}>
+                              {l.label}
+                            </Link>
+                          ) : (
+                            <Link href={l.href} rel="noopener" color="text.secondary" underline="hover" variant="body2" sx={touchRow}>
+                              {l.label}
+                            </Link>
+                          )}
+                        </li>
+                      ))}
+                    </Stack>
+                  </div>
+                ))}
+              </Box>
+            </Grid>
           </Grid>
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
-            spacing={2}
+            spacing={1}
             sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' }, mt: 5, pt: 3, borderTop: 1, borderColor: 'divider' }}
           >
             <Typography variant="body2" color="text.secondary">
-              MIT licensed. Built on Material UI v7 and v9.
+              © <span suppressHydrationWarning>{new Date().getFullYear()}</span> Tahmid Bin Taslim Rafi and {SITE.name} contributors.{' '}
+              <Link href={`${SITE.github}/blob/main/LICENSE`} rel="noopener" color="inherit" underline="always">
+                MIT licensed
+              </Link>
+              .
             </Typography>
-            <Box>
-              <GitHubStars />
-            </Box>
+            <Typography variant="body2" color="text.secondary">
+              Built on Material UI v7 and v9.
+            </Typography>
           </Stack>
         </Container>
       </Box>
