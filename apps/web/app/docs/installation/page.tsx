@@ -1,23 +1,39 @@
 import type { Metadata } from 'next';
-import { pageMeta } from '@/lib/seo';
-import { AlertTitle, Box, Link, Typography } from '@mui/material';
+import { AlertTitle, Link } from '@mui/material';
 import { Alert, Tabs } from '@sorbet-ui/react';
+import { pageMeta } from '@/lib/seo';
+import { docPage } from '@/lib/docs-nav';
+import GuidePage, { H3, Section } from '@/components/docs/GuidePage';
 import CodeBlock, { CommandLine } from '@/components/CodeBlock';
 import { REGISTRY_URL, addCommand } from '@/lib/registry';
-import PageHeader from '@/components/fun/PageHeader';
-import { SECTION_FLAVOR } from '@/lib/sections';
+import { SITE } from '@/lib/site';
+import { Step, Steps } from '../_start/Steps';
+import LinkGrid from '../_start/LinkGrid';
 
-export const metadata: Metadata = pageMeta({
-  title: 'Installation',
-  description: 'Install Sorbet UI, wrap your app in its theme, and your existing Material UI screens restyle. Vite and Next.js.',
-  path: '/docs/installation',
-});
+const HREF = '/docs/installation';
+const meta = docPage(HREF)!;
 
-const REPO = 'https://github.com/tahmidbintaslim/sorbet-ui';
+export const metadata: Metadata = pageMeta({ title: meta.title, description: meta.description, path: HREF });
+
+const TOC = [
+  { id: 'prerequisites', label: 'Prerequisites', depth: 2 },
+  { id: 'build', label: 'Build the packages', depth: 2 },
+  { id: 'setup', label: 'Set up your app', depth: 2 },
+  { id: 'framework-guides', label: 'Framework guides', depth: 2 },
+  { id: 'dark-mode', label: 'Dark mode', depth: 2 },
+  { id: 'fonts', label: 'Load the Inter font', depth: 2 },
+  { id: 'cli', label: 'Add blocks with the shadcn CLI', depth: 2 },
+  { id: 'troubleshooting', label: 'Troubleshooting', depth: 2 },
+  { id: 'peer-errors', label: 'Peer dependency errors', depth: 3 },
+  { id: 'missing-module', label: 'Cannot find module', depth: 3 },
+  { id: 'server-functions', label: 'Functions cannot be passed', depth: 3 },
+  { id: 'styles-wrong', label: 'Styles missing or stale', depth: 3 },
+  { id: 'next-steps', label: 'Next steps', depth: 2 },
+] as const;
 
 // Every command below was run end to end in a clean folder: clone, build, pack,
 // install the tarballs into a new Vite app and a new Next.js app, and build both.
-const BUILD_FROM_SOURCE = `git clone ${REPO}.git
+const BUILD_FROM_SOURCE = `git clone ${SITE.github}.git
 cd sorbet-ui
 pnpm install && pnpm build:packages
 # Packs tokens, core, theme and react into sorbet-ui/tarballs/
@@ -111,12 +127,10 @@ import '@fontsource/inter/500.css';
 import '@fontsource/inter/600.css';
 import '@fontsource/inter/700.css';`;
 
-const DARK = `// app/providers.tsx (or wrap your Vite app the same way)
-'use client';
-import { ThemeProvider, CssBaseline, useMediaQuery } from '@mui/material';
+const DARK = `import { ThemeProvider, CssBaseline, useMediaQuery } from '@mui/material';
 import { lightTheme, darkTheme } from '@sorbet-ui/theme';
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+function Root({ children }: { children: React.ReactNode }) {
   // Follow the operating system setting.
   const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
   return (
@@ -150,48 +164,35 @@ export default function App() {
   );
 }`;
 
-const h2 = { fontWeight: 700, mt: 5, scrollMarginTop: 90 } as const;
-const h3 = { fontWeight: 700, fontSize: 17, mt: 3 } as const;
-
-function Step({ children }: { children: React.ReactNode }) {
-  return (
-    <Typography component="h3" sx={h3}>
-      {children}
-    </Typography>
-  );
-}
-
 function SeeResult({ where }: { where: string }) {
   return (
-    <>
-      <Step>What you should see</Step>
-      <Typography color="text.secondary" component="div">
-        <ul style={{ margin: '8px 0', paddingLeft: 20 }}>
-          <li>
-            At {where}: a blue <strong>Hello Sorbet</strong> button with white text and rounded
-            corners, in the top left of an otherwise empty page.
-          </li>
-          <li>
-            No default browser margin around the page. That is <code>CssBaseline</code> at work.
-          </li>
-          <li>
-            If the button looks like a plain grey browser button, the theme provider is missing or
-            the tarballs did not install; check the terminal for errors.
-          </li>
-        </ul>
-      </Typography>
-    </>
+    <Step title="Check the result">
+      <p>Start the dev server and open {where}. You should see:</p>
+      <ul>
+        <li>
+          A blue <strong>Hello Sorbet</strong> button with white text and rounded corners, top left
+          on an otherwise empty page.
+        </li>
+        <li>No default browser margin around the page. That is <code>CssBaseline</code> at work.</li>
+        <li>
+          If the button looks like a plain grey browser button, the theme provider is missing or the
+          tarballs did not install. Check the terminal for errors.
+        </li>
+      </ul>
+    </Step>
   );
 }
 
-export default function GettingStarted() {
-  return (
-    <>
-      <PageHeader flavor={SECTION_FLAVOR.docs} doodle="cone" aside="start here!" title="Getting started">
-        Sorbet UI wraps Material UI v7 or v9. Install the packages and their peer dependencies, wrap
-        your app in a Sorbet theme, and render a component.
-      </PageHeader>
+const FRAMEWORKS = [
+  { href: '/docs/frameworks/nextjs', title: 'Next.js', note: 'App Router with server rendering, a client provider and dark mode.' },
+  { href: '/docs/frameworks/vite', title: 'Vite', note: 'A single-page React app: one file to wrap, nothing else to configure.' },
+  { href: '/docs/frameworks/react-router', title: 'React Router', note: 'Framework mode with server rendering, wired in app/root.tsx.' },
+  { href: '/docs/migrating-from-mui', title: 'Existing MUI app', note: 'Swap the theme first, then adopt components one screen at a time.' },
+];
 
+export default function Installation() {
+  return (
+    <GuidePage href={HREF} toc={[...TOC]} doodle="cone" aside="first scoop">
       <Alert color="info" variant="soft" data-testid="prerelease-notice">
         <AlertTitle>Pre-release: not on npm yet</AlertTitle>
         Version 0.1.0 of the <code>@sorbet-ui/*</code> packages is not published to npm yet, so{' '}
@@ -199,11 +200,8 @@ export default function GettingStarted() {
         packages from source and install the tarballs, as shown below.
       </Alert>
 
-      <Typography component="h2" id="prerequisites" variant="h5" sx={h2}>
-        Prerequisites
-      </Typography>
-      <Typography color="text.secondary" component="div">
-        <ul style={{ paddingLeft: 20 }}>
+      <Section id="prerequisites" title="Prerequisites">
+        <ul>
           <li>
             <strong>Node.js 20.19 or newer</strong> (current Vite and Next.js need it) and{' '}
             <strong>pnpm 10</strong> to build from source (<code>corepack enable</code> provides it).
@@ -218,202 +216,205 @@ export default function GettingStarted() {
             or 9, Emotion 11 and <code>dayjs</code>.
           </li>
         </ul>
-      </Typography>
+      </Section>
 
-      <Typography component="h2" id="build" variant="h5" sx={h2}>
-        Build the packages
-      </Typography>
-      <Typography color="text.secondary">
-        Clone the repository next to your app, build it, and pack the four packages into tarballs
-        (macOS, Linux, or WSL / Git Bash on Windows):
-      </Typography>
-      <CodeBlock code={BUILD_FROM_SOURCE} title="Terminal" label="Build Sorbet UI from source" />
-      <Typography variant="body2" color="text.secondary">
-        <code>@sorbet-ui/react</code> depends on <code>@sorbet-ui/core</code> and{' '}
-        <code>@sorbet-ui/tokens</code>, so install all four tarballs. Installing only theme and
-        react fails with <code>404 &apos;@sorbet-ui/core@0.1.0&apos; is not in this registry</code>.
-      </Typography>
+      <Section id="build" title="Build the packages">
+        <p>
+          Clone the repository next to your app, build it, and pack the four packages into tarballs
+          (macOS, Linux, or WSL / Git Bash on Windows):
+        </p>
+        <CodeBlock code={BUILD_FROM_SOURCE} title="Terminal" label="Build Sorbet UI from source" />
+        <p>
+          <code>@sorbet-ui/react</code> depends on <code>@sorbet-ui/core</code> and{' '}
+          <code>@sorbet-ui/tokens</code>, so install all four tarballs. Installing only theme and
+          react fails with <code>404 &apos;@sorbet-ui/core@0.1.0&apos; is not in this registry</code>.
+        </p>
+      </Section>
 
-      <Typography component="h2" id="setup" variant="h5" sx={h2}>
-        Set up your app
-      </Typography>
-      <Typography color="text.secondary" sx={{ mb: 1 }}>
-        Pick your framework. The commands assume your app folder sits next to{' '}
-        <code>sorbet-ui</code>.
-      </Typography>
-      <Tabs
-        variant="soft"
-        aria-label="Framework"
-        defaultValue="vite"
-        tabs={[
-          {
-            id: 'vite',
-            label: 'Vite',
-            content: (
-              <Box>
-                <Step>1. Install</Step>
-                <CodeBlock code={INSTALL} title="Terminal" label="Install command for Vite" />
-                <Step>2. Wrap your app in the theme</Step>
-                <CodeBlock code={VITE} title="src/main.tsx" label="Vite: wrap the app in the Sorbet theme" />
-                <Step>3. Render a Button</Step>
-                <CodeBlock code={VITE_APP} title="src/App.tsx" label="Vite: render a Button" />
-                <SeeResult where="http://localhost:5173 (npm run dev)" />
-              </Box>
-            ),
-          },
-          {
-            id: 'next',
-            label: 'Next.js',
-            content: (
-              <Box>
-                <Step>1. Install</Step>
-                <CodeBlock code={INSTALL_NEXT} title="Terminal" label="Install command for Next.js" />
-                <Step>2. Wrap your app in the theme</Step>
-                <Typography color="text.secondary">
-                  A theme contains functions, so it cannot be passed from a Server Component. Put{' '}
-                  <code>ThemeProvider</code> in a <code>&apos;use client&apos;</code> file:
-                </Typography>
-                <CodeBlock code={NEXT_PROVIDERS} title="app/providers.tsx" label="Next.js providers" />
-                <Typography color="text.secondary">
-                  Then use it in the root layout, inside <code>AppRouterCacheProvider</code> so
-                  styles are in the server HTML. On Next.js 15, import from{' '}
-                  <code>@mui/material-nextjs/v15-appRouter</code>.
-                </Typography>
-                <CodeBlock code={NEXT_LAYOUT} title="app/layout.tsx" label="Next.js root layout" />
-                <Step>3. Render a Button</Step>
-                <Typography color="text.secondary">
-                  Sorbet components ship with a <code>&quot;use client&quot;</code> banner, so a
-                  Server Component can import them directly.
-                </Typography>
-                <CodeBlock code={NEXT_PAGE} title="app/page.tsx" label="Next.js: render a Button" />
-                <SeeResult where="http://localhost:3000 (npm run dev)" />
-              </Box>
-            ),
-          },
-        ]}
-      />
+      <Section id="setup" title="Set up your app">
+        <p>
+          Three steps: install, wrap your app in the theme, render a component. Pick your framework.
+          The commands assume your app folder sits next to <code>sorbet-ui</code>.
+        </p>
+        <Tabs
+          variant="soft"
+          aria-label="Framework"
+          defaultValue="vite"
+          tabs={[
+            {
+              id: 'vite',
+              label: 'Vite',
+              content: (
+                <Steps>
+                  <Step title="Install">
+                    <CodeBlock code={INSTALL} title="Terminal" label="Install command for Vite" />
+                  </Step>
+                  <Step title="Wrap your app in the theme">
+                    <p>
+                      <code>ThemeProvider</code> hands the Sorbet theme to every component below it.{' '}
+                      <code>CssBaseline</code> resets browser styles and sets the page background.
+                    </p>
+                    <CodeBlock code={VITE} title="src/main.tsx" label="Vite: wrap the app in the Sorbet theme" />
+                  </Step>
+                  <Step title="Render a component">
+                    <CodeBlock code={VITE_APP} title="src/App.tsx" label="Vite: render a Button" />
+                  </Step>
+                  <SeeResult where="http://localhost:5173 (npm run dev)" />
+                </Steps>
+              ),
+            },
+            {
+              id: 'next',
+              label: 'Next.js',
+              content: (
+                <Steps>
+                  <Step title="Install">
+                    <p>
+                      Next.js also needs <code>@mui/material-nextjs</code>, which puts the styles in
+                      the server HTML.
+                    </p>
+                    <CodeBlock code={INSTALL_NEXT} title="Terminal" label="Install command for Next.js" />
+                  </Step>
+                  <Step title="Wrap your app in the theme">
+                    <p>
+                      A theme contains functions, so it cannot be passed from a Server Component. Put{' '}
+                      <code>ThemeProvider</code> in a <code>&apos;use client&apos;</code> file:
+                    </p>
+                    <CodeBlock code={NEXT_PROVIDERS} title="app/providers.tsx" label="Next.js providers" />
+                    <p>
+                      Then use it in the root layout, inside <code>AppRouterCacheProvider</code>. On
+                      Next.js 15, import from <code>@mui/material-nextjs/v15-appRouter</code>.
+                    </p>
+                    <CodeBlock code={NEXT_LAYOUT} title="app/layout.tsx" label="Next.js root layout" />
+                  </Step>
+                  <Step title="Render a component">
+                    <p>
+                      <code>@sorbet-ui/react</code> ships with a <code>&quot;use client&quot;</code>{' '}
+                      banner, so a Server Component can import it directly.
+                    </p>
+                    <CodeBlock code={NEXT_PAGE} title="app/page.tsx" label="Next.js: render a Button" />
+                  </Step>
+                  <SeeResult where="http://localhost:3000 (npm run dev)" />
+                </Steps>
+              ),
+            },
+          ]}
+        />
+      </Section>
 
-      <Typography component="h2" id="troubleshooting" variant="h5" sx={h2}>
-        Troubleshooting
-      </Typography>
-      <Typography component="h3" sx={h3}>
-        npm ERR! ERESOLVE or peer dependency errors
-      </Typography>
-      <Typography color="text.secondary">
-        A peer does not match. The usual causes: React 18 with <code>@sorbet-ui/react</code> (it
-        needs React 19), Material UI older than 7.3.5, or <code>@mui/material</code> and{' '}
-        <code>@mui/icons-material</code> on different majors. Upgrade the package npm names in the
-        error rather than passing <code>--legacy-peer-deps</code>, which only hides the mismatch.
-        A <code>404</code> for <code>@sorbet-ui/core</code> or <code>@sorbet-ui/tokens</code> means
-        not all four tarballs were installed.
-      </Typography>
-      <Typography component="h3" sx={h3}>
-        Next.js: &ldquo;Functions cannot be passed directly to Client Components&rdquo;
-      </Typography>
-      <Typography color="text.secondary">
-        The theme was passed to <code>ThemeProvider</code> from a Server Component (usually{' '}
-        <code>app/layout.tsx</code>). Move the provider into <code>app/providers.tsx</code> with{' '}
-        <code>&apos;use client&apos;</code> at the top, as in the Next.js tab above.
-      </Typography>
-      <Typography component="h3" sx={h3}>
-        Next.js: the page flashes unstyled, then snaps into place
-      </Typography>
-      <Typography color="text.secondary">
-        Without <code>AppRouterCacheProvider</code>, Emotion only adds styles in the browser, so the
-        server HTML arrives unstyled. Install <code>@mui/material-nextjs</code> and wrap{' '}
-        <code>&lt;Providers&gt;</code> with it in <code>app/layout.tsx</code>.
-      </Typography>
-      <Typography component="h3" sx={h3}>
-        Text uses the system font, not Inter
-      </Typography>
-      <Typography color="text.secondary">
-        The theme&apos;s body text uses your system font. Most components (TextField, Select, Chip,
-        Alert, Tabs, Table and others) ask for Inter first but do not load it, so without Inter
-        they fall back to the system font and nothing breaks. To get Inter, load it: in Next.js
-        with <code>next/font/google</code> as in the layout above, in Vite with Fontsource:
-      </Typography>
-      <CodeBlock code={FONT_VITE} title="Load Inter in Vite" label="Load the Inter font in Vite" />
+      <Section id="framework-guides" title="Framework guides">
+        <p>Each guide starts from a new app and covers dark mode and common errors.</p>
+        <LinkGrid items={FRAMEWORKS} testId="framework-links" />
+      </Section>
 
-      <Typography component="h2" id="next-steps" variant="h5" sx={h2}>
-        Next steps
-      </Typography>
-      <Typography color="text.secondary" component="div">
-        <ul style={{ paddingLeft: 20 }}>
+      <Section id="dark-mode" title="Dark mode">
+        <p>
+          Swap <code>lightTheme</code> for <code>darkTheme</code>. This root follows the operating
+          system setting. In Next.js, keep it in your <code>&apos;use client&apos;</code> providers
+          file; the <Link href="/docs/frameworks/nextjs#dark-mode">Next.js guide</Link> shows how to
+          avoid a white flash for dark-mode visitors.
+        </p>
+        <CodeBlock code={DARK} title="Root.tsx" label="Switch between lightTheme and darkTheme" />
+      </Section>
+
+      <Section id="fonts" title="Load the Inter font">
+        <p>
+          The theme&apos;s body text uses your system font. Most components (TextField, Select, Chip,
+          Alert, Tabs, Table and others) ask for Inter first but do not load it, so without Inter
+          they fall back to the system font and nothing breaks. To get Inter, load it: in Next.js
+          with <code>next/font/google</code> as in the layout above, in Vite with Fontsource:
+        </p>
+        <CodeBlock code={FONT_VITE} title="Load Inter in Vite" label="Load the Inter font in Vite" />
+      </Section>
+
+      <Section id="cli" title="Add blocks with the shadcn CLI">
+        <Alert color="warning" variant="soft" sx={{ my: 2 }}>
+          Until 0.1.0 is on npm, the CLI cannot install a block&apos;s <code>@sorbet-ui/*</code>{' '}
+          dependencies, so these commands fail. For now, install the tarballs as above and copy a
+          block&apos;s source from the Code tab on the{' '}
+          <Link href="/blocks" color="inherit" sx={{ fontWeight: 600 }}>
+            blocks page
+          </Link>
+          .
+        </Alert>
+        <p>
+          This site publishes a <Link href="https://ui.shadcn.com/docs/registry" rel="noopener">shadcn registry</Link>.
+          It has one item per block plus a <code>theme</code> item. When you add a block, the CLI:
+        </p>
+        <ul>
           <li>
-            <Link href="/docs/theming">
-              Theming
-            </Link>
-            : light and dark themes and how to extend them.
+            Copies the block to <code>components/sorbet/&lt;Name&gt;.tsx</code>.
           </li>
           <li>
-            <Link href="/docs/components">
-              Components
-            </Link>
-            : every component with live examples and props.
+            Adds the <code>theme</code> item, which copies a <code>SorbetProvider</code> wrapper to{' '}
+            <code>components/sorbet/SorbetProvider.tsx</code>. It takes{' '}
+            <code>mode=&quot;light&quot; | &quot;dark&quot; | &quot;system&quot;</code>.
+          </li>
+          <li>Installs the npm packages the files import. No Tailwind is needed.</li>
+        </ul>
+        <p>
+          If your project has no <code>components.json</code> yet, add this one at the root:
+        </p>
+        <CodeBlock code={COMPONENTS_JSON} title="components.json" label="components.json for an MUI app" />
+        <p>Then add any block by URL, or by its short name:</p>
+        <CommandLine command={addCommand('hero-centered')} label="Add a block by URL" />
+        <CommandLine command="npx shadcn@latest add @sorbet/hero-centered" label="Add a block by short name" mt={1.5} />
+        <CodeBlock code={PROVIDER_USE} title="App.tsx" label="Using an installed block" />
+        <p>
+          The <code>@/</code> alias must point at your source folder (for example <code>src/</code>)
+          in <code>tsconfig.json</code> and your bundler. In the Next.js App Router, place{' '}
+          <code>SorbetProvider</code> inside <code>AppRouterCacheProvider</code>, as in the layout
+          above. The full list is at <Link href={`${REGISTRY_URL}/registry.json`}>registry.json</Link>.
+        </p>
+      </Section>
+
+      <Section id="troubleshooting" title="Troubleshooting">
+        <H3 id="peer-errors">npm ERR! ERESOLVE or peer dependency errors</H3>
+        <p>
+          A peer does not match. The usual causes: React 18 with <code>@sorbet-ui/react</code> (it
+          needs React 19), Material UI older than 7.3.5, or <code>@mui/material</code> and{' '}
+          <code>@mui/icons-material</code> on different majors. Upgrade the packages npm names in the
+          error rather than passing <code>--legacy-peer-deps</code>, which only hides the mismatch. A{' '}
+          <code>404</code> for <code>@sorbet-ui/core</code> or <code>@sorbet-ui/tokens</code> means
+          not all four tarballs were installed.
+        </p>
+        <H3 id="missing-module">Cannot find module &apos;@mui/x-date-pickers&apos;</H3>
+        <p>
+          The same goes for <code>dayjs</code> and <code>@mui/icons-material</code>. Install every
+          peer in the install command, even if you do not use DatePicker or Rating.
+        </p>
+        <H3 id="server-functions">Next.js: Functions cannot be passed directly to Client Components</H3>
+        <p>
+          The theme was passed to <code>ThemeProvider</code> from a Server Component (usually{' '}
+          <code>app/layout.tsx</code>). Move the provider into <code>app/providers.tsx</code> with{' '}
+          <code>&apos;use client&apos;</code> at the top, as in the Next.js tab above.
+        </p>
+        <H3 id="styles-wrong">Styles missing, duplicated or stale</H3>
+        <p>
+          Check that only one copy of MUI and Emotion is installed (<code>npm ls @mui/material</code>
+          ). In Next.js, check that <code>AppRouterCacheProvider</code> wraps your providers, so
+          Emotion collects the styles into the document head in order.
+        </p>
+      </Section>
+
+      <Section id="next-steps" title="Next steps">
+        <ul>
+          <li>
+            <Link href="/docs">Introduction</Link>: the variant, color and size API in one page.
           </li>
           <li>
-            <Link href="/blocks">
-              Blocks
-            </Link>
-            : ready-made page sections to copy.
+            <Link href="/docs/theming">Theming</Link>: the light and dark themes and how to extend
+            them.
           </li>
           <li>
-            <Link href="/demo">
-              Demo
-            </Link>
-            : a working admin dashboard built only from Sorbet UI.
+            <Link href="/docs/components">Components</Link>: every component with live examples and
+            props.
+          </li>
+          <li>
+            <Link href="/demo">Demo</Link>: a working admin dashboard built only from Sorbet UI.
           </li>
         </ul>
-      </Typography>
-      <Typography component="h3" sx={h3}>
-        Dark mode
-      </Typography>
-      <Typography color="text.secondary">
-        Swap <code>lightTheme</code> for <code>darkTheme</code>. This provider follows the operating
-        system setting:
-      </Typography>
-      <CodeBlock code={DARK} title="Dark mode" label="Switch between lightTheme and darkTheme" />
-
-      <Typography component="h2" id="cli" variant="h5" sx={h2}>
-        Add blocks with the shadcn CLI
-      </Typography>
-      <Alert color="warning" variant="soft" sx={{ my: 2 }}>
-        Until 0.1.0 is on npm, the CLI cannot install a block&apos;s <code>@sorbet-ui/*</code>{' '}
-        dependencies, so these commands fail. For now, install the tarballs as above and copy a
-        block&apos;s source from the Code tab on the{' '}
-        <Link href="/blocks" color="inherit">
-          blocks page
-        </Link>
-        .
-      </Alert>
-      <Typography color="text.secondary">
-        Once published, every block on the blocks page installs with one command. The CLI copies the
-        block into <code>components/sorbet/</code>, adds a <code>SorbetProvider</code> theme wrapper,
-        and installs the npm packages it imports. No Tailwind needed. If your project has no{' '}
-        <code>components.json</code> yet, add this one at the root:
-      </Typography>
-      <CodeBlock code={COMPONENTS_JSON} title="components.json" label="components.json for an MUI app" />
-      <Typography color="text.secondary">Then add any block by URL, or by its short name:</Typography>
-      <CommandLine command={addCommand('hero-centered')} label="Add a block by URL" />
-      <CommandLine command="npx shadcn@latest add @sorbet/hero-centered" label="Add a block by short name" mt={1.5} />
-      <CodeBlock code={PROVIDER_USE} title="App.tsx" label="Using an installed block" />
-      <Typography variant="body2" color="text.secondary">
-        The <code>@/</code> alias must point at your source folder (for example <code>src/</code>) in{' '}
-        <code>tsconfig.json</code> and your bundler. In the Next.js App Router, place{' '}
-        <code>SorbetProvider</code> inside <code>AppRouterCacheProvider</code>, as in the layout
-        above. The full list is at <a href={`${REGISTRY_URL}/registry.json`}>registry.json</a>.
-      </Typography>
-
-      <Typography component="h2" variant="h5" sx={h2}>
-        The variant, color and size API
-      </Typography>
-      <Typography color="text.secondary">
-        Every component takes the same three props. Variants: <code>solid</code>,{' '}
-        <code>soft</code>, <code>outlined</code>, <code>ghost</code>, <code>plain</code>. Colors:{' '}
-        <code>primary</code>, <code>secondary</code>, <code>success</code>, <code>warning</code>,{' '}
-        <code>danger</code>, <code>info</code>, <code>neutral</code>. Sizes: <code>xs</code> to{' '}
-        <code>xl</code>.
-      </Typography>
-    </>
+      </Section>
+    </GuidePage>
   );
 }
