@@ -917,7 +917,25 @@ test('landing: no horizontal overflow from 320 to 1280', async ({ page }) => {
     await page.goto('/');
     await page.getByTestId('demo-kanban').scrollIntoViewIfNeeded();
     await expect(page.getByTestId('demo-kanban').getByRole('group', { name: 'Ready' })).toBeVisible();
-    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), `overflow at ${width}`).toBeLessThanOrEqual(0);
+    // On failure, name the elements whose removal would end the overflow.
+    const overflow = await page.evaluate(() => {
+      const de = document.documentElement;
+      const W = de.clientWidth;
+      const by: string[] = [];
+      if (de.scrollWidth > W) {
+        for (const e of [...document.querySelectorAll('body *')] as HTMLElement[]) {
+          const b = e.getBoundingClientRect();
+          if (b.right <= W + 0.5) continue;
+          const prev = e.style.display;
+          e.style.display = 'none';
+          const fixed = de.scrollWidth <= W;
+          e.style.display = prev;
+          if (fixed) by.push(`${e.tagName.toLowerCase()}.${String(e.className).slice(0, 60)} [${Math.round(b.left)}, ${Math.round(b.right)}] transform=${getComputedStyle(e).transform}`);
+        }
+      }
+      return { px: de.scrollWidth - W, by: by.slice(-3) };
+    });
+    expect(overflow.px, `overflow at ${width}: ${overflow.by.join(' | ')}`).toBeLessThanOrEqual(0);
     // The stage never pokes out of the hero.
     const box = (await page.getByTestId('stage').boundingBox())!;
     expect(box.x, `stage left at ${width}`).toBeGreaterThanOrEqual(0);

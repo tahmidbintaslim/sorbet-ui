@@ -185,6 +185,8 @@ function ThemeBar({ settings, set, setMode }: { settings: StageSettings; set: (p
                   height: 22,
                   borderRadius: '50%',
                   bgcolor: swatch(f.id),
+                  // Paint only: clicks go to the radio underneath.
+                  pointerEvents: 'none',
                   transition: 'scale .2s cubic-bezier(.3,1.6,.5,1), box-shadow .2s',
                   'input:checked + &': { boxShadow: (t) => `0 0 0 2px ${t.palette.background.paper}, 0 0 0 4px ${t.palette.text.primary}` },
                   'input:focus-visible + &': { outline: '2px solid', outlineColor: 'text.primary', outlineOffset: 5 },
@@ -240,7 +242,9 @@ export default function DeviceShowcase() {
   const shop = useShop();
   // One accessible copy of the app: the browser frame on wide screens (the phone is
   // a visual mirror), the phone below that (the browser frame is display: none).
-  const wide = useMediaQuery('(min-width:1000px)');
+  // The static HTML assumes wide, so it never exposes two copies; on phones the
+  // phone frame becomes the accessible copy on hydration (it is not interactive before).
+  const wide = useMediaQuery('(min-width:1000px)', { defaultMatches: true });
   const a: Scoop = isScoop(settings.flavor) ? settings.flavor : 'primary';
   const b = SCOOPS[(SCOOPS.indexOf(a) + 2) % SCOOPS.length];
 
