@@ -383,7 +383,9 @@ test('landing: hand-drawn ink draws itself, and is shown finished with reduced m
   // Normal motion: the three sketch diagrams finish drawing once scrolled to.
   const page = await browser.newPage();
   await page.goto('/');
-  await page.locator('#how').scrollIntoViewIfNeeded();
+  // Each drawing starts when it scrolls into view, so bring every one into view.
+  const drawings = page.locator('#how svg');
+  for (let i = 0; i < (await drawings.count()); i++) await drawings.nth(i).scrollIntoViewIfNeeded();
   const offsets = () => page.locator('#how svg path').evaluateAll((els) => els.map((el) => parseFloat(getComputedStyle(el).strokeDashoffset)));
   await expect.poll(async () => Math.max(...(await offsets())), { timeout: 8000 }).toBe(0);
   await page.close();
