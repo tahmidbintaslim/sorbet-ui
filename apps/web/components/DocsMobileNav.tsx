@@ -9,6 +9,7 @@ import MenuBook from '@mui/icons-material/MenuBookOutlined';
 import UnfoldMore from '@mui/icons-material/UnfoldMore';
 import Close from '@mui/icons-material/Close';
 import DocsNav, { docsPageLabel } from './DocsNav';
+import DocsSearch from './docs/DocsSearch';
 import { scoop } from '@/lib/scoops';
 import { flavorOf } from '@/lib/sections';
 import { ScoopRow } from './fun/Decor';
@@ -33,7 +34,8 @@ export default function DocsMobileNav() {
       <GlobalStyles styles={{ '@media (max-width: 899.95px)': { html: { scrollPaddingTop: BAR } } }} />
       <Box
         sx={(t) => ({
-          display: { md: 'none' },
+          display: { xs: 'flex', md: 'none' },
+          gap: 1,
           position: 'sticky',
           top: 65, // header height incl. its border
           zIndex: t.zIndex.appBar - 1,
@@ -58,6 +60,7 @@ export default function DocsMobileNav() {
           endIcon={<UnfoldMore />}
           sx={{
             minHeight: 44,
+            minWidth: 0,
             justifyContent: 'flex-start',
             borderColor: scoop(flavor, 'fill'),
             borderRadius: 999,
@@ -78,6 +81,7 @@ export default function DocsMobileNav() {
             </Typography>
           )}
         </Button>
+        <DocsSearch compact />
       </Box>
       <Drawer
         anchor="left"
