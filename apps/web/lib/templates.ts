@@ -22,7 +22,7 @@ export type Template = {
 };
 
 // TEMP while building: only finished templates are listed.
-const READY = new Set(['analytics-dashboard', 'inbox', 'kanban']);
+const READY = new Set(['analytics-dashboard', 'inbox', 'kanban', 'storefront']);
 const ALL: Template[] = [
   {
     slug: 'analytics-dashboard',

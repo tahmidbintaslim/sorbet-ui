@@ -30,7 +30,8 @@ export default function TemplateFullscreen({ slug, name, layout, children }: { s
       <Box
         sx={{
           position: 'fixed',
-          right: 12,
+          // Bottom left: templates keep their primary actions (bag, checkout, send) on the right.
+          left: 12,
           bottom: 12,
           zIndex: 1200,
           display: 'flex',
