@@ -181,7 +181,9 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                 </Link>
               );
             })}
-            <Link href={SITE.storybook} underline="none" rel="noopener" sx={{ ...navLinkSx, ...touchRow, fontWeight: 500, color: 'text.secondary' }}>
+            {/* 900-1199px is too tight for every item (more so before the web font loads):
+                Storybook and the version chip wait for lg; both are in the footer too. */}
+            <Link href={SITE.storybook} underline="none" rel="noopener" sx={{ ...navLinkSx, ...touchRow, fontWeight: 500, color: 'text.secondary', display: { md: 'none', lg: 'inline-flex' } }}>
               Storybook
             </Link>
           </Box>
@@ -194,7 +196,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
               label="v0.1.0"
               size="small"
               variant="outlined"
-              sx={{ display: { xs: 'none', md: 'inline-flex' }, fontWeight: 600, mr: 0.5 }}
+              sx={{ display: { xs: 'none', lg: 'inline-flex' }, fontWeight: 600, mr: 0.5 }}
             />
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>
               <GitHubStars />
