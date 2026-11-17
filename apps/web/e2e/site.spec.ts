@@ -944,3 +944,55 @@ test('landing: no horizontal overflow from 320 to 1280', async ({ page }) => {
     expect(box.x + box.width, `stage right at ${width}`).toBeLessThanOrEqual(width + 0.5);
   }
 });
+
+// ---------------------------------------------------------------------------
+// Interactive docs: live examples, generated props tables, TOC, search, catalog.
+// ---------------------------------------------------------------------------
+
+test('docs examples: every component page has live examples whose code expands', async ({ page }) => {
+  await page.goto('/docs/components/button');
+  const examples = page.locator('[data-testid^="example-"]');
+  expect(await examples.count()).toBeGreaterThanOrEqual(4);
+  // The live stage renders real components, not a picture of them.
+  await expect(page.getByTestId('stage-colors').getByRole('button', { name: 'danger' }).first()).toBeVisible();
+  const toggle = page.getByTestId('example-colors').getByRole('button', { name: /show code/i });
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await toggle.click();
+  await expect(page.getByTestId('example-colors').getByRole('button', { name: /hide code/i })).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByTestId('code-colors')).toContainText("from '@sorbet-ui/react'");
+});
+
+test('docs api: the props table is generated from the source types', async ({ page }) => {
+  await page.goto('/docs/components/button');
+  const table = page.getByTestId('api-Button');
+  await expect(table).toBeVisible();
+  for (const prop of ['variant', 'color', 'size', 'loading']) await expect(table.getByText(prop, { exact: true }).first()).toBeVisible();
+});
+
+test('docs toc: lists the examples and marks the section in view', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/docs/components/button');
+  const toc = page.getByTestId('toc');
+  await toc.getByRole('link', { name: 'Sizes' }).click();
+  await expect(page).toHaveURL(/#sizes$/);
+  await expect(toc.getByRole('link', { name: 'Sizes' })).toHaveAttribute('aria-current', /true|location/);
+});
+
+test('docs search: Ctrl+K opens it, typing finds a component, Enter goes there', async ({ page }) => {
+  await page.goto('/docs/components/button');
+  await page.keyboard.press('Control+k');
+  const dialog = page.getByTestId('docs-search');
+  await expect(dialog).toBeVisible();
+  await page.keyboard.type('slider');
+  await expect(dialog.getByRole('option').first()).toContainText('Slider');
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/\/docs\/components\/slider/);
+});
+
+test('docs catalog: the filter narrows the live previews and says how many match', async ({ page }) => {
+  await page.goto('/docs/components');
+  await expect(page.getByTestId('catalog-count')).toContainText('30');
+  await page.getByTestId('catalog-filter').fill('table');
+  await expect(page.getByTestId('catalog-count')).not.toContainText('30');
+  await expect(page.getByRole('link', { name: /^Table/ }).first()).toBeVisible();
+});

@@ -1,7 +1,8 @@
 'use client';
-// Registry of component demos. Each entry renders a live component for the given
-// variant/color/size and returns matching source for the "Code" block, so what
-// the visitor sees and what they copy cannot drift apart.
+// Registry of playground demos. Each entry renders a live component for the given
+// variant/color/size (plus the boolean props switched on in the playground) and
+// returns matching source for the "Code" block, so what the visitor sees and what
+// they copy cannot drift apart.
 import * as React from 'react';
 import { Box, List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
 import {
@@ -12,6 +13,7 @@ import {
   Autocomplete,
   Avatar,
   Badge,
+  Breadcrumbs,
   Button,
   Card,
   Checkbox,
@@ -38,6 +40,8 @@ import {
   Table,
   Tabs,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Tooltip,
   dayjs,
 } from '@sorbet-ui/react';
@@ -50,14 +54,21 @@ export interface DemoProps {
   size: Size;
 }
 
+/** Boolean props switched on in the playground, e.g. `{ disabled: true }`. */
+export type Flags = Record<string, boolean>;
+
 export interface Demo {
   slug: string;
-  render: (p: DemoProps) => React.ReactNode;
-  code: (p: DemoProps) => string;
+  /** Boolean props the playground offers as switches. Every one is a real prop of the component. */
+  flags?: readonly string[];
+  render: (p: DemoProps, x: Flags) => React.ReactNode;
+  code: (p: DemoProps, x: Flags) => string;
 }
 
-const attrs = ({ variant, color, size }: DemoProps) =>
-  `variant="${variant}" color="${color}" size="${size}"`;
+const attrs = ({ variant, color, size }: DemoProps, x: Flags = {}) =>
+  [`variant="${variant}" color="${color}" size="${size}"`, ...Object.keys(x).filter((k) => x[k])].join(' ');
+
+type P = DemoProps & { x: Flags };
 
 const rows = [
   { id: 1, name: 'Ada Lovelace', role: 'Engineer' },
@@ -65,55 +76,48 @@ const rows = [
   { id: 3, name: 'Linus Torvalds', role: 'Maintainer' },
 ];
 
-function SelectDemo(p: DemoProps) {
+function SelectDemo({ x, ...p }: P) {
   const [v, setV] = React.useState('apple');
   return (
-    <Select
-      {...p}
-      value={v}
-      onChange={(e) => setV(String(e.target.value))}
-      inputProps={{ 'aria-label': 'Fruit' }}
-      sx={{ minWidth: 200 }}
-    >
-      <MenuItem value="apple">Apple</MenuItem>
-      <MenuItem value="pear">Pear</MenuItem>
-      <MenuItem value="plum">Plum</MenuItem>
-    </Select>
-  );
-}
-
-function PaginationDemo(p: DemoProps) {
-  const [page, setPage] = React.useState(2);
-  return <Pagination {...p} count={8} page={page} onChange={(_e, n) => setPage(n)} />;
-}
-
-function SliderDemo(p: DemoProps) {
-  const [v, setV] = React.useState(40);
-  return (
-    <Box sx={{ width: 260, px: 1 }}>
-      <Slider
-        variant={p.variant}
-        color={p.color}
-        size={p.size}
-        value={v}
-        onChange={(_e, n) => setV(n as number)}
-        aria-label="Volume"
-      />
+    <Box sx={{ width: 220, maxWidth: '100%' }}>
+      <Select {...p} {...x} value={v} onChange={(e) => setV(String(e.target.value))} inputProps={{ 'aria-label': 'Fruit' }}>
+        <MenuItem value="apple">Apple</MenuItem>
+        <MenuItem value="pear">Pear</MenuItem>
+        <MenuItem value="plum">Plum</MenuItem>
+      </Select>
     </Box>
   );
 }
 
-function RatingDemo(p: DemoProps) {
-  const [v, setV] = React.useState<number | null>(3);
+function PaginationDemo({ x, ...p }: P) {
+  const [page, setPage] = React.useState(2);
+  return <Pagination {...p} {...x} count={8} page={page} onChange={(_e, n) => setPage(n)} />;
+}
+
+function SliderDemo({ x, ...p }: P) {
+  const [v, setV] = React.useState(40);
   return (
-    <Rating
-      variant={p.variant}
-      color={p.color}
-      size={p.size}
-      value={v}
-      onChange={(_e, n) => setV(n)}
-      aria-label="Rating"
-    />
+    <Box sx={{ width: 260, maxWidth: '100%', px: 1, pt: x.showValue ? 3 : 0 }}>
+      <Slider {...p} {...x} value={v} onChange={(_e, n) => setV(n as number)} aria-label="Volume" />
+    </Box>
+  );
+}
+
+function RatingDemo({ x, ...p }: P) {
+  const [v, setV] = React.useState<number | null>(3);
+  return <Rating {...p} {...x} value={v} onChange={(_e, n) => setV(n)} aria-label="Rating" />;
+}
+
+function ToggleDemo({ x, ...p }: P) {
+  const [v, setV] = React.useState('week');
+  return (
+    <Box sx={{ width: x.fullWidth ? '100%' : 'auto', maxWidth: 420 }}>
+      <ToggleButtonGroup {...p} {...x} exclusive value={v} onChange={(_e, n) => n && setV(n)} aria-label="Date range">
+        <ToggleButton value="day">Day</ToggleButton>
+        <ToggleButton value="week">Week</ToggleButton>
+        <ToggleButton value="month">Month</ToggleButton>
+      </ToggleButtonGroup>
+    </Box>
   );
 }
 
@@ -125,22 +129,33 @@ const frameworks = [
   { label: 'Nuxt', value: 'nuxt', group: 'Other' },
 ];
 
-function DatePickerDemo(p: DemoProps) {
+const crumbs = [
+  { id: 'home', label: 'Home', href: '/' },
+  { id: 'docs', label: 'Docs', href: '/docs' },
+  { id: 'components', label: 'Components', href: '/docs/components' },
+  { id: 'current', label: 'Breadcrumbs' },
+];
+
+function DatePickerDemo({ x, ...p }: P) {
   const [v, setV] = React.useState<ReturnType<typeof dayjs> | null>(dayjs('2026-11-03'));
-  return <DatePicker {...p} label="Start date" value={v} onChange={setV} />;
+  return (
+    <Box sx={{ width: x.fullWidth ? '100%' : 'auto', maxWidth: 420 }}>
+      <DatePicker {...p} {...x} label="Start date" value={v} onChange={setV} />
+    </Box>
+  );
 }
 
 // Overlays render a trigger button; the overlay itself follows the pickers.
-function DialogDemo(p: DemoProps) {
+function DialogDemo({ x, ...p }: P) {
   const [open, setOpen] = React.useState(false);
   return (
     <>
       <Button color={p.color} onClick={() => setOpen(true)}>
         Open dialog
       </Button>
-      <Dialog {...p} open={open} onClose={() => setOpen(false)} aria-labelledby="demo-dialog-title">
+      <Dialog {...p} {...x} open={open} onClose={() => setOpen(false)} aria-labelledby="demo-dialog-title">
         <DialogTitle id="demo-dialog-title">Delete project?</DialogTitle>
-        <DialogContent>This removes the project and its deploys. You can't undo it.</DialogContent>
+        <DialogContent>This removes the project and its deploys. You can&apos;t undo it.</DialogContent>
         <DialogActions>
           <Button variant="ghost" color="neutral" onClick={() => setOpen(false)}>
             Cancel
@@ -154,14 +169,14 @@ function DialogDemo(p: DemoProps) {
   );
 }
 
-function DrawerDemo(p: DemoProps) {
+function DrawerDemo({ x, ...p }: P) {
   const [open, setOpen] = React.useState(false);
   return (
     <>
       <Button color={p.color} onClick={() => setOpen(true)}>
         Open drawer
       </Button>
-      <Drawer {...p} anchor="right" open={open} onClose={() => setOpen(false)}>
+      <Drawer {...p} {...x} anchor="right" open={open} onClose={() => setOpen(false)}>
         <Box sx={{ width: 280, p: 2 }} role="navigation" aria-label="Drawer menu">
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
             Menu
@@ -179,7 +194,7 @@ function DrawerDemo(p: DemoProps) {
   );
 }
 
-function PopoverDemo(p: DemoProps) {
+function PopoverDemo({ x, ...p }: P) {
   const [anchor, setAnchor] = React.useState<HTMLElement | null>(null);
   return (
     <>
@@ -188,6 +203,7 @@ function PopoverDemo(p: DemoProps) {
       </Button>
       <Popover
         {...p}
+        {...x}
         open={!!anchor}
         anchorEl={anchor}
         onClose={() => setAnchor(null)}
@@ -202,7 +218,8 @@ function PopoverDemo(p: DemoProps) {
   );
 }
 
-function MenuDemo(p: DemoProps) {
+function MenuDemo(p: P) {
+  const { x: _x, ...style } = p;
   const [anchor, setAnchor] = React.useState<HTMLElement | null>(null);
   const id = React.useId();
   const open = Boolean(anchor);
@@ -219,14 +236,7 @@ function MenuDemo(p: DemoProps) {
       >
         Project actions
       </Button>
-      <Menu
-        {...p}
-        id={`${id}-menu`}
-        aria-labelledby={`${id}-button`}
-        anchorEl={anchor}
-        open={open}
-        onClose={close}
-      >
+      <Menu {...style} id={`${id}-menu`} aria-labelledby={`${id}-button`} anchorEl={anchor} open={open} onClose={close}>
         <MenuItem onClick={close}>Rename</MenuItem>
         <MenuItem onClick={close} selected>
           Duplicate
@@ -237,29 +247,24 @@ function MenuDemo(p: DemoProps) {
   );
 }
 
-function StepperDemo(p: DemoProps) {
+function StepperDemo({ x, ...p }: P) {
   const steps = [{ label: 'Account' }, { label: 'Workspace' }, { label: 'Invite', optional: true }, { label: 'Done' }];
   return (
-    <Box sx={{ width: '100%', maxWidth: 560, overflowX: 'auto' }}>
-      <Stepper {...p} aria-label="Setup progress" activeStep={1} alternativeLabel steps={steps} />
+    // Four steps can be wider than a phone: the strip scrolls, so keyboard users can focus it.
+    <Box tabIndex={0} role="region" aria-label="Setup progress, scrolls sideways" sx={{ width: '100%', maxWidth: 560, overflowX: 'auto' }}>
+      <Stepper {...p} {...x} aria-label="Setup progress" activeStep={1} steps={steps} />
     </Box>
   );
 }
 
-function SnackbarDemo(p: DemoProps) {
+function SnackbarDemo({ x, ...p }: P) {
   const [open, setOpen] = React.useState(false);
   return (
     <>
       <Button color={p.color} onClick={() => setOpen(true)}>
         Save changes
       </Button>
-      <Snackbar
-        {...p}
-        open={open}
-        onClose={() => setOpen(false)}
-        autoHideDuration={4000}
-        message="Changes saved"
-      />
+      <Snackbar {...p} {...x} open={open} onClose={() => setOpen(false)} autoHideDuration={4000} message="Changes saved" />
     </>
   );
 }
@@ -267,144 +272,173 @@ function SnackbarDemo(p: DemoProps) {
 export const DEMOS: Demo[] = [
   {
     slug: 'button',
-    render: (p) => <Button {...p}>Button</Button>,
-    code: (p) => `<Button ${attrs(p)}>Button</Button>`,
+    flags: ['disabled', 'loading', 'active', 'fullWidth'],
+    render: (p, x) => (
+      <Box sx={{ width: x.fullWidth ? '100%' : 'auto', maxWidth: 420, textAlign: 'center' }}>
+        <Button {...p} {...x}>
+          Button
+        </Button>
+      </Box>
+    ),
+    code: (p, x) => `<Button ${attrs(p, x)}>Button</Button>`,
+  },
+  {
+    slug: 'toggle-button-group',
+    flags: ['disabled', 'fullWidth'],
+    render: (p, x) => <ToggleDemo {...p} x={x} />,
+    code: (p, x) =>
+      `<ToggleButtonGroup ${attrs(p, x)} exclusive value={value} onChange={(_e, next) => next && setValue(next)}>\n  <ToggleButton value="day">Day</ToggleButton>\n  <ToggleButton value="week">Week</ToggleButton>\n  <ToggleButton value="month">Month</ToggleButton>\n</ToggleButtonGroup>`,
   },
   {
     slug: 'text-field',
-    render: (p) => <TextField {...p} label="Email" placeholder="you@example.com" />,
-    code: (p) => `<TextField ${attrs(p)} label="Email" placeholder="you@example.com" />`,
+    flags: ['disabled', 'loading', 'error', 'required', 'fullWidth'],
+    render: (p, x) => (
+      <Box sx={{ width: x.fullWidth ? '100%' : 'auto', maxWidth: 420 }}>
+        <TextField {...p} {...x} label="Email" placeholder="you@example.com" />
+      </Box>
+    ),
+    code: (p, x) => `<TextField ${attrs(p, x)} label="Email" placeholder="you@example.com" />`,
   },
   {
     slug: 'select',
-    render: (p) => <SelectDemo {...p} />,
-    code: (p) =>
-      `<Select ${attrs(p)} value={value} onChange={...}>\n  <MenuItem value="apple">Apple</MenuItem>\n  <MenuItem value="pear">Pear</MenuItem>\n</Select>`,
+    flags: ['disabled', 'loading', 'error'],
+    render: (p, x) => <SelectDemo {...p} x={x} />,
+    code: (p, x) =>
+      `<Select ${attrs(p, x)} value={value} onChange={...}>\n  <MenuItem value="apple">Apple</MenuItem>\n  <MenuItem value="pear">Pear</MenuItem>\n</Select>`,
+  },
+  {
+    slug: 'autocomplete',
+    flags: ['disabled', 'error', 'required', 'fullWidth'],
+    render: (p, x) => (
+      <Box sx={{ width: x.fullWidth ? '100%' : 300, maxWidth: '100%' }}>
+        <Autocomplete {...p} {...x} options={frameworks} groupBy={(o) => o.group ?? ''} label="Framework" placeholder="Search frameworks" fullWidth />
+      </Box>
+    ),
+    code: (p, x) =>
+      `<Autocomplete ${attrs(p, x)}\n  options={frameworks}\n  groupBy={(o) => o.group}\n  label="Framework"\n  placeholder="Search frameworks"\n/>`,
+  },
+  {
+    slug: 'date-picker',
+    flags: ['disabled', 'error', 'required', 'fullWidth'],
+    render: (p, x) => <DatePickerDemo {...p} x={x} />,
+    code: (p, x) =>
+      `const [value, setValue] = useState(dayjs('2026-11-03'));\n\n<DatePicker ${attrs(p, x)} label="Start date" value={value} onChange={setValue} />`,
   },
   {
     slug: 'checkbox',
-    render: (p) => <Checkbox {...p} label="Accept terms" defaultChecked />,
-    code: (p) => `<Checkbox ${attrs(p)} label="Accept terms" defaultChecked />`,
+    flags: ['disabled', 'loading', 'indeterminate'],
+    render: (p, x) => <Checkbox {...p} {...x} label="Accept terms" defaultChecked />,
+    code: (p, x) => `<Checkbox ${attrs(p, x)} label="Accept terms" defaultChecked />`,
   },
   {
     slug: 'radio',
-    render: (p) => <Radio {...p} label="Option A" defaultChecked />,
-    code: (p) => `<Radio ${attrs(p)} label="Option A" defaultChecked />`,
+    flags: ['disabled', 'loading'],
+    render: (p, x) => <Radio {...p} {...x} label="Option A" defaultChecked />,
+    code: (p, x) => `<Radio ${attrs(p, x)} label="Option A" defaultChecked />`,
   },
   {
     slug: 'switch',
-    render: (p) => <Switch {...p} label="Notifications" defaultChecked />,
-    code: (p) => `<Switch ${attrs(p)} label="Notifications" defaultChecked />`,
+    flags: ['disabled', 'loading'],
+    render: (p, x) => <Switch {...p} {...x} label="Notifications" defaultChecked />,
+    code: (p, x) => `<Switch ${attrs(p, x)} label="Notifications" defaultChecked />`,
   },
   {
     slug: 'slider',
-    render: (p) => <SliderDemo {...p} />,
-    code: (p) => `<Slider ${attrs(p)} value={value} onChange={...} />`,
+    flags: ['disabled', 'showValue', 'showMinMax'],
+    render: (p, x) => <SliderDemo {...p} x={x} />,
+    code: (p, x) => `<Slider ${attrs(p, x)} value={value} onChange={...} />`,
   },
   {
     slug: 'rating',
-    render: (p) => <RatingDemo {...p} />,
-    code: (p) => `<Rating ${attrs(p)} value={value} onChange={...} />`,
+    flags: ['disabled', 'readOnly', 'showLabel'],
+    render: (p, x) => <RatingDemo {...p} x={x} />,
+    code: (p, x) => `<Rating ${attrs(p, x)} value={value} onChange={...} />`,
   },
   {
-    slug: 'card',
-    render: (p) => (
-      <Card {...p} sx={{ p: 2, width: 260 }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-          Card title
-        </Typography>
-        <Typography variant="body2">Cards group related content.</Typography>
-      </Card>
+    slug: 'avatar',
+    flags: ['loading'],
+    render: (p, x) => (
+      <Avatar {...p} {...x} status="online">
+        AL
+      </Avatar>
     ),
-    code: (p) => `<Card ${attrs(p)} sx={{ p: 2 }}>\n  Cards group related content.\n</Card>`,
+    code: (p, x) => `<Avatar ${attrs(p, x)} status="online">AL</Avatar>`,
+  },
+  {
+    slug: 'badge',
+    flags: ['pulse', 'loading'],
+    render: (p, x) => (
+      <Badge {...p} {...x} badgeContent={4}>
+        <Button variant="outlined" color="neutral" size="sm">
+          Inbox
+        </Button>
+      </Badge>
+    ),
+    code: (p, x) => `<Badge ${attrs(p, x)} badgeContent={4}>\n  <Button>Inbox</Button>\n</Badge>`,
   },
   {
     slug: 'chip',
-    render: (p) => <Chip {...p} label="Chip" />,
-    code: (p) => `<Chip ${attrs(p)} label="Chip" />`,
+    flags: ['disabled', 'loading'],
+    render: (p, x) => <Chip {...p} {...x} label="Chip" />,
+    code: (p, x) => `<Chip ${attrs(p, x)} label="Chip" />`,
   },
   {
-    slug: 'alert',
-    render: (p) => <Alert {...p}>Your changes were saved.</Alert>,
-    code: (p) => `<Alert ${attrs(p)}>Your changes were saved.</Alert>`,
-  },
-  {
-    slug: 'avatar-badge',
-    render: (p) => (
-      <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
-        <Avatar {...p} status="online">
-          AL
-        </Avatar>
-        <Badge {...p} badgeContent={4}>
-          <Button variant="outlined" color="neutral" size="sm">
-            Inbox
-          </Button>
-        </Badge>
-      </Stack>
-    ),
-    code: (p) =>
-      `<Avatar ${attrs(p)} status="online">AL</Avatar>\n<Badge ${attrs(p)} badgeContent={4}>\n  <Button>Inbox</Button>\n</Badge>`,
-  },
-  {
-    slug: 'progress',
-    render: (p) => (
-      <Box sx={{ width: 260 }}>
-        <Progress variant={p.variant} color={p.color} size={p.size} value={65} aria-label="Progress" />
-      </Box>
-    ),
-    code: (p) => `<Progress ${attrs(p)} value={65} />`,
-  },
-  {
-    slug: 'pagination',
-    render: (p) => <PaginationDemo {...p} />,
-    code: (p) => `<Pagination ${attrs(p)} count={8} page={page} onChange={...} />`,
-  },
-  {
-    slug: 'tabs',
-    render: (p) => (
-      <Box sx={{ width: '100%', maxWidth: 420 }}>
-        <Tabs
+    slug: 'table',
+    flags: ['striped', 'dense', 'loading'],
+    render: (p, x) => (
+      <Box sx={{ width: '100%', maxWidth: 520, overflowX: 'auto' }}>
+        <Table
           {...p}
-          aria-label="Account"
-          defaultValue="a"
-          tabs={[
-            { id: 'a', label: 'Profile', content: <Box sx={{ p: 2 }}>Profile panel</Box> },
-            { id: 'b', label: 'Billing', content: <Box sx={{ p: 2 }}>Billing panel</Box> },
-            { id: 'c', label: 'Team', content: <Box sx={{ p: 2 }}>Team panel</Box> },
+          {...x}
+          data={rows}
+          columns={[
+            { id: 'name', header: 'Name', accessor: 'name' },
+            { id: 'role', header: 'Role', accessor: 'role' },
           ]}
         />
       </Box>
     ),
-    code: (p) =>
-      `<Tabs ${attrs(p)} defaultValue="a" tabs={[\n  { id: 'a', label: 'Profile', content: <Profile /> },\n  { id: 'b', label: 'Billing', content: <Billing /> },\n]} />`,
+    code: (p, x) =>
+      `<Table ${attrs(p, x)}\n  data={rows}\n  columns={[\n    { id: 'name', header: 'Name', accessor: 'name' },\n    { id: 'role', header: 'Role', accessor: 'role' },\n  ]}\n/>`,
   },
   {
-    slug: 'accordion',
-    render: (p) => (
-      <Box sx={{ width: '100%', maxWidth: 460 }}>
-        <Accordion {...p} defaultExpanded>
-          <AccordionSummary>Can I cancel any time?</AccordionSummary>
-          <AccordionDetails>Yes. Your plan stays active until the end of the billing period.</AccordionDetails>
-        </Accordion>
-        <Accordion {...p}>
-          <AccordionSummary>Do you offer refunds?</AccordionSummary>
-          <AccordionDetails>Within 14 days of purchase, no questions asked.</AccordionDetails>
-        </Accordion>
+    slug: 'tooltip',
+    flags: ['arrow', 'loading'],
+    render: (p, x) => (
+      <Tooltip {...p} {...x} title="Tooltip text">
+        <span>
+          <Button variant="outlined" color="neutral">
+            Hover me
+          </Button>
+        </span>
+      </Tooltip>
+    ),
+    code: (p, x) => `<Tooltip ${attrs(p, x)} title="Tooltip text">\n  <Button>Hover me</Button>\n</Tooltip>`,
+  },
+  {
+    slug: 'alert',
+    flags: ['loading'],
+    render: (p, x) => (
+      <Alert {...p} {...x}>
+        Your changes were saved.
+      </Alert>
+    ),
+    code: (p, x) => `<Alert ${attrs(p, x)}>Your changes were saved.</Alert>`,
+  },
+  {
+    slug: 'progress',
+    flags: ['indeterminate', 'showLabel'],
+    render: (p, x) => (
+      <Box sx={{ width: 260, maxWidth: '100%' }}>
+        <Progress variant={p.variant} color={p.color} size={p.size} {...x} value={65} aria-label="Progress" />
       </Box>
     ),
-    code: (p) =>
-      `<Accordion ${attrs(p)} defaultExpanded>\n  <AccordionSummary>Can I cancel any time?</AccordionSummary>\n  <AccordionDetails>Yes. Your plan stays active…</AccordionDetails>\n</Accordion>`,
-  },
-  {
-    slug: 'stepper',
-    render: (p) => <StepperDemo {...p} />,
-    code: (p) =>
-      `<Stepper ${attrs(p)}\n  aria-label="Setup progress"\n  activeStep={1}\n  alternativeLabel\n  steps={[\n    { label: 'Account' },\n    { label: 'Workspace' },\n    { label: 'Invite', optional: true },\n    { label: 'Done' },\n  ]}\n/>`,
+    code: (p, x) => `<Progress ${attrs(p, x)} value={65} />`,
   },
   {
     slug: 'skeleton',
     render: (p) => (
-      <Box aria-busy="true" sx={{ width: 280 }}>
+      <Box aria-busy="true" sx={{ width: 280, maxWidth: '100%' }}>
         <Box component="span" sx={srOnly}>
           Loading profile
         </Box>
@@ -422,86 +456,105 @@ export const DEMOS: Demo[] = [
       `<Box aria-busy="true">\n  <span className="sr-only">Loading profile</span>\n  <Skeleton ${attrs(p)} shape="circular" />\n  <Skeleton ${attrs(p)} width="70%" />\n  <Skeleton ${attrs(p)} shape="rounded" />\n</Box>`,
   },
   {
-    slug: 'table',
-    render: (p) => (
-      <Box sx={{ width: '100%', maxWidth: 520, overflowX: 'auto' }}>
-        <Table
+    slug: 'snackbar',
+    flags: ['loading'],
+    render: (p, x) => <SnackbarDemo {...p} x={x} />,
+    code: (p, x) => `<Snackbar ${attrs(p, x)} open={open} onClose={close} autoHideDuration={4000} message="Changes saved" />`,
+  },
+  {
+    slug: 'tabs',
+    flags: ['fullWidth', 'centered'],
+    render: (p, x) => (
+      <Box sx={{ width: '100%', maxWidth: 420 }}>
+        <Tabs
           {...p}
-          data={rows}
-          columns={[
-            { id: 'name', header: 'Name', accessor: 'name' },
-            { id: 'role', header: 'Role', accessor: 'role' },
+          {...x}
+          aria-label="Account"
+          defaultValue="a"
+          tabs={[
+            { id: 'a', label: 'Profile', content: <Box sx={{ p: 2 }}>Profile panel</Box> },
+            { id: 'b', label: 'Billing', content: <Box sx={{ p: 2 }}>Billing panel</Box> },
+            { id: 'c', label: 'Team', content: <Box sx={{ p: 2 }}>Team panel</Box> },
           ]}
         />
       </Box>
     ),
-    code: (p) =>
-      `<Table ${attrs(p)}\n  data={rows}\n  columns={[\n    { id: 'name', header: 'Name', accessor: 'name' },\n    { id: 'role', header: 'Role', accessor: 'role' },\n  ]}\n/>`,
+    code: (p, x) =>
+      `<Tabs ${attrs(p, x)} defaultValue="a" tabs={[\n  { id: 'a', label: 'Profile', content: <Profile /> },\n  { id: 'b', label: 'Billing', content: <Billing /> },\n]} />`,
   },
   {
-    slug: 'tooltip',
-    render: (p) => (
-      <Tooltip {...p} title="Tooltip text">
-        <span>
-          <Button variant="outlined" color="neutral">
-            Hover me
-          </Button>
-        </span>
-      </Tooltip>
-    ),
+    slug: 'breadcrumbs',
+    render: (p) => <Breadcrumbs {...p} items={crumbs} />,
     code: (p) =>
-      `<Tooltip ${attrs(p)} title="Tooltip text">\n  <Button>Hover me</Button>\n</Tooltip>`,
+      `<Breadcrumbs ${attrs(p)}\n  items={[\n    { id: 'home', label: 'Home', href: '/' },\n    { id: 'docs', label: 'Docs', href: '/docs' },\n    { id: 'components', label: 'Components', href: '/docs/components' },\n    { id: 'current', label: 'Breadcrumbs' },\n  ]}\n/>`,
   },
   {
-    slug: 'autocomplete',
-    render: (p) => (
-      <Autocomplete
-        {...p}
-        options={frameworks}
-        groupBy={(o) => o.group ?? ''}
-        label="Framework"
-        placeholder="Search frameworks"
-        sx={{ width: 300 }}
-      />
-    ),
-    code: (p) =>
-      `<Autocomplete ${attrs(p)}\n  options={frameworks}\n  groupBy={(o) => o.group}\n  label="Framework"\n  placeholder="Search frameworks"\n/>`,
+    slug: 'pagination',
+    flags: ['disabled', 'showFirstButton', 'showLastButton'],
+    render: (p, x) => <PaginationDemo {...p} x={x} />,
+    code: (p, x) => `<Pagination ${attrs(p, x)} count={8} page={page} onChange={...} />`,
   },
   {
-    slug: 'date-picker',
-    render: (p) => <DatePickerDemo {...p} />,
-    code: (p) =>
-      `const [value, setValue] = useState(dayjs('2026-11-03'));\n\n<DatePicker ${attrs(p)} label="Start date" value={value} onChange={setValue} />`,
-  },
-  {
-    slug: 'dialog',
-    render: (p) => <DialogDemo {...p} />,
-    code: (p) =>
-      `<Dialog ${attrs(p)} open={open} onClose={close} aria-labelledby="dialog-title">\n  <DialogTitle id="dialog-title">Delete project?</DialogTitle>\n  <DialogContent>This removes the project and its deploys.</DialogContent>\n  <DialogActions>\n    <Button variant="ghost" color="neutral" onClick={close}>Cancel</Button>\n    <Button color="danger" onClick={close}>Delete</Button>\n  </DialogActions>\n</Dialog>`,
-  },
-  {
-    slug: 'drawer',
-    render: (p) => <DrawerDemo {...p} />,
-    code: (p) =>
-      `<Drawer ${attrs(p)} anchor="right" open={open} onClose={close}>\n  <Box sx={{ width: 280, p: 2 }}>…</Box>\n</Drawer>`,
+    slug: 'stepper',
+    flags: ['alternativeLabel'],
+    render: (p, x) => <StepperDemo {...p} x={x} />,
+    code: (p, x) =>
+      `<Stepper ${attrs(p, x)}\n  aria-label="Setup progress"\n  activeStep={1}\n  steps={[\n    { label: 'Account' },\n    { label: 'Workspace' },\n    { label: 'Invite', optional: true },\n    { label: 'Done' },\n  ]}\n/>`,
   },
   {
     slug: 'menu',
-    render: (p) => <MenuDemo {...p} />,
+    render: (p, x) => <MenuDemo {...p} x={x} />,
     code: (p) =>
       `<Button id="actions-button" aria-haspopup="true" aria-expanded={open} onClick={openMenu}>\n  Project actions\n</Button>\n<Menu ${attrs(p)}\n  aria-labelledby="actions-button"\n  anchorEl={anchor}\n  open={open}\n  onClose={close}\n>\n  <MenuItem onClick={close}>Rename</MenuItem>\n  <MenuItem onClick={close}>Duplicate</MenuItem>\n  <MenuItem onClick={close}>Archive</MenuItem>\n</Menu>`,
   },
   {
-    slug: 'popover',
-    render: (p) => <PopoverDemo {...p} />,
-    code: (p) =>
-      `<Popover ${attrs(p)}\n  open={!!anchor}\n  anchorEl={anchor}\n  onClose={() => setAnchor(null)}\n  anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}\n>\n  <Box sx={{ p: 2 }}>Usage this month</Box>\n</Popover>`,
+    slug: 'card',
+    flags: ['clickable', 'loading'],
+    render: (p, x) => (
+      <Card {...p} {...x} sx={{ p: 2, width: 260, maxWidth: '100%' }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+          Card title
+        </Typography>
+        <Typography variant="body2">Cards group related content.</Typography>
+      </Card>
+    ),
+    code: (p, x) => `<Card ${attrs(p, x)} sx={{ p: 2 }}>\n  Cards group related content.\n</Card>`,
   },
   {
-    slug: 'snackbar',
-    render: (p) => <SnackbarDemo {...p} />,
+    slug: 'accordion',
+    flags: ['disabled'],
+    render: (p, x) => (
+      <Box sx={{ width: '100%', maxWidth: 460 }}>
+        <Accordion {...p} {...x} defaultExpanded>
+          <AccordionSummary>Can I cancel any time?</AccordionSummary>
+          <AccordionDetails>Yes. Your plan stays active until the end of the billing period.</AccordionDetails>
+        </Accordion>
+        <Accordion {...p} {...x}>
+          <AccordionSummary>Do you offer refunds?</AccordionSummary>
+          <AccordionDetails>Within 14 days of purchase, no questions asked.</AccordionDetails>
+        </Accordion>
+      </Box>
+    ),
+    code: (p, x) =>
+      `<Accordion ${attrs(p, x)} defaultExpanded>\n  <AccordionSummary>Can I cancel any time?</AccordionSummary>\n  <AccordionDetails>Yes. Your plan stays active…</AccordionDetails>\n</Accordion>`,
+  },
+  {
+    slug: 'dialog',
+    flags: ['fullWidth'],
+    render: (p, x) => <DialogDemo {...p} x={x} />,
+    code: (p, x) =>
+      `<Dialog ${attrs(p, x)} open={open} onClose={close} aria-labelledby="dialog-title">\n  <DialogTitle id="dialog-title">Delete project?</DialogTitle>\n  <DialogContent>This removes the project and its deploys.</DialogContent>\n  <DialogActions>\n    <Button variant="ghost" color="neutral" onClick={close}>Cancel</Button>\n    <Button color="danger" onClick={close}>Delete</Button>\n  </DialogActions>\n</Dialog>`,
+  },
+  {
+    slug: 'drawer',
+    render: (p, x) => <DrawerDemo {...p} x={x} />,
+    code: (p) => `<Drawer ${attrs(p)} anchor="right" open={open} onClose={close}>\n  <Box sx={{ width: 280, p: 2 }}>…</Box>\n</Drawer>`,
+  },
+  {
+    slug: 'popover',
+    render: (p, x) => <PopoverDemo {...p} x={x} />,
     code: (p) =>
-      `<Snackbar ${attrs(p)} open={open} onClose={close} autoHideDuration={4000} message="Changes saved" />`,
+      `<Popover ${attrs(p)}\n  open={!!anchor}\n  anchorEl={anchor}\n  onClose={() => setAnchor(null)}\n  anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}\n>\n  <Box sx={{ p: 2 }}>Usage this month</Box>\n</Popover>`,
   },
 ];
 
