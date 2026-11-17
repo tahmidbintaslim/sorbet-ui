@@ -996,3 +996,39 @@ test('docs catalog: the filter narrows the live previews and says how many match
   await expect(page.getByTestId('catalog-count')).not.toContainText('30');
   await expect(page.getByRole('link', { name: /^Table/ }).first()).toBeVisible();
 });
+
+test('landing: the Stepper, Accordion and Menu demos work from the keyboard and mouse', async ({ page }) => {
+  await page.goto('/');
+  // Stepper: you cannot go on without a flavor; finished steps lead back.
+  const sundae = page.getByTestId('demo-sundae');
+  await sundae.scrollIntoViewIfNeeded();
+  await expect(sundae.getByRole('button', { name: 'Next' })).toBeDisabled();
+  await sundae.getByRole('radio', { name: 'Mango Tango' }).click();
+  await sundae.getByRole('button', { name: 'Next' }).click();
+  await sundae.getByRole('button', { name: 'Sprinkles' }).click();
+  await sundae.getByRole('button', { name: 'Place order' }).click();
+  await expect(sundae.getByTestId('sundae-receipt')).toContainText('One Mango Tango sundae');
+  await expect(sundae.getByTestId('sundae-receipt')).toContainText('sprinkles');
+  // Accordion: one answer open at a time.
+  const faq = page.getByTestId('demo-faq');
+  await faq.scrollIntoViewIfNeeded();
+  const first = faq.getByRole('button', { name: 'Any vegan scoops?' });
+  const second = faq.getByRole('button', { name: 'Can I take a pint home?' });
+  await expect(first).toHaveAttribute('aria-expanded', 'true');
+  await second.focus();
+  await page.keyboard.press('Enter');
+  await expect(second).toHaveAttribute('aria-expanded', 'true');
+  await expect(first).toHaveAttribute('aria-expanded', 'false');
+  // Menu: open from the keyboard, pick with arrows, focus returns to the trigger.
+  const order = page.getByTestId('demo-order-menu');
+  await order.scrollIntoViewIfNeeded();
+  const trigger = order.getByRole('button', { name: 'Order actions' });
+  await trigger.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('menu')).toBeVisible();
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('Enter');
+  await expect(order.getByTestId('order-status')).toContainText('Refunded');
+  await expect(trigger).toBeFocused();
+});

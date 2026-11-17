@@ -1,5 +1,5 @@
 'use client';
-// "Built with Sorbet": six working mini-demos. Each one is its own chunk, loaded and
+// "Built with Sorbet": nine working mini-demos. Each one is its own chunk, loaded and
 // mounted when its card scrolls near, so the landing page stays light.
 import * as React from 'react';
 import dynamic from 'next/dynamic';
@@ -30,7 +30,10 @@ const DEMOS: { id: string; title: string; blurb: string; href: string; link: str
   { id: 'stats', title: 'Stats', blurb: 'Switch the range; the number counts.', href: '/docs/components/tabs', link: 'Tabs', c: 'success', Demo: dynamic(() => import('./demos/Stats'), { ssr: false, loading: Loading }) },
   { id: 'command', title: 'Command menu', blurb: 'Type, arrow down, press Enter.', href: '/docs/components/text-field', link: 'TextField', c: 'secondary', Demo: dynamic(() => import('./demos/Command'), { ssr: false, loading: Loading }) },
   { id: 'filters', title: 'Filters and table', blurb: 'Chips narrow the rows.', href: '/docs/components/table', link: 'Table', c: 'primary', Demo: dynamic(() => import('./demos/Filters'), { ssr: false, loading: Loading }) },
-  { id: 'agenda', title: 'Agenda', blurb: 'Pick a day to see what is on.', href: '/docs/components/avatar-badge', link: 'Avatar', c: 'danger', Demo: dynamic(() => import('./demos/Agenda'), { ssr: false, loading: Loading }) },
+  { id: 'agenda', title: 'Agenda', blurb: 'Pick a day to see what is on.', href: '/docs/components/avatar', link: 'Avatar', c: 'danger', Demo: dynamic(() => import('./demos/Agenda'), { ssr: false, loading: Loading }) },
+  { id: 'sundae', title: 'Build a sundae', blurb: 'Three steps; finished ones go back.', href: '/docs/components/stepper', link: 'Stepper', c: 'warning', Demo: dynamic(() => import('./demos/Sundae'), { ssr: false, loading: Loading }) },
+  { id: 'faq', title: 'Shop FAQ', blurb: 'One answer open at a time.', href: '/docs/components/accordion', link: 'Accordion', c: 'info', Demo: dynamic(() => import('./demos/Faq'), { ssr: false, loading: Loading }) },
+  { id: 'order-menu', title: 'Order actions', blurb: 'Open the menu, pick an action.', href: '/docs/components/menu', link: 'Menu', c: 'secondary', Demo: dynamic(() => import('./demos/OrderMenu'), { ssr: false, loading: Loading }) },
   { id: 'form', title: 'Sign-up form', blurb: 'Submit it empty, then fix it.', href: '/docs/components/checkbox', link: 'Checkbox', c: 'info', Demo: dynamic(() => import('./demos/SignUp'), { ssr: false, loading: Loading }) },
 ];
 
