@@ -21,6 +21,8 @@ export type Message = {
   unread: boolean;
   starred: boolean;
   labels: Label[];
+  /** Recipient, for sent mail and drafts. */
+  to?: string;
   attachments?: { name: string; size: string }[];
   replies?: Reply[];
 };
@@ -195,6 +197,7 @@ export const MESSAGES: Message[] = [
   {
     id: 's1',
     folder: 'sent',
+    to: 'Dara Okonkwo',
     from: ME.name,
     email: ME.email,
     subject: 'Call sheet for the 18th',
@@ -212,6 +215,7 @@ export const MESSAGES: Message[] = [
   {
     id: 's2',
     folder: 'sent',
+    to: 'Mirela Popa',
     from: ME.name,
     email: ME.email,
     subject: 'Estimate: Oster Bakery winter menu',
@@ -225,6 +229,7 @@ export const MESSAGES: Message[] = [
   {
     id: 'd1',
     folder: 'drafts',
+    to: 'Studio team',
     from: ME.name,
     email: ME.email,
     subject: 'Studio rates for next year',

@@ -17,6 +17,7 @@ import TemplateStage from './TemplateStage';
 // One lazy chunk per template.
 const LIVE: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
   'analytics-dashboard': React.lazy(() => import('@/templates/analytics-dashboard')),
+  inbox: React.lazy(() => import('@/templates/inbox')),
 };
 
 // The preview renders at a desktop size and is scaled to the card.
