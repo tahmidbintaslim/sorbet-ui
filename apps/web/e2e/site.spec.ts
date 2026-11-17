@@ -6,15 +6,18 @@ import { BLOCKS } from '../lib/blocks-meta';
 import { BLOCK_SOURCE } from '../lib/blocks-source';
 import { registryName } from '../lib/registry';
 import { TEMPLATES } from '../lib/templates';
+import { DOC_PAGES } from '../lib/docs-nav';
 
 const TEMPLATE_ROUTES = TEMPLATES.map((t) => `/templates/${t.slug}`);
 
 const BLOCK_ROUTES = categoriesWithBlocks().map((c) => `/blocks/${c.id}`);
 
+// Every written docs page (lib/docs-nav.ts) and the help center.
+const DOC_ROUTES = [...DOC_PAGES.map((p) => p.href), '/support'];
+
 const ROUTES = [
   '/',
-  '/docs',
-  '/docs/theming',
+  ...DOC_ROUTES,
   '/docs/components',
   '/blocks',
   '/demo',
@@ -249,7 +252,7 @@ test('keyboard: skip link reaches main content', async ({ page }) => {
 });
 
 for (const theme of ['light', 'dark'] as const) {
-  for (const route of ['/', '/blocks', '/demo', '/docs', '/docs/components/button', '/docs/components/table', '/docs/components/autocomplete', '/docs/components/date-picker', '/docs/components/accordion', '/docs/components/stepper', '/docs/components/skeleton', '/templates', ...TEMPLATE_ROUTES, ...BLOCK_ROUTES]) {
+  for (const route of ['/', '/blocks', '/demo', '/docs/components/button', '/docs/components/table', '/docs/components/autocomplete', '/docs/components/date-picker', '/docs/components/accordion', '/docs/components/stepper', '/docs/components/skeleton', '/templates', ...TEMPLATE_ROUTES, ...BLOCK_ROUTES, ...DOC_ROUTES]) {
     test(`a11y (axe) ${theme} ${route}`, async ({ browser }) => {
       // Reduced motion renders every section in its final state, so axe never
       // measures text mid-fade.
@@ -604,8 +607,8 @@ test('demo: the view is in the URL hash and back/forward work', async ({ page })
   await expect(app.getByRole('heading', { level: 2, name: 'Orders' })).toBeVisible();
 });
 
-test('docs: getting started says 0.1.0 is not on npm yet and shows the source install', async ({ page }) => {
-  await page.goto('/docs');
+test('docs: installation says 0.1.0 is not on npm yet and shows the source install', async ({ page }) => {
+  await page.goto('/docs/installation');
   const notice = page.getByTestId('prerelease-notice');
   await expect(notice).toBeVisible();
   await expect(notice).toContainText('not published to npm yet');

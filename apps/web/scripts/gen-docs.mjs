@@ -340,14 +340,19 @@ writeFileSync(
 // Search index: components, their examples, and the guide pages' sections
 // ---------------------------------------------------------------------------
 const index = [];
-const guides = [
-  { file: '../app/docs/page.tsx', href: '/docs', title: 'Getting started' },
-  { file: '../app/docs/theming/page.tsx', href: '/docs/theming', title: 'Theming' },
-];
-for (const g of guides) {
-  index.push({ title: g.title, href: g.href, group: 'Guides', hint: 'Guide' });
-  const raw = readFileSync(here(g.file), 'utf8');
-  for (const m of raw.matchAll(/component="h2"[^>]*?\bid="([^"]+)"[^>]*>\s*([^<{]+?)\s*</g))
+const navJs = ts.transpileModule(readFileSync(here('../lib/docs-nav.ts'), 'utf8'), {
+  compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+}).outputText;
+const { DOC_PAGES } = await import(`data:text/javascript;base64,${Buffer.from(navJs).toString('base64')}`);
+for (const g of DOC_PAGES) {
+  index.push({ title: g.title, href: g.href, group: 'Guides', hint: 'Guide', keywords: g.description });
+  const file = here(`../${g.file}`);
+  if (!existsSync(file)) throw new Error(`${g.file} is listed in lib/docs-nav.ts but does not exist`);
+  const raw = readFileSync(file, 'utf8');
+  // <Section id="x" title="Y"> and <DocHeading id="x" level={2}>Y</DocHeading> both count.
+  for (const m of raw.matchAll(/<Section\s+id="([^"]+)"\s+title="([^"]+)"/g))
+    index.push({ title: m[2], href: `${g.href}#${m[1]}`, group: 'Guides', hint: g.title });
+  for (const m of raw.matchAll(/<DocHeading\s+id="([^"]+)"\s+level=\{2\}>\s*([^<{]+?)\s*</g))
     index.push({ title: m[2], href: `${g.href}#${m[1]}`, group: 'Guides', hint: g.title });
 }
 index.push({ title: 'All components', href: '/docs/components', group: 'Components', hint: 'Catalog' });

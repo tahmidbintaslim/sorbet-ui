@@ -2,52 +2,151 @@
 export type SearchEntry = { title: string; href: string; group: 'Guides' | 'Components' | 'Examples'; hint: string; keywords?: string };
 export const SEARCH_INDEX: SearchEntry[] = [
   {
-    "title": "Getting started",
+    "title": "Introduction",
     "href": "/docs",
     "group": "Guides",
-    "hint": "Guide"
+    "hint": "Guide",
+    "keywords": "What Sorbet UI is, who it is for, and how it fits on top of Material UI."
   },
   {
-    "title": "Prerequisites",
-    "href": "/docs#prerequisites",
+    "title": "Installation",
+    "href": "/docs/installation",
     "group": "Guides",
-    "hint": "Getting started"
+    "hint": "Guide",
+    "keywords": "Install the packages, wrap your app in the theme, and render your first component."
   },
   {
-    "title": "Build the packages",
-    "href": "/docs#build",
+    "title": "Next.js",
+    "href": "/docs/frameworks/nextjs",
     "group": "Guides",
-    "hint": "Getting started"
+    "hint": "Guide",
+    "keywords": "Set up Sorbet UI in a Next.js App Router project, with server rendering and no style flash."
   },
   {
-    "title": "Set up your app",
-    "href": "/docs#setup",
+    "title": "Vite",
+    "href": "/docs/frameworks/vite",
     "group": "Guides",
-    "hint": "Getting started"
+    "hint": "Guide",
+    "keywords": "Set up Sorbet UI in a Vite and React project."
   },
   {
-    "title": "Troubleshooting",
-    "href": "/docs#troubleshooting",
+    "title": "React Router",
+    "href": "/docs/frameworks/react-router",
     "group": "Guides",
-    "hint": "Getting started"
+    "hint": "Guide",
+    "keywords": "Set up Sorbet UI in a React Router (framework mode) project."
   },
   {
-    "title": "Next steps",
-    "href": "/docs#next-steps",
+    "title": "Migrating from MUI",
+    "href": "/docs/migrating-from-mui",
     "group": "Guides",
-    "hint": "Getting started"
-  },
-  {
-    "title": "Add blocks with the shadcn CLI",
-    "href": "/docs#cli",
-    "group": "Guides",
-    "hint": "Getting started"
+    "hint": "Guide",
+    "keywords": "Adopt Sorbet in an existing Material UI app one screen at a time."
   },
   {
     "title": "Theming",
     "href": "/docs/theming",
     "group": "Guides",
-    "hint": "Guide"
+    "hint": "Guide",
+    "keywords": "The light and dark themes, and how to extend them like any MUI theme."
+  },
+  {
+    "title": "Colors and tokens",
+    "href": "/docs/customization/colors",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "The seven color roles, the palette scales and the design tokens behind them."
+  },
+  {
+    "title": "Typography and spacing",
+    "href": "/docs/customization/typography",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "Type scale, font stack, spacing and corner radius, and how to change them."
+  },
+  {
+    "title": "Dark mode",
+    "href": "/docs/customization/dark-mode",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "Follow the system setting, add a toggle, and avoid a flash of the wrong theme."
+  },
+  {
+    "title": "Variants, colors and sizes",
+    "href": "/docs/customization/variants",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "The one shared API: five variants, seven colors and five sizes on every component."
+  },
+  {
+    "title": "Overriding styles",
+    "href": "/docs/customization/override-styles",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "Change one instance with sx, every instance with theme overrides, or build your own variant."
+  },
+  {
+    "title": "Forms",
+    "href": "/docs/guides/forms",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "Labels, helper text, validation and submission with Sorbet form controls."
+  },
+  {
+    "title": "Accessibility",
+    "href": "/docs/guides/accessibility",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "What the components do for you, what is still your job, and how we test."
+  },
+  {
+    "title": "Server rendering",
+    "href": "/docs/guides/server-rendering",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "Server components, client boundaries and streaming with Sorbet UI."
+  },
+  {
+    "title": "Routing and links",
+    "href": "/docs/guides/routing",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "Render buttons and links with your router: Next.js Link, React Router and plain anchors."
+  },
+  {
+    "title": "AI and MCP",
+    "href": "/docs/guides/ai",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "Give coding assistants the real props: the Storybook MCP server, llms.txt and the registry."
+  },
+  {
+    "title": "FAQ",
+    "href": "/docs/faq",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "Short answers to the questions people ask most."
+  },
+  {
+    "title": "Changelog",
+    "href": "/docs/changelog",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "What changed in each release."
+  },
+  {
+    "title": "Contributing",
+    "href": "/docs/contributing",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "Report a bug, propose a component, or send a pull request."
+  },
+  {
+    "title": "Brand assets",
+    "href": "/docs/brand",
+    "group": "Guides",
+    "hint": "Guide",
+    "keywords": "The Sorbet UI name, logo and colors, and how to use them."
   },
   {
     "title": "All components",
