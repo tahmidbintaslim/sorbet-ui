@@ -91,8 +91,10 @@ const floatTile = keyframes`
 `;
 
 // Screens from scripts/gen-shots.mjs, each linking to its page.
+// Six templates and the demo hub: one per slot in COLUMNS below.
+const SHOT_TEMPLATES = ['analytics-dashboard', 'storefront', 'kanban', 'saas-landing', 'inbox', 'settings'];
 const SHOTS = [
-  ...TEMPLATES.map((t) => ({ file: t.slug, href: `/templates/${t.slug}`, label: `${t.name} template` })),
+  ...SHOT_TEMPLATES.map((slug) => TEMPLATES.find((t) => t.slug === slug)!).map((t) => ({ file: t.slug, href: `/templates/${t.slug}`, label: `${t.name} template` })),
   { file: 'demo', href: '/demo', label: 'Acme Admin demo' },
 ];
 // Four columns, each starting a little lower, like a contact sheet.

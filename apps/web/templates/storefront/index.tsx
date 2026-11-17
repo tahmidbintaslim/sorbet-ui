@@ -254,6 +254,7 @@ export default function Storefront({ accent = 'danger' }: { accent?: Accent }) {
               <Button
                 variant="outlined"
                 color="neutral"
+                sx={{ bgcolor: 'background.paper' }}
                 onClick={() => {
                   setCats([]);
                   setSort('rating');

@@ -270,9 +270,10 @@ export default function Inbox({ accent = 'secondary' }: { accent?: Accent }) {
                       pl: 2,
                       pr: 6,
                       py: 1.5,
-                      bgcolor: on ? 'action.selected' : 'transparent',
+                      // A light accent tint: the grey "selected" overlay would cost the preview text its contrast in dark mode.
+                      bgcolor: on ? colorPalette[accent].alpha8 : 'transparent',
                       boxShadow: on ? `inset 3px 0 0 ${colorPalette[accent][500]}` : 'none',
-                      '&:hover': { bgcolor: on ? 'action.selected' : 'action.hover' },
+                      '&:hover': { bgcolor: on ? colorPalette[accent].alpha12 : 'action.hover' },
                       '&:focus-visible': { outline: '2px solid', outlineColor: colorPalette[accent][500], outlineOffset: -2 },
                     }}
                   >
