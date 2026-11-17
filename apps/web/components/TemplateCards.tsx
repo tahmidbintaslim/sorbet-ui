@@ -7,87 +7,11 @@ import * as React from 'react';
 import NextLink from 'next/link';
 import { Box, Stack, Typography } from '@mui/material';
 import ArrowForward from '@mui/icons-material/ArrowForward';
-import { Button, Chip, Skeleton } from '@sorbet-ui/react';
-import { TEMPLATES, TEMPLATE_TYPES, type Template, type TemplateType } from '@/lib/templates';
+import { Button, Chip } from '@sorbet-ui/react';
+import { TEMPLATES, TEMPLATE_TYPES, type TemplateType } from '@/lib/templates';
 import { scoop, scoopAt } from '@/lib/scoops';
 import { touchTarget } from '@/lib/touch';
-import { useColorMode } from './ColorMode';
-import TemplateStage from './TemplateStage';
-
-// One lazy chunk per template.
-const LIVE: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
-  'analytics-dashboard': React.lazy(() => import('@/templates/analytics-dashboard')),
-  inbox: React.lazy(() => import('@/templates/inbox')),
-  kanban: React.lazy(() => import('@/templates/kanban')),
-  storefront: React.lazy(() => import('@/templates/storefront')),
-  'saas-landing': React.lazy(() => import('@/templates/saas-landing')),
-  settings: React.lazy(() => import('@/templates/settings')),
-  'product-launch': React.lazy(() => import('@/templates/product-launch')),
-  'developer-tool': React.lazy(() => import('@/templates/developer-tool')),
-};
-
-// The preview renders at a desktop size and is scaled to the card.
-const VIEW = { width: 1280, height: 800 };
-
-function LivePreview({ template }: { template: Template }) {
-  const { mode } = useColorMode();
-  const box = React.useRef<HTMLDivElement>(null);
-  const [scale, setScale] = React.useState<number | null>(null);
-  const [near, setNear] = React.useState(false);
-  const Live = LIVE[template.slug];
-
-  React.useEffect(() => {
-    const el = box.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([entry]) => setScale(entry.contentRect.width / VIEW.width));
-    ro.observe(el);
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setNear(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: '300px' },
-    );
-    io.observe(el);
-    return () => {
-      ro.disconnect();
-      io.disconnect();
-    };
-  }, []);
-
-  const placeholder = (
-    <Box sx={{ position: 'absolute', inset: 0, p: 3, display: 'grid', gap: 2, gridTemplateRows: 'auto 1fr 1fr' }}>
-      <Skeleton shape="rounded" height={28} width="40%" />
-      <Skeleton shape="rounded" height="100%" />
-      <Skeleton shape="rounded" height="100%" />
-    </Box>
-  );
-
-  return (
-    <Box
-      ref={box}
-      aria-hidden
-      inert
-      data-testid={`template-thumb-${template.slug}`}
-      data-live={near && scale !== null ? 'true' : 'false'}
-      sx={{ position: 'relative', aspectRatio: `${VIEW.width} / ${VIEW.height}`, overflow: 'hidden', bgcolor: 'background.default', borderBottom: 1, borderColor: 'divider', pointerEvents: 'none', userSelect: 'none' }}
-    >
-      {near && scale !== null && Live ? (
-        <Box className="thumb" sx={{ width: VIEW.width, height: VIEW.height, transformOrigin: '0 0', transform: `scale(${scale})`, transition: 'transform .6s cubic-bezier(.22,1,.36,1)' }}>
-          <React.Suspense fallback={placeholder}>
-            <TemplateStage mode={mode} scroll={false} sx={{ width: VIEW.width, height: VIEW.height }}>
-              <Live />
-            </TemplateStage>
-          </React.Suspense>
-        </Box>
-      ) : (
-        placeholder
-      )}
-    </Box>
-  );
-}
+import TemplateThumb from './TemplateThumb';
 
 export default function TemplateCards() {
   const [type, setType] = React.useState<TemplateType | 'All'>('All');
@@ -128,7 +52,7 @@ export default function TemplateCards() {
                 '@media (prefers-reduced-motion: reduce)': { '&:hover': { transform: 'none' }, '&:hover .go': { transform: 'none' } },
               }}
             >
-              <LivePreview template={t} />
+              <TemplateThumb slug={t.slug} sx={{ borderBottom: 1, borderColor: 'divider' }} />
               <Box sx={{ p: { xs: 2.5, md: 3 } }}>
                 <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
                   <Typography component="h2" sx={{ fontWeight: 800, fontSize: 22, letterSpacing: '-0.02em' }}>

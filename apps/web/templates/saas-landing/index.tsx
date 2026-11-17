@@ -16,7 +16,7 @@ import AutoAwesomeOutlined from '@mui/icons-material/AutoAwesomeOutlined';
 import GroupsOutlined from '@mui/icons-material/GroupsOutlined';
 import KeyboardOutlined from '@mui/icons-material/KeyboardOutlined';
 import InsightsOutlined from '@mui/icons-material/InsightsOutlined';
-import { motion, MotionConfig, useInView } from 'motion/react';
+import { motion, MotionConfig, useInView, useReducedMotion } from 'motion/react';
 import { Alert, Avatar, Button, Card, Chip, Drawer, Progress, Rating, Switch, TextField } from '@sorbet-ui/react';
 import { colorPalette } from '@sorbet-ui/tokens';
 import { FAQ, LOGOS, NAV, PLANS, TESTIMONIALS, type Accent } from './data';
@@ -88,10 +88,11 @@ function ProductMock({ accent }: { accent: Accent }) {
   );
 }
 
-/** Bars that grow when scrolled into view. MotionConfig reducedMotion="user" makes the growth instant. */
+/** Bars that grow when scrolled into view; instantly for reduced motion. The first render is the same on server and client. */
 function MiniChart({ accent }: { accent: Accent }) {
   const ref = React.useRef<HTMLDivElement>(null);
   const seen = useInView(ref, { once: true, margin: '-40px' });
+  const reduce = useReducedMotion();
   const bars = [32, 48, 40, 62, 55, 78, 90];
   return (
     <Box ref={ref} aria-hidden sx={{ display: 'flex', alignItems: 'flex-end', gap: 1, height: 96 }}>
@@ -100,7 +101,7 @@ function MiniChart({ accent }: { accent: Accent }) {
           key={i}
           initial={{ height: 6 }}
           animate={{ height: seen ? `${h}%` : 6 }}
-          transition={{ duration: 0.6, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+          transition={reduce ? { duration: 0 } : { duration: 0.6, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
           style={{ flex: 1, borderRadius: 6, background: i === bars.length - 1 ? colorPalette[accent][500] : colorPalette[accent][200] }}
         />
       ))}
