@@ -20,6 +20,7 @@ const LIVE: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
   inbox: React.lazy(() => import('@/templates/inbox')),
   kanban: React.lazy(() => import('@/templates/kanban')),
   storefront: React.lazy(() => import('@/templates/storefront')),
+  'saas-landing': React.lazy(() => import('@/templates/saas-landing')),
 };
 
 // The preview renders at a desktop size and is scaled to the card.
