@@ -203,7 +203,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
           <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', ml: 'auto' }}>
             <Chip
               component="a"
-              href={SITE.npm}
+              href="/docs/changelog"
               clickable
               label="v0.1.0"
               size="small"

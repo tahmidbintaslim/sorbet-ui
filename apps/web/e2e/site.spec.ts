@@ -157,7 +157,7 @@ test.describe('phone navigation', () => {
     await page.getByRole('button', { name: /Browse docs/ }).tap();
     const drawer = page.getByRole('dialog', { name: 'Docs pages' });
     await expect(drawer).toBeVisible();
-    await expect(drawer.locator('[aria-current="page"]')).toHaveText('Getting started');
+    await expect(drawer.locator('[aria-current="page"]')).toHaveText('Introduction');
     await drawer.getByRole('link', { name: 'Table', exact: true }).tap();
     await expect(page).toHaveURL(/\/docs\/components\/table$/);
     await expect(drawer).toBeHidden();
@@ -698,7 +698,7 @@ test('docs header: the section doodle draws itself, and is fully drawn with redu
     await paths.evaluateAll((els) => els.every((el) => getComputedStyle(el).animationName === 'none' && getComputedStyle(el).opacity === '1')),
   ).toBe(true);
   // The header text is never hidden either.
-  await expect(still.getByRole('heading', { level: 1, name: 'Getting started' })).toBeVisible();
+  await expect(still.getByRole('heading', { level: 1, name: 'Introduction' })).toBeVisible();
   await ctx.close();
 });
 
