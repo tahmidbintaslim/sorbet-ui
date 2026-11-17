@@ -495,10 +495,10 @@ test('demo: create an order, filter it, and see the toast', async ({ page }) => 
 
 test('templates: gallery links to a template whose source lists its blocks', async ({ page }) => {
   await page.goto('/templates');
-  await page.getByRole('link', { name: /SaaS landing/ }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'SaaS landing' })).toBeVisible();
-  await page.getByRole('button', { name: 'Get the code' }).click();
-  await expect(page.locator('pre[aria-label="SaaS landing page source"]')).toContainText('<PricingTiers />');
+  await page.getByRole('link', { name: /Developer tool/ }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Developer tool' })).toBeVisible();
+  await page.getByRole('group', { name: 'Developer tool view' }).getByRole('button', { name: 'Code' }).click();
+  await expect(page.locator('pre[aria-label="Developer tool source: index.tsx"]')).toContainText('<PricingCompare />');
 });
 
 // ---------------------------------------------------------------- Demo app
@@ -737,6 +737,259 @@ test('copy button: a sprinkle burst on success, none with reduced motion', async
     await ctx.close();
   }
 });
+
+// ---------------------------------------------------------------- Templates and demo hub
+
+for (const t of TEMPLATES) {
+  test(`template ${t.slug}: renders in the preview frame and full screen`, async ({ page }) => {
+    const problems = watch(page);
+    await page.goto(`/templates/${t.slug}`);
+    const preview = page.getByTestId('template-preview');
+    await expect(preview).toBeVisible();
+    await expect(preview.locator('h2').first()).toBeVisible();
+    await page.getByRole('link', { name: 'Open full screen' }).click();
+    await expect(page).toHaveURL(new RegExp(`/templates/${t.slug}/preview$`));
+    await expect(page.getByTestId('template-preview').locator('h2').first()).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Back to template' })).toBeVisible();
+    await page.waitForLoadState('networkidle');
+    expect(problems, problems.join('\n')).toEqual([]);
+  });
+}
+
+test('templates: the device switch resizes the frame and the template reflows', async ({ page }) => {
+  // This checks sizes and reflow, not the resize animation, so widths jump.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/templates/inbox');
+  const frame = page.getByTestId('template-frame');
+  const preview = page.getByTestId('template-preview');
+  const width = async () => Math.round((await frame.boundingBox())!.width);
+  await expect.poll(width).toBeGreaterThan(1200);
+  // Desktop: the folders column is in the page; no menu button.
+  await expect(preview.getByRole('complementary', { name: 'Mailbox' })).toBeVisible();
+  await expect(preview.getByRole('button', { name: 'Open folders' })).toBeHidden();
+
+  const sizes = page.getByRole('group', { name: 'Preview width' });
+  await sizes.getByRole('button', { name: /^Phone/ }).click();
+  await expect(frame).toHaveAttribute('data-device', 'phone');
+  await expect.poll(width).toBe(390);
+  await expect(preview.getByRole('complementary', { name: 'Mailbox' })).toBeHidden();
+  await expect(preview.getByRole('button', { name: 'Open folders' })).toBeVisible();
+
+  await sizes.getByRole('button', { name: /^Tablet/ }).click();
+  await expect.poll(width).toBe(768);
+  await sizes.getByRole('button', { name: /^Desktop/ }).click();
+  await expect.poll(width).toBeGreaterThan(1200);
+});
+
+test('templates: the Code tab shows the real files', async ({ page }) => {
+  await page.goto('/templates/kanban');
+  await page.getByRole('group', { name: 'Kanban board view' }).getByRole('button', { name: 'Code' }).click();
+  await expect(page.locator('pre[aria-label="Kanban board source: index.tsx"]')).toContainText('export default function Kanban');
+  await page.getByRole('group', { name: 'Template files' }).getByRole('button', { name: 'data.ts' }).click();
+  await expect(page.locator('pre[aria-label="Kanban board source: data.ts"]')).toContainText('export const TASKS');
+  // Back to the preview: it kept running.
+  await page.getByRole('group', { name: 'Kanban board view' }).getByRole('button', { name: 'Preview' }).click();
+  await expect(page.getByTestId('template-preview').getByRole('heading', { level: 2 }).first()).toBeVisible();
+});
+
+test('templates: the type filter narrows the gallery and every card links to its page', async ({ page }) => {
+  await page.goto('/templates');
+  const filters = page.getByRole('group', { name: 'Filter templates by type' });
+  const cards = page.locator('article');
+  await expect(cards).toHaveCount(TEMPLATES.length);
+  for (const type of ['Application', 'Marketing', 'E-commerce'] as const) {
+    const n = TEMPLATES.filter((t) => t.type === type).length;
+    await filters.getByRole('button', { name: `${type} (${n})` }).click();
+    await expect(cards).toHaveCount(n);
+    await expect(page.getByRole('status').filter({ hasText: 'Showing' })).toContainText(`Showing ${n} of ${TEMPLATES.length}`);
+  }
+  await filters.getByRole('button', { name: /^E-commerce/ }).click();
+  // Live previews mount once their card is near the viewport.
+  await expect(page.getByTestId('template-thumb-storefront')).toHaveAttribute('data-live', 'true');
+  await cards.getByRole('link', { name: 'Storefront' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Storefront' })).toBeVisible();
+});
+
+test('template inbox: search, read, reply and compose', async ({ page }) => {
+  await page.goto('/templates/inbox/preview');
+  const app = page.getByTestId('template-preview');
+  await app.getByRole('textbox', { name: 'Search mail' }).fill('invoice');
+  await expect(app.getByRole('list', { name: 'Inbox messages' }).getByRole('listitem')).toHaveCount(2);
+  await app.getByRole('button', { name: /Ledgerly: Invoice INV-2041 was paid/ }).click();
+  await expect(app.getByRole('heading', { level: 2, name: 'Invoice INV-2041 was paid' })).toBeVisible();
+  // Narrow screens show one pane at a time: the message replaced the list.
+  const back = app.getByRole('button', { name: 'Back to Inbox' });
+  if (await back.isVisible()) await back.click();
+  await app.getByRole('textbox', { name: 'Search mail' }).fill('zzz');
+  await expect(app.getByText('No messages match')).toBeVisible();
+  await app.getByRole('button', { name: 'Clear filters' }).click();
+  await app.getByRole('button', { name: /Priya Raman: Studio day/ }).click();
+  await app.getByRole('textbox', { name: 'Reply to Priya Raman' }).fill('Count me in.');
+  await app.getByRole('button', { name: 'Send reply' }).click();
+  await expect(page.getByText('Reply sent to Priya Raman')).toBeVisible();
+  await expect(app.getByText('Count me in.')).toBeVisible();
+  if (await back.isVisible()) await back.click();
+  // Compose (the button lives in the folders column, or in the drawer on narrow screens).
+  const compose = app.getByRole('button', { name: 'Compose' });
+  if (!(await compose.first().isVisible())) await app.getByRole('button', { name: 'Open folders' }).click();
+  await compose.filter({ visible: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'New message' });
+  await dialog.getByRole('textbox', { name: 'To' }).fill('sam@example.com');
+  await dialog.getByRole('textbox', { name: 'Subject' }).fill('Hello');
+  await dialog.getByRole('button', { name: 'Send' }).click();
+  await expect(page.getByText('Message sent to sam@example.com')).toBeVisible();
+});
+
+test('template kanban: move a card from its menu, and the move is announced', async ({ page }) => {
+  await page.goto('/templates/kanban/preview');
+  const app = page.getByTestId('template-preview');
+  await app.getByRole('button', { name: 'Move PL-44' }).click();
+  await page.getByRole('menuitem', { name: 'Move to Done' }).click();
+  await expect(app.getByTestId('kanban-column-done').getByRole('button', { name: /Open card PL-44/ })).toBeVisible();
+  await expect(app.getByRole('status').filter({ hasText: 'PL-44 moved' })).toHaveText('PL-44 moved from To do to Done.');
+  // Edit in the card dialog: tick a checklist item and save.
+  await app.getByRole('button', { name: /Open card PL-37/ }).click();
+  const dialog = page.getByRole('dialog', { name: /PL-37/ });
+  await dialog.getByRole('checkbox', { name: 'Dark theme pass' }).check();
+  await dialog.getByRole('button', { name: 'Save' }).click();
+  await expect(app.getByRole('button', { name: /Open card PL-37/ }).locator('..').getByLabel('Checklist 3 of 4')).toBeVisible();
+  // Filter by person.
+  await app.getByRole('button', { name: "Only Rafael Holm's cards" }).click();
+  await expect(app.getByRole('button', { name: /Open card/ })).toHaveCount(2);
+});
+
+test('template storefront: add to the bag and check out with validation', async ({ page }) => {
+  await page.goto('/templates/storefront/preview');
+  const app = page.getByTestId('template-preview');
+  await app.getByRole('button', { name: 'Quick view: Morning mug' }).click();
+  const qv = page.getByRole('dialog', { name: 'Morning mug' });
+  await qv.getByRole('radio', { name: 'Honey' }).check();
+  await qv.getByRole('button', { name: 'Increase quantity' }).click();
+  await qv.getByRole('button', { name: /Add to bag/ }).click();
+  await app.getByRole('button', { name: 'Shopping bag, 2 items' }).click();
+  const bag = page.getByRole('dialog', { name: 'Shopping bag' });
+  await expect(bag).toContainText('Honey');
+  await expect(bag).toContainText('Add $19.00 more for free shipping');
+  await bag.getByRole('button', { name: /Checkout/ }).click();
+  const checkout = page.getByRole('dialog', { name: 'Checkout' });
+  await checkout.getByRole('button', { name: 'Continue' }).click();
+  await expect(checkout.getByText('Enter your name')).toBeVisible();
+  await checkout.getByRole('textbox', { name: 'Full name' }).fill('Robin Vale');
+  await checkout.getByRole('textbox', { name: 'Email' }).fill('robin@example.com');
+  await checkout.getByRole('textbox', { name: 'Street address' }).fill('1 Sample Lane');
+  await checkout.getByRole('textbox', { name: 'City' }).fill('Springfield');
+  await checkout.getByRole('textbox', { name: 'Postal code' }).fill('12345');
+  await checkout.getByRole('button', { name: 'Continue' }).click();
+  await checkout.getByRole('textbox', { name: 'Card number' }).fill('4242424242424242');
+  await checkout.getByRole('textbox', { name: 'Expiry (MM/YY)' }).fill('04/29');
+  await checkout.getByRole('textbox', { name: 'Security code' }).fill('123');
+  await checkout.getByRole('button', { name: 'Continue' }).click();
+  await checkout.getByRole('button', { name: /Place order/ }).click();
+  await expect(page.getByRole('dialog', { name: 'Order placed' })).toContainText('is confirmed');
+});
+
+test('template settings: unsaved changes bar, invite and type-to-confirm delete', async ({ page }) => {
+  await page.goto('/templates/settings/preview');
+  const app = page.getByTestId('template-preview');
+  const bar = app.getByRole('region', { name: 'Unsaved changes' });
+  await expect(bar).toBeHidden();
+  await app.getByRole('textbox', { name: 'Email' }).fill('not-an-email');
+  await expect(bar).toBeVisible();
+  await bar.getByRole('button', { name: 'Save changes' }).click();
+  await expect(app.getByText('Enter a valid email address')).toBeVisible();
+  await bar.getByRole('button', { name: 'Cancel' }).click();
+  await expect(bar).toBeHidden();
+  await expect(app.getByRole('textbox', { name: 'Email' })).toHaveValue('maya@juniperstudio.example');
+
+  await app.getByRole('navigation', { name: 'Settings sections' }).getByRole('button', { name: 'Team' }).click();
+  await app.getByRole('button', { name: 'Invite people' }).click();
+  const invite = page.getByRole('dialog', { name: /Invite to/ });
+  await invite.getByRole('textbox', { name: 'Email address' }).fill('new@example.com');
+  await invite.getByRole('button', { name: 'Send invite', exact: true }).click();
+  await expect(app.getByRole('list', { name: 'Pending invites' })).toContainText('new@example.com');
+
+  await app.getByRole('navigation', { name: 'Settings sections' }).getByRole('button', { name: 'Advanced' }).click();
+  await app.getByRole('button', { name: 'Delete workspace' }).click();
+  const del = page.getByRole('dialog', { name: /Delete Juniper Studio/ });
+  await expect(del.getByRole('button', { name: 'Delete workspace' })).toBeDisabled();
+  await del.getByRole('textbox', { name: /Type juniper-studio/ }).fill('juniper-studio');
+  await expect(del.getByRole('button', { name: 'Delete workspace' })).toBeEnabled();
+});
+
+test('template saas-landing: email capture validates and the pricing switch changes prices', async ({ page }) => {
+  await page.goto('/templates/saas-landing/preview');
+  const app = page.getByTestId('template-preview');
+  await expect(app.getByText('$10', { exact: true })).toBeVisible();
+  await app.getByRole('switch', { name: 'Bill yearly' }).uncheck();
+  await expect(app.getByText('$12', { exact: true })).toBeVisible();
+  await app.getByRole('textbox', { name: 'Work email' }).fill('nope');
+  await app.getByRole('button', { name: 'Get started' }).filter({ visible: true }).last().click();
+  await expect(app.getByText('Enter an email like you@company.com')).toBeVisible();
+  await app.getByRole('textbox', { name: 'Work email' }).fill('pat@example.com');
+  await app.getByRole('textbox', { name: 'Work email' }).press('Enter');
+  await expect(app.getByText('You are on the list')).toBeVisible();
+});
+
+test('demo hub: every app has live desktop and phone previews that link to it', async ({ page }) => {
+  await page.goto('/demo');
+  await expect(page.getByRole('heading', { level: 1, name: 'Demos' })).toBeVisible();
+  for (const slug of ['analytics-dashboard', 'inbox', 'kanban', 'settings', 'storefront']) {
+    const card = page.getByTestId(`demo-card-${slug}`);
+    await card.scrollIntoViewIfNeeded();
+    await expect(card.getByTestId(`demo-desktop-${slug}`)).toHaveAttribute('data-live', 'true');
+    await expect(card.getByRole('link', { name: /^Open app:/ })).toHaveAttribute('href', `/templates/${slug}/preview`);
+    await expect(card.getByRole('link', { name: /^Sizes and code:/ })).toHaveAttribute('href', `/templates/${slug}`);
+  }
+  // The Acme Admin demo is still on the page.
+  await page.getByRole('button', { name: 'Jump to Acme Admin' }).click();
+  await expect(page.getByTestId('demo-app')).toBeInViewport();
+  await page.getByRole('link', { name: 'Open app: Inbox, full screen' }).click();
+  await expect(page).toHaveURL(/\/templates\/inbox\/preview$/);
+});
+
+// Full-screen previews with an overlay open, in both themes.
+const OPEN_OVERLAY: Record<string, (page: Page) => Promise<void>> = {
+  inbox: async (page) => {
+    const app = page.getByTestId('template-preview');
+    if (!(await app.getByRole('button', { name: 'Compose' }).first().isVisible())) await app.getByRole('button', { name: 'Open folders' }).click();
+    await app.getByRole('button', { name: 'Compose' }).filter({ visible: true }).click();
+    await expect(page.getByRole('dialog', { name: 'New message' })).toBeVisible();
+  },
+  kanban: async (page) => {
+    await page.getByRole('button', { name: /Open card PL-37/ }).click();
+    await expect(page.getByRole('dialog', { name: /PL-37/ })).toBeVisible();
+  },
+  storefront: async (page) => {
+    await page.getByRole('button', { name: 'Add Everyday bowl to bag' }).click();
+    await page.getByRole('button', { name: /^Shopping bag/ }).click();
+    await expect(page.getByRole('dialog', { name: 'Shopping bag' })).toBeVisible();
+  },
+  settings: async (page) => {
+    await page.getByRole('navigation', { name: 'Settings sections' }).getByRole('button', { name: 'Team' }).click();
+    await page.getByRole('button', { name: 'Invite people' }).click();
+    await expect(page.getByRole('dialog', { name: /Invite to/ })).toBeVisible();
+  },
+};
+
+for (const theme of ['light', 'dark'] as const) {
+  for (const t of TEMPLATES) {
+    test(`a11y (axe) ${theme} /templates/${t.slug}/preview${OPEN_OVERLAY[t.slug] ? ' with an overlay open' : ''}`, async ({ browser }) => {
+      const ctx = await browser.newContext({ colorScheme: theme, reducedMotion: 'reduce' });
+      await stubGitHub(ctx);
+      const page = await ctx.newPage();
+      await page.goto(`/templates/${t.slug}/preview`);
+      await page.waitForLoadState('networkidle');
+      await expect(page.locator('html')).toHaveAttribute('data-mode', theme);
+      await expect(page.getByTestId('template-preview')).toHaveAttribute('data-stage-mode', theme);
+      await OPEN_OVERLAY[t.slug]?.(page);
+      const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+      const summary = results.violations.map((v) => `${v.id} (${v.impact}): ${v.nodes.length} nodes, e.g. ${v.nodes[0]?.html.slice(0, 120)}`);
+      expect(summary, summary.join('\n')).toEqual([]);
+      await ctx.close();
+    });
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Landing: live device showcase and the "Built with Sorbet" demos.

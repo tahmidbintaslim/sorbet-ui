@@ -181,7 +181,7 @@ function Overview({
               {r.bars.map((b, i) => (
                 <motion.div
                   key={`${range}-${i}`}
-                  initial={reduce ? false : { height: 0 }}
+                  initial={{ height: 0 }}
                   animate={{ height: `${b}%` }}
                   transition={{ duration: reduce ? 0 : 0.5, ease: EASE, delay: reduce ? 0 : i * 0.025 }}
                   style={{ flex: 1, minWidth: 0, borderRadius: r.bars.length > 14 ? 3 : 8, background: `linear-gradient(180deg, ${colorPalette.primary[400]}, ${colorPalette.secondary[400]})` }}

@@ -154,7 +154,9 @@ const StyledSwitch = styled(MuiSwitch, {
   };
 });
 
-const StyledLabel = styled(FormControlLabel)<{ sorbetSize: SorbetSize }>(
+const StyledLabel = styled(FormControlLabel, {
+  shouldForwardProp: (prop) => prop !== 'sorbetSize',
+})<{ sorbetSize: SorbetSize }>(
   ({ theme, sorbetSize }) => ({
     margin: 0,
     gap: sizing.spacing[2],
