@@ -9,11 +9,107 @@ export const SEARCH_INDEX: SearchEntry[] = [
     "keywords": "What Sorbet UI is, who it is for, and how it fits on top of Material UI."
   },
   {
+    "title": "What Sorbet UI is",
+    "href": "/docs#what-it-is",
+    "group": "Guides",
+    "hint": "Introduction"
+  },
+  {
+    "title": "Why it exists",
+    "href": "/docs#why",
+    "group": "Guides",
+    "hint": "Introduction"
+  },
+  {
+    "title": "How it works",
+    "href": "/docs#how-it-works",
+    "group": "Guides",
+    "hint": "Introduction"
+  },
+  {
+    "title": "Principles",
+    "href": "/docs#principles",
+    "group": "Guides",
+    "hint": "Introduction"
+  },
+  {
+    "title": "What is in the box",
+    "href": "/docs#in-the-box",
+    "group": "Guides",
+    "hint": "Introduction"
+  },
+  {
+    "title": "Is it for you?",
+    "href": "/docs#is-it-for-you",
+    "group": "Guides",
+    "hint": "Introduction"
+  },
+  {
+    "title": "Project status",
+    "href": "/docs#status",
+    "group": "Guides",
+    "hint": "Introduction"
+  },
+  {
     "title": "Installation",
     "href": "/docs/installation",
     "group": "Guides",
     "hint": "Guide",
     "keywords": "Install the packages, wrap your app in the theme, and render your first component."
+  },
+  {
+    "title": "Prerequisites",
+    "href": "/docs/installation#prerequisites",
+    "group": "Guides",
+    "hint": "Installation"
+  },
+  {
+    "title": "Build the packages",
+    "href": "/docs/installation#build",
+    "group": "Guides",
+    "hint": "Installation"
+  },
+  {
+    "title": "Set up your app",
+    "href": "/docs/installation#setup",
+    "group": "Guides",
+    "hint": "Installation"
+  },
+  {
+    "title": "Framework guides",
+    "href": "/docs/installation#framework-guides",
+    "group": "Guides",
+    "hint": "Installation"
+  },
+  {
+    "title": "Dark mode",
+    "href": "/docs/installation#dark-mode",
+    "group": "Guides",
+    "hint": "Installation"
+  },
+  {
+    "title": "Load the Inter font",
+    "href": "/docs/installation#fonts",
+    "group": "Guides",
+    "hint": "Installation"
+  },
+  {
+    "title": "Add blocks with the shadcn CLI",
+    "href": "/docs/installation#cli",
+    "group": "Guides",
+    "hint": "Installation"
+  },
+  {
+    "title": "Troubleshooting",
+    "href": "/docs/installation#troubleshooting",
+    "group": "Guides",
+    "hint": "Installation"
+  },
+  {
+    "title": "Next steps",
+    "href": "/docs/installation#next-steps",
+    "group": "Guides",
+    "hint": "Installation"
   },
   {
     "title": "Next.js",
