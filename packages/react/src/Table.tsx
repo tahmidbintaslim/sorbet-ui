@@ -131,7 +131,7 @@ interface StyledProps {
 
 const StyledTableContainer = styled(MuiTableContainer, {
   shouldForwardProp: (prop) =>
-    !['$variant', '$color', '$size', '$striped', '$hoverable', '$loading'].includes(prop as string),
+    !['$variant', '$color', '$size', '$striped', '$hoverable', '$loading', '$maxHeight'].includes(prop as string),
 })<StyledProps & { $maxHeight?: string | number }>(({ theme, $variant, $color, $maxHeight }) => {
   const colorScale = colorScaleForMode($color, theme.palette.mode === 'dark');
   const isDark = theme.palette.mode === 'dark';
