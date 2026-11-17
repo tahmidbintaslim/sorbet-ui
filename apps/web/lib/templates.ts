@@ -21,9 +21,7 @@ export type Template = {
   layout: 'app' | 'page';
 };
 
-// TEMP while building: only finished templates are listed.
-const READY = new Set(['analytics-dashboard', 'inbox', 'kanban', 'storefront', 'saas-landing']);
-const ALL: Template[] = [
+export const TEMPLATES: Template[] = [
   {
     slug: 'analytics-dashboard',
     name: 'Analytics dashboard',
@@ -121,8 +119,6 @@ const ALL: Template[] = [
     components: ['button', 'card', 'chip', 'tabs', 'text-field', 'select', 'switch', 'table', 'dialog', 'avatar-badge', 'progress', 'alert', 'menu', 'snackbar', 'radio'],
   },
 ];
-
-export const TEMPLATES: Template[] = ALL.filter((t) => READY.has(t.slug));
 
 export const TEMPLATE_TYPES: TemplateType[] = ['Application', 'Marketing', 'E-commerce'];
 

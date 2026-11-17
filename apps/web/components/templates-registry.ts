@@ -7,6 +7,7 @@ import Inbox from '@/templates/inbox';
 import Kanban from '@/templates/kanban';
 import Storefront from '@/templates/storefront';
 import SaasLanding from '@/templates/saas-landing';
+import Settings from '@/templates/settings';
 
 export const TEMPLATE_COMPONENTS: Record<string, ComponentType> = {
   'analytics-dashboard': AnalyticsDashboard,
@@ -14,4 +15,5 @@ export const TEMPLATE_COMPONENTS: Record<string, ComponentType> = {
   kanban: Kanban,
   storefront: Storefront,
   'saas-landing': SaasLanding,
+  settings: Settings,
 };
