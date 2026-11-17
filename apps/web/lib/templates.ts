@@ -118,6 +118,36 @@ export const TEMPLATES: Template[] = [
     ],
     components: ['button', 'card', 'chip', 'tabs', 'text-field', 'select', 'switch', 'table', 'dialog', 'avatar-badge', 'progress', 'alert', 'menu', 'snackbar', 'radio'],
   },
+  {
+    slug: 'product-launch',
+    name: 'Product launch',
+    description: 'A waitlist page assembled from seven blocks: minimal hero with email capture, three steps, a featured quote and a newsletter footer.',
+    type: 'Marketing',
+    tags: ['Waitlist', 'Blocks'],
+    layout: 'page',
+    features: [
+      'Seven blocks stacked into one page: swap any of them for another from /blocks',
+      'Email capture with validation in the hero, the call to action and the footer',
+      'Numbered steps, a feature list and a featured testimonial',
+      'Every block ships as its own file on the Code tab',
+    ],
+    components: ['button', 'text-field', 'card', 'chip', 'avatar-badge', 'alert', 'checkbox'],
+  },
+  {
+    slug: 'developer-tool',
+    name: 'Developer tool',
+    description: 'A page for an API or SDK, assembled from seven blocks: code-first hero, feature grid, plan comparison table, changelog and footer.',
+    type: 'Marketing',
+    tags: ['API', 'Blocks'],
+    layout: 'page',
+    features: [
+      'Code-first hero with runtime chips and a code sample',
+      'Feature grid and a plan comparison table',
+      'Changelog with version chips and a split call to action',
+      'Every block ships as its own file on the Code tab',
+    ],
+    components: ['button', 'chip', 'card', 'table', 'alert'],
+  },
 ];
 
 export const TEMPLATE_TYPES: TemplateType[] = ['Application', 'Marketing', 'E-commerce'];

@@ -15,8 +15,16 @@ for (const slug of readdirSync(root).sort()) {
   if (!names.includes('index.tsx')) throw new Error(`templates/${slug} needs an index.tsx that default-exports the page`);
   // index.tsx first, then the rest by name.
   names.sort((a, b) => (a === 'index.tsx' ? -1 : b === 'index.tsx' ? 1 : a.localeCompare(b)));
-  out[slug] = names.map((file) => ({ file, source: readFileSync(join(dir, file), 'utf8') }));
-  files += names.length;
+  const list = names.map((file) => ({ file, source: readFileSync(join(dir, file), 'utf8') }));
+  // Templates assembled from site blocks: ship each block as a file next to index.tsx
+  // and point the import at it, so the Code tab is a folder you can copy as is.
+  const blocks = [...list[0].source.matchAll(/from '@\/blocks\/([\w-]+)\/(\w+)'/g)];
+  for (const [, category, name] of blocks) {
+    list.push({ file: `blocks/${name}.tsx`, source: readFileSync(new URL(`../blocks/${category}/${name}.tsx`, import.meta.url), 'utf8') });
+  }
+  list[0].source = list[0].source.replace(/from '@\/blocks\/[\w-]+\/(\w+)'/g, "from './blocks/$1'");
+  out[slug] = list;
+  files += list.length;
 }
 
 writeFileSync(

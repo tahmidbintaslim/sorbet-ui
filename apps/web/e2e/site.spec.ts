@@ -477,10 +477,10 @@ test('demo: create an order, filter it, and see the toast', async ({ page }) => 
 
 test('templates: gallery links to a template whose source lists its blocks', async ({ page }) => {
   await page.goto('/templates');
-  await page.getByRole('link', { name: /SaaS landing/ }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'SaaS landing' })).toBeVisible();
-  await page.getByRole('button', { name: 'Get the code' }).click();
-  await expect(page.locator('pre[aria-label="SaaS landing page source"]')).toContainText('<PricingTiers />');
+  await page.getByRole('link', { name: /Developer tool/ }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Developer tool' })).toBeVisible();
+  await page.getByRole('group', { name: 'Developer tool view' }).getByRole('button', { name: 'Code' }).click();
+  await expect(page.locator('pre[aria-label="Developer tool source: index.tsx"]')).toContainText('<PricingCompare />');
 });
 
 // ---------------------------------------------------------------- Demo app

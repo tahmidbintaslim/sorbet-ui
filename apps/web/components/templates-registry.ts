@@ -8,6 +8,8 @@ import Kanban from '@/templates/kanban';
 import Storefront from '@/templates/storefront';
 import SaasLanding from '@/templates/saas-landing';
 import Settings from '@/templates/settings';
+import ProductLaunch from '@/templates/product-launch';
+import DeveloperTool from '@/templates/developer-tool';
 
 export const TEMPLATE_COMPONENTS: Record<string, ComponentType> = {
   'analytics-dashboard': AnalyticsDashboard,
@@ -16,4 +18,6 @@ export const TEMPLATE_COMPONENTS: Record<string, ComponentType> = {
   storefront: Storefront,
   'saas-landing': SaasLanding,
   settings: Settings,
+  'product-launch': ProductLaunch,
+  'developer-tool': DeveloperTool,
 };
