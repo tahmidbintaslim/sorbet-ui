@@ -58,7 +58,9 @@ export function DocTable({
           '& th': { fontWeight: 700, color: 'text.primary', whiteSpace: 'nowrap', bgcolor: 'action.hover' },
           '& td': { color: 'text.secondary', lineHeight: 1.6 },
           ...Object.fromEntries(
-            mono.map((i) => [`& td:nth-of-type(${i + 1})`, { fontFamily: 'var(--font-mono), ui-monospace, monospace', fontSize: 13, color: 'text.primary', whiteSpace: 'nowrap' }]),
+            // The first column (a name) stays on one line; longer mono values, like type
+            // unions, wrap instead of hiding off the edge.
+            mono.map((i) => [`& td:nth-of-type(${i + 1})`, { fontFamily: 'var(--font-mono), ui-monospace, monospace', fontSize: 13, color: 'text.primary', ...(i === 0 ? { whiteSpace: 'nowrap' } : { overflowWrap: 'anywhere', minWidth: 160 }) }]),
           ),
         }}
       >
