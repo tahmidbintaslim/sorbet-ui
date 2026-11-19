@@ -51,11 +51,83 @@ export const SEARCH_INDEX: SearchEntry[] = [
     "keywords": "The light and dark themes, and how to extend them like any MUI theme."
   },
   {
+    "title": "Use the themes",
+    "href": "/docs/theming#use-the-themes",
+    "group": "Guides",
+    "hint": "Theming"
+  },
+  {
+    "title": "What's in the theme",
+    "href": "/docs/theming#whats-in-the-theme",
+    "group": "Guides",
+    "hint": "Theming"
+  },
+  {
+    "title": "Extend the theme",
+    "href": "/docs/theming#extend",
+    "group": "Guides",
+    "hint": "Theming"
+  },
+  {
+    "title": "Use your brand colors",
+    "href": "/docs/theming#brand-colors",
+    "group": "Guides",
+    "hint": "Theming"
+  },
+  {
+    "title": "Theme-level component overrides",
+    "href": "/docs/theming#component-overrides",
+    "group": "Guides",
+    "hint": "Theming"
+  },
+  {
+    "title": "Where to go next",
+    "href": "/docs/theming#next",
+    "group": "Guides",
+    "hint": "Theming"
+  },
+  {
     "title": "Colors and tokens",
     "href": "/docs/customization/colors",
     "group": "Guides",
     "hint": "Guide",
     "keywords": "The seven color roles, the palette scales and the design tokens behind them."
+  },
+  {
+    "title": "The seven roles",
+    "href": "/docs/customization/colors#roles",
+    "group": "Guides",
+    "hint": "Colors and tokens"
+  },
+  {
+    "title": "Palette scales",
+    "href": "/docs/customization/colors#scales",
+    "group": "Guides",
+    "hint": "Colors and tokens"
+  },
+  {
+    "title": "Use the tokens",
+    "href": "/docs/customization/colors#use-tokens",
+    "group": "Guides",
+    "hint": "Colors and tokens"
+  },
+  {
+    "title": "The contrast guarantee",
+    "href": "/docs/customization/colors#contrast",
+    "group": "Guides",
+    "hint": "Colors and tokens"
+  },
+  {
+    "title": "Add a color pair safely",
+    "href": "/docs/customization/colors#add-pair",
+    "group": "Guides",
+    "hint": "Colors and tokens"
+  },
+  {
+    "title": "Where to go next",
+    "href": "/docs/customization/colors#next",
+    "group": "Guides",
+    "hint": "Colors and tokens"
   },
   {
     "title": "Typography and spacing",
@@ -65,11 +137,89 @@ export const SEARCH_INDEX: SearchEntry[] = [
     "keywords": "Type scale, font stack, spacing and corner radius, and how to change them."
   },
   {
+    "title": "Type scale",
+    "href": "/docs/customization/typography#type-scale",
+    "group": "Guides",
+    "hint": "Typography and spacing"
+  },
+  {
+    "title": "Font stack",
+    "href": "/docs/customization/typography#font-stack",
+    "group": "Guides",
+    "hint": "Typography and spacing"
+  },
+  {
+    "title": "Spacing scale",
+    "href": "/docs/customization/typography#spacing",
+    "group": "Guides",
+    "hint": "Typography and spacing"
+  },
+  {
+    "title": "Corner radius",
+    "href": "/docs/customization/typography#radius",
+    "group": "Guides",
+    "hint": "Typography and spacing"
+  },
+  {
+    "title": "Change the font",
+    "href": "/docs/customization/typography#change-font",
+    "group": "Guides",
+    "hint": "Typography and spacing"
+  },
+  {
+    "title": "Change the corner radius",
+    "href": "/docs/customization/typography#change-radius",
+    "group": "Guides",
+    "hint": "Typography and spacing"
+  },
+  {
+    "title": "Where to go next",
+    "href": "/docs/customization/typography#next",
+    "group": "Guides",
+    "hint": "Typography and spacing"
+  },
+  {
     "title": "Dark mode",
     "href": "/docs/customization/dark-mode",
     "group": "Guides",
     "hint": "Guide",
     "keywords": "Follow the system setting, add a toggle, and avoid a flash of the wrong theme."
+  },
+  {
+    "title": "Pick a theme by mode",
+    "href": "/docs/customization/dark-mode#pick-a-theme",
+    "group": "Guides",
+    "hint": "Dark mode"
+  },
+  {
+    "title": "Follow the system setting",
+    "href": "/docs/customization/dark-mode#follow-system",
+    "group": "Guides",
+    "hint": "Dark mode"
+  },
+  {
+    "title": "A toggle that remembers",
+    "href": "/docs/customization/dark-mode#toggle",
+    "group": "Guides",
+    "hint": "Dark mode"
+  },
+  {
+    "title": "Avoid a flash of the wrong theme",
+    "href": "/docs/customization/dark-mode#no-flash",
+    "group": "Guides",
+    "hint": "Dark mode"
+  },
+  {
+    "title": "Check each component in dark mode",
+    "href": "/docs/customization/dark-mode#check-components",
+    "group": "Guides",
+    "hint": "Dark mode"
+  },
+  {
+    "title": "Where to go next",
+    "href": "/docs/customization/dark-mode#next",
+    "group": "Guides",
+    "hint": "Dark mode"
   },
   {
     "title": "Variants, colors and sizes",
@@ -79,11 +229,101 @@ export const SEARCH_INDEX: SearchEntry[] = [
     "keywords": "The one shared API: five variants, seven colors and five sizes on every component."
   },
   {
+    "title": "The API",
+    "href": "/docs/customization/variants#the-api",
+    "group": "Guides",
+    "hint": "Variants, colors and sizes"
+  },
+  {
+    "title": "Every variant, every color",
+    "href": "/docs/customization/variants#matrix",
+    "group": "Guides",
+    "hint": "Variants, colors and sizes"
+  },
+  {
+    "title": "Variants",
+    "href": "/docs/customization/variants#variants",
+    "group": "Guides",
+    "hint": "Variants, colors and sizes"
+  },
+  {
+    "title": "Sizes",
+    "href": "/docs/customization/variants#sizes",
+    "group": "Guides",
+    "hint": "Variants, colors and sizes"
+  },
+  {
+    "title": "Which components support what",
+    "href": "/docs/customization/variants#support",
+    "group": "Guides",
+    "hint": "Variants, colors and sizes"
+  },
+  {
+    "title": "How variants map to styles",
+    "href": "/docs/customization/variants#how-it-maps",
+    "group": "Guides",
+    "hint": "Variants, colors and sizes"
+  },
+  {
+    "title": "Where to go next",
+    "href": "/docs/customization/variants#next",
+    "group": "Guides",
+    "hint": "Variants, colors and sizes"
+  },
+  {
     "title": "Overriding styles",
     "href": "/docs/customization/override-styles",
     "group": "Guides",
     "hint": "Guide",
     "keywords": "Change one instance with sx, every instance with theme overrides, or build your own variant."
+  },
+  {
+    "title": "Which tool to use",
+    "href": "/docs/customization/override-styles#which-tool",
+    "group": "Guides",
+    "hint": "Overriding styles"
+  },
+  {
+    "title": "One instance: sx",
+    "href": "/docs/customization/override-styles#sx",
+    "group": "Guides",
+    "hint": "Overriding styles"
+  },
+  {
+    "title": "A reusable variant: styled()",
+    "href": "/docs/customization/override-styles#styled",
+    "group": "Guides",
+    "hint": "Overriding styles"
+  },
+  {
+    "title": "Every instance: the theme",
+    "href": "/docs/customization/override-styles#theme",
+    "group": "Guides",
+    "hint": "Overriding styles"
+  },
+  {
+    "title": "Inner parts: slots and classes",
+    "href": "/docs/customization/override-styles#slots",
+    "group": "Guides",
+    "hint": "Overriding styles"
+  },
+  {
+    "title": "The cascade order",
+    "href": "/docs/customization/override-styles#cascade",
+    "group": "Guides",
+    "hint": "Overriding styles"
+  },
+  {
+    "title": "Pitfalls",
+    "href": "/docs/customization/override-styles#pitfalls",
+    "group": "Guides",
+    "hint": "Overriding styles"
+  },
+  {
+    "title": "Where to go next",
+    "href": "/docs/customization/override-styles#next",
+    "group": "Guides",
+    "hint": "Overriding styles"
   },
   {
     "title": "Forms",
@@ -93,11 +333,101 @@ export const SEARCH_INDEX: SearchEntry[] = [
     "keywords": "Labels, helper text, validation and submission with Sorbet form controls."
   },
   {
+    "title": "A complete sign-up form",
+    "href": "/docs/guides/forms#example",
+    "group": "Guides",
+    "hint": "Forms"
+  },
+  {
+    "title": "Labels",
+    "href": "/docs/guides/forms#labels",
+    "group": "Guides",
+    "hint": "Forms"
+  },
+  {
+    "title": "Helper and error text",
+    "href": "/docs/guides/forms#helper-and-error",
+    "group": "Guides",
+    "hint": "Forms"
+  },
+  {
+    "title": "Required and optional",
+    "href": "/docs/guides/forms#required",
+    "group": "Guides",
+    "hint": "Forms"
+  },
+  {
+    "title": "Validate on submit",
+    "href": "/docs/guides/forms#validate-on-submit",
+    "group": "Guides",
+    "hint": "Forms"
+  },
+  {
+    "title": "The error summary",
+    "href": "/docs/guides/forms#error-summary",
+    "group": "Guides",
+    "hint": "Forms"
+  },
+  {
+    "title": "Checklist",
+    "href": "/docs/guides/forms#checklist",
+    "group": "Guides",
+    "hint": "Forms"
+  },
+  {
+    "title": "Where to go next",
+    "href": "/docs/guides/forms#next",
+    "group": "Guides",
+    "hint": "Forms"
+  },
+  {
     "title": "Accessibility",
     "href": "/docs/guides/accessibility",
     "group": "Guides",
     "hint": "Guide",
     "keywords": "What the components do for you, what is still your job, and how we test."
+  },
+  {
+    "title": "What the components do",
+    "href": "/docs/guides/accessibility#what-components-do",
+    "group": "Guides",
+    "hint": "Accessibility"
+  },
+  {
+    "title": "Keyboard",
+    "href": "/docs/guides/accessibility#keyboard",
+    "group": "Guides",
+    "hint": "Accessibility"
+  },
+  {
+    "title": "Color contrast",
+    "href": "/docs/guides/accessibility#contrast",
+    "group": "Guides",
+    "hint": "Accessibility"
+  },
+  {
+    "title": "Reduced motion",
+    "href": "/docs/guides/accessibility#reduced-motion",
+    "group": "Guides",
+    "hint": "Accessibility"
+  },
+  {
+    "title": "What is still your job",
+    "href": "/docs/guides/accessibility#your-job",
+    "group": "Guides",
+    "hint": "Accessibility"
+  },
+  {
+    "title": "How we test",
+    "href": "/docs/guides/accessibility#testing",
+    "group": "Guides",
+    "hint": "Accessibility"
+  },
+  {
+    "title": "Where to go next",
+    "href": "/docs/guides/accessibility#next",
+    "group": "Guides",
+    "hint": "Accessibility"
   },
   {
     "title": "Server rendering",
@@ -107,6 +437,42 @@ export const SEARCH_INDEX: SearchEntry[] = [
     "keywords": "Server components, client boundaries and streaming with Sorbet UI."
   },
   {
+    "title": "How the packages fit",
+    "href": "/docs/guides/server-rendering#how-it-fits",
+    "group": "Guides",
+    "hint": "Server rendering"
+  },
+  {
+    "title": "Set up the App Router",
+    "href": "/docs/guides/server-rendering#setup",
+    "group": "Guides",
+    "hint": "Server rendering"
+  },
+  {
+    "title": "The 'use client' boundary",
+    "href": "/docs/guides/server-rendering#boundary",
+    "group": "Guides",
+    "hint": "Server rendering"
+  },
+  {
+    "title": "Static export",
+    "href": "/docs/guides/server-rendering#static-export",
+    "group": "Guides",
+    "hint": "Server rendering"
+  },
+  {
+    "title": "Avoid hydration mismatches",
+    "href": "/docs/guides/server-rendering#hydration",
+    "group": "Guides",
+    "hint": "Server rendering"
+  },
+  {
+    "title": "Where to go next",
+    "href": "/docs/guides/server-rendering#next",
+    "group": "Guides",
+    "hint": "Server rendering"
+  },
+  {
     "title": "Routing and links",
     "href": "/docs/guides/routing",
     "group": "Guides",
@@ -114,11 +480,101 @@ export const SEARCH_INDEX: SearchEntry[] = [
     "keywords": "Render buttons and links with your router: Next.js Link, React Router and plain anchors."
   },
   {
+    "title": "Link or button?",
+    "href": "/docs/guides/routing#links-or-buttons",
+    "group": "Guides",
+    "hint": "Routing and links"
+  },
+  {
+    "title": "Plain anchors",
+    "href": "/docs/guides/routing#plain-anchors",
+    "group": "Guides",
+    "hint": "Routing and links"
+  },
+  {
+    "title": "Next.js",
+    "href": "/docs/guides/routing#nextjs",
+    "group": "Guides",
+    "hint": "Routing and links"
+  },
+  {
+    "title": "React Router",
+    "href": "/docs/guides/routing#react-router",
+    "group": "Guides",
+    "hint": "Routing and links"
+  },
+  {
+    "title": "Breadcrumbs with a router",
+    "href": "/docs/guides/routing#breadcrumbs",
+    "group": "Guides",
+    "hint": "Routing and links"
+  },
+  {
+    "title": "Active navigation state",
+    "href": "/docs/guides/routing#active-state",
+    "group": "Guides",
+    "hint": "Routing and links"
+  },
+  {
+    "title": "Try it",
+    "href": "/docs/guides/routing#demo",
+    "group": "Guides",
+    "hint": "Routing and links"
+  },
+  {
+    "title": "Where to go next",
+    "href": "/docs/guides/routing#next",
+    "group": "Guides",
+    "hint": "Routing and links"
+  },
+  {
     "title": "AI and MCP",
     "href": "/docs/guides/ai",
     "group": "Guides",
     "hint": "Guide",
     "keywords": "Give coding assistants the real props: the Storybook MCP server, llms.txt and the registry."
+  },
+  {
+    "title": "Why give agents the source",
+    "href": "/docs/guides/ai#why",
+    "group": "Guides",
+    "hint": "AI and MCP"
+  },
+  {
+    "title": "The Storybook MCP server",
+    "href": "/docs/guides/ai#storybook-mcp",
+    "group": "Guides",
+    "hint": "AI and MCP"
+  },
+  {
+    "title": "AGENTS.md",
+    "href": "/docs/guides/ai#agents-md",
+    "group": "Guides",
+    "hint": "AI and MCP"
+  },
+  {
+    "title": "The shadcn registry",
+    "href": "/docs/guides/ai#registry",
+    "group": "Guides",
+    "hint": "AI and MCP"
+  },
+  {
+    "title": "llms.txt",
+    "href": "/docs/guides/ai#llms-txt",
+    "group": "Guides",
+    "hint": "AI and MCP"
+  },
+  {
+    "title": "Prompts that work",
+    "href": "/docs/guides/ai#prompts",
+    "group": "Guides",
+    "hint": "AI and MCP"
+  },
+  {
+    "title": "Where to go next",
+    "href": "/docs/guides/ai#next",
+    "group": "Guides",
+    "hint": "AI and MCP"
   },
   {
     "title": "FAQ",
