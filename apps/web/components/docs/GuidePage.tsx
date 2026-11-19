@@ -59,7 +59,7 @@ export default function GuidePage({
               '& > p, & section > p': { color: 'text.secondary', lineHeight: 1.75, my: 2 },
               '& ul, & ol': { color: 'text.secondary', lineHeight: 1.75, pl: 3 },
               '& li': { my: 0.75 },
-              '& :not(pre) > code': { fontSize: '0.875em', px: 0.6, py: 0.15, borderRadius: 1, bgcolor: 'action.hover', color: 'text.primary' },
+              '& :not(pre) > code': { fontSize: '0.875em', px: 0.6, py: 0.15, borderRadius: 1, bgcolor: 'action.hover', color: 'text.primary', overflowWrap: 'anywhere' },
               '& section': { scrollMarginTop: 88, mt: 6 },
               '& section:first-of-type': { mt: 2 },
             }}
