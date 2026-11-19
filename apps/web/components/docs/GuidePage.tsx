@@ -80,7 +80,7 @@ export default function GuidePage({
             </Typography>
           </Box>
 
-          <Box component="nav" aria-label="Docs pages" sx={{ mt: 3, display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+          <Box component="nav" aria-label="Previous and next page" sx={{ mt: 3, display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
             {prev ? <DocLinkCard href={prev.href} title={prev.title} note="Previous" rel="prev" /> : <span />}
             {next && <DocLinkCard href={next.href} title={next.title} note="Next" rel="next" align="right" />}
           </Box>
