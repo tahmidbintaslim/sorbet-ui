@@ -13,7 +13,6 @@ import PhoneIphoneOutlined from '@mui/icons-material/PhoneIphoneOutlined';
 import LightModeOutlined from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlined from '@mui/icons-material/DarkModeOutlined';
 import OpenInNew from '@mui/icons-material/OpenInNew';
-import { motion } from 'motion/react';
 import CodeBlock from './CodeBlock';
 import TemplateStage, { type StageMode } from './TemplateStage';
 import { useColorMode } from './ColorMode';
@@ -110,15 +109,13 @@ export default function TemplateViewer({
 
       {/* Both views stay mounted, so the preview keeps its state while you read the code. */}
       <Box ref={track} hidden={view !== 'preview'} sx={{ display: view === 'preview' ? 'flex' : 'none', justifyContent: 'center' }}>
-        <motion.div
+        <Box
           data-testid="template-frame"
           data-device={device}
-          initial={false}
-          animate={width === null ? undefined : { width }}
-          // A short tween, not a spring: the template reflows on every frame, so a long
-          // settle costs real work on slow machines. Reduced motion jumps (MotionConfig).
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          style={{ width: '100%', maxWidth: '100%', minWidth: 0 }}
+          // The width is plain state, eased by a CSS transition (off with reduced motion), so
+          // it always lands on the chosen device; the template reflows as it narrows.
+          style={{ width: width === null ? '100%' : `${width}px`, maxWidth: '100%', minWidth: 0 }}
+          sx={{ transition: 'width .35s cubic-bezier(.22,1,.36,1)', '@media (prefers-reduced-motion: reduce)': { transition: 'none' } }}
         >
           <Box sx={{ borderRadius: device === 'phone' ? '28px' : '14px', border: 1, borderColor: 'divider', bgcolor: 'background.paper', overflow: 'hidden', boxShadow: '0 24px 60px -32px rgba(15,23,42,.45)', transition: 'border-radius .3s' }}>
             {/* Browser bar */}
@@ -144,7 +141,7 @@ export default function TemplateViewer({
               {children}
             </TemplateStage>
           </Box>
-        </motion.div>
+        </Box>
       </Box>
 
       {view === 'code' && (

@@ -3,14 +3,15 @@ import { CATALOG } from '@/lib/catalog';
 import { categoriesWithBlocks } from '@/lib/blocks';
 import { TEMPLATES } from '@/lib/templates';
 import { SITE_URL } from '@/lib/seo';
+import { DOC_PAGES } from '@/lib/docs-nav';
 
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [
     '/',
-    '/docs',
-    '/docs/theming',
+    ...DOC_PAGES.map((p) => p.href),
+    '/support',
     '/docs/components',
     ...CATALOG.map((c) => `/docs/components/${c.slug}`),
     '/blocks',

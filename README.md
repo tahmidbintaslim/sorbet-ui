@@ -50,7 +50,7 @@ Sorbet UI is a good fit if you already use Material UI and MUI X and want soft, 
 
 ## Features
 
-- 30 components, from Button and TextField to Table, DatePicker and Autocomplete, each with the variant, color and size props above (exceptions are listed under [Components](#components)).
+- 30 components, from Button and TextField to Table, DatePicker and Autocomplete, each with the variant, color and size props above.
 - `@sorbet-ui/tokens`: 7 color scales with alpha steps, spacing, radius, shadows, z-index, breakpoints, typography and animations, as plain TypeScript objects.
 - `@sorbet-ui/theme`: `lightTheme` and `darkTheme`, built with MUI `createTheme` from those tokens.
 - Dark mode: 28 of the 30 components read the MUI palette mode and switch to lighter shades under `darkTheme`. Progress and Rating use the same shades in both modes.
@@ -151,17 +151,13 @@ Vite needs no extra setup. Both setups were checked with the packed packages: a 
 
 ## Components
 
-All components take the 5 sizes above. The 7 colors apply everywhere except in three components:
-
-- Autocomplete names the red color `error` instead of `danger`. Its input field ignores `color`: the field styles read `--sun-color-*` CSS variables that Sorbet UI does not define, so they fall back to MUI's default blue. Its multi-select tags do follow `color`, because they pass it to MUI `Chip`, which takes the color from the theme palette.
-- DatePicker names the red color `error` and ignores `color` for the same reason as the Autocomplete field.
-- Drawer accepts `color` but never reads it; its styles use neutral shades and the theme's text and background colors.
+All components take the 5 sizes and the 7 colors above. Drawer uses `color` as an accent edge (any color but `neutral`); its surface stays neutral.
 
 | Component         | `variant` values                                | Notes                                                           |
 | ----------------- | ----------------------------------------------- | --------------------------------------------------------------- |
 | Accordion         | solid, soft, outlined, ghost, plain             | Also exports AccordionSummary, AccordionDetails                 |
 | Alert             | solid, soft, outlined, ghost, plain             |                                                                 |
-| Autocomplete      | solid, soft, outlined, ghost, plain             | Uses `error`; `color` styles the multi-select tags only         |
+| Autocomplete      | solid, soft, outlined, ghost, plain             | Single and multiple; tags follow `color`                        |
 | Avatar            | solid, soft, outlined, ghost, plain             | Optional `status` dot                                           |
 | Badge             | solid, soft, outlined, ghost, plain             |                                                                 |
 | Breadcrumbs       | solid, soft, outlined, ghost, plain             |                                                                 |
@@ -169,9 +165,9 @@ All components take the 5 sizes above. The 7 colors apply everywhere except in t
 | Card              | solid, soft, outlined, ghost, plain             |                                                                 |
 | Checkbox          | solid, soft, outlined, ghost, plain             | `label` prop                                                    |
 | Chip              | solid, soft, outlined, ghost, plain             |                                                                 |
-| DatePicker        | solid, soft, outlined, ghost, plain             | MUI X with dayjs; re-exports `dayjs`; `color` has no effect yet |
+| DatePicker        | solid, soft, outlined, ghost, plain             | MUI X with dayjs; re-exports `dayjs`                            |
 | Dialog            | solid, soft, outlined, ghost, plain             | Also exports DialogTitle, DialogContent, DialogActions          |
-| Drawer            | solid, soft, outlined, ghost, plain             | Accepts `color` but ignores it                                  |
+| Drawer            | solid, soft, outlined, ghost, plain             | `color` adds an accent edge (not for `neutral`)                 |
 | Menu              | solid, soft, outlined, ghost, plain             | Use MenuItem children; MUI's `menu` / `selectedMenu` still work |
 | Pagination        | solid, soft, outlined, ghost, plain             |                                                                 |
 | Popover           | solid, soft, outlined, ghost, plain             |                                                                 |

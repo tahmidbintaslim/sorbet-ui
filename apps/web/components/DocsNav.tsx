@@ -7,6 +7,7 @@ import { CATALOG, catalogByGroup } from '@/lib/catalog';
 import { TOUCH } from '@/lib/touch';
 import { scoop, type Scoop } from '@/lib/scoops';
 import { SECTION_FLAVOR } from '@/lib/sections';
+import { DOCS_NAV } from '@/lib/docs-nav';
 import { ScoopDot } from './fun/Decor';
 import DocsSearch from './docs/DocsSearch';
 
@@ -14,25 +15,26 @@ import DocsSearch from './docs/DocsSearch';
 type NavItem = { href: string; label: string; c: Scoop };
 // Items can be split under small sub-headings (the component groups).
 const GROUPS: { title: string; c: Scoop; items: NavItem[]; sections?: { title: string; items: NavItem[] }[] }[] = [
-  {
-    title: 'Overview',
-    c: SECTION_FLAVOR.docs,
-    items: [
-      { href: '/docs', label: 'Getting started', c: SECTION_FLAVOR.docs },
-      { href: '/docs/theming', label: 'Theming', c: SECTION_FLAVOR.theming },
-    ],
-  },
+  ...DOCS_NAV.filter((g) => g.title !== 'Resources').map((g) => ({
+    title: g.title,
+    c: g.flavor,
+    items: g.pages.map((p) => ({ href: p.href, label: p.title, c: g.flavor })),
+  })),
   {
     title: 'Components',
     c: SECTION_FLAVOR.components,
-    items: [
-      { href: '/docs/components', label: 'All components', c: SECTION_FLAVOR.components },
-    ],
+    items: [{ href: '/docs/components', label: 'All components', c: SECTION_FLAVOR.components }],
     sections: catalogByGroup().map(({ group, entries }) => ({
       title: group,
       items: entries.map((d) => ({ href: `/docs/components/${d.slug}`, label: d.name, c: SECTION_FLAVOR.components })),
     })),
   },
+  // Resources come last, after the long component list, as in most docs sites.
+  ...DOCS_NAV.filter((g) => g.title === 'Resources').map((g) => ({
+    title: g.title,
+    c: g.flavor,
+    items: g.pages.map((p) => ({ href: p.href, label: p.title, c: g.flavor })),
+  })),
 ];
 
 /** Label of the docs page at `pathname`, for the mobile "Browse docs" bar. */

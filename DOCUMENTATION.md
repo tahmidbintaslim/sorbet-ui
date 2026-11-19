@@ -86,11 +86,7 @@ Components read their colors from `@sorbet-ui/tokens` and read the theme to choo
 
 ### `color`
 
-`primary`, `secondary`, `success`, `warning`, `danger`, `info` and `neutral`. Three components differ:
-
-- Autocomplete calls the red color `error` instead of `danger`. Its input field ignores `color` and renders in MUI's default blue, but its multi-select tags pass `color` to MUI `Chip` and follow the theme palette.
-- DatePicker calls the red color `error` and ignores `color` (MUI's default blue).
-- Drawer accepts `color` but never reads it.
+`primary`, `secondary`, `success`, `warning`, `danger`, `info` and `neutral`, on every component. Drawer uses `color` as an accent edge (any color but `neutral`).
 
 ### `size`
 
