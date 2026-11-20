@@ -28,6 +28,9 @@ export default defineConfig({
     name: 'storybook',
     browser: {
       enabled: true,
+      // Headless when there is no display (CI, containers, cloud agents). Without this the
+      // Storybook MCP test-run tool launches a headed Chromium, which exits immediately there.
+      headless: !process.env.DISPLAY,
       provider: playwright(),
       instances: [
         {
