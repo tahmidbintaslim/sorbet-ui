@@ -19,7 +19,9 @@ When working on UI:
 
 - Look up a component's props and stories with the MCP docs tools (`docs-list`, `docs-show`, `docs-show-story`) before using or changing it. Never guess props.
 - Reuse existing components and patterns instead of writing new ones.
-- After changing a component or story, run the MCP `test-run` tool (or `pnpm test:storybook:ci`) and fix accessibility findings.
+- After changing a component or story, run the MCP `test-run` tool on the stories you touched (pass their story IDs; get real IDs from `docs-show`, never guess) and fix accessibility findings. For the whole suite (427 tests) use `pnpm test:storybook:ci`: a full MCP run takes longer than the tool's 60-second timeout.
+- Tests run headless when there is no display (CI, containers, cloud agents); see `apps/docs/vitest.config.ts`.
+- Running many stories through the dev server can exceed Node's default heap. If Storybook crashes with "heap out of memory", start it with `NODE_OPTIONS=--max-old-space-size=6144 pnpm storybook:dev`.
 
 ## Rules
 
